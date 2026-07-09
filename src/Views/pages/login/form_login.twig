@@ -1,0 +1,63 @@
+{% extends "layouts/guest.twig" %}
+
+{% block content %}
+	<div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+		<div class="card border-0 bg-transparent" style="width: 100%; max-width: 400px;">
+			<div class="card-body">
+
+				<div class="text-center mb-3">
+					<img src="img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 120px;">
+				</div>
+
+				<h2 class="text-center mb-2 text-white fw-light">
+					{{ app_name }}
+				</h2>
+
+				<p class="card-text text-center text-white">{{ app_slogan }}</p>
+
+				{% if status == 'info' %}
+					<div class="alert alert-info rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2" data-time="3">
+						{{ message }}
+					</div>
+				{% endif %}
+
+				{% if status == 'server_error' %}
+					<div class="alert alert-danger rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+						<br>
+						<small class="opacity-75">ID do Erro:
+							{{ error_id }}</small>
+					</div>
+				{% endif %}
+
+				<form method="post" class="custom-form" enctype="application/x-www-form-urlencoded">
+					<div
+						class="mb-2">
+						{# Adicionado a tag 'value' dinâmica para não perder o e-mail digitado em caso de erro de senha #}
+						<input type="email" name="email" class="form-control rounded-pill py-2 px-4" value="{{ dados.email ?? 'jairojeffersont@gmail.com' }}" placeholder="E-mail" required>
+					</div>
+
+					<div class="mb-4">
+						<input type="password" name="senha" class="form-control rounded-pill py-2 px-4" value="intell01" placeholder="Senha" required>
+					</div>
+
+					<button type="submit" name="btn_login" class="btn btn-success w-100 rounded-pill py-2">
+						Entrar
+					</button>
+				</form>
+
+				<div class="d-flex justify-content-center gap-3 mt-3">
+					<a href="/esqueci-senha" class="text-white opacity-75 text-decoration-none">
+						Esqueci minha senha
+					</a>
+
+					<span class="text-white opacity-50">|</span>
+
+					<a href="/cadastro" class="text-white opacity-75 text-decoration-none">
+						Cadastre seu gabinete
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

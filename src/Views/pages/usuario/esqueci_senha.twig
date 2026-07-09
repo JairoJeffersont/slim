@@ -1,0 +1,58 @@
+{% extends "layouts/guest.twig" %}
+
+{% block content %}
+	<div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+		<div class="card border-0 bg-transparent" style="width: 100%; max-width: 400px;">
+			<div class="card-body">
+
+				<div class="text-center mb-3">
+					<img src="/img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 120px;">
+				</div>
+
+				<h2 class="text-center mb-2 text-white fw-light">
+					Recuperar senha
+				</h2>
+
+				<p class="card-text text-center text-white">
+					Informe seu e-mail para receber as instruções de recuperação.
+				</p>
+
+				{% if status == 'info' %}
+					<div class="alert alert-info rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+					</div>
+				{% endif %}
+
+				{% if status == 'success' %}
+					<div class="alert alert-success rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+					</div>
+				{% endif %}
+
+				{% if status == 'server_error' %}
+					<div class="alert alert-danger rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+						<br>
+						<small class="opacity-75">ID do Erro:
+							{{ error_id }}</small>
+					</div>
+				{% endif %}
+
+				<form method="post" class="custom-form" enctype="application/x-www-form-urlencoded">
+
+					<div class="mb-4">
+						<input type="email" name="email" class="form-control rounded-pill py-2 px-4" value="{{ dados.email ?? '' }}" placeholder="E-mail" required>
+					</div>
+
+					<div class="col-12 d-flex gap-2 mt-3">
+						<button type="submit" name="btn_salvar" class="btn btn-success rounded-pill py-2 w-100">Enviar link</button>
+						<a href="/login" class="btn btn-primary rounded-pill py-2 w-100">Voltar para login</a>
+					</div>
+
+				</form>
+
+
+			</div>
+		</div>
+	</div>
+{% endblock %}
