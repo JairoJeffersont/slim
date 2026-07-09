@@ -1,4 +1,4 @@
 /vendor/
 /storage/sessions/*
-
+**/.DS_Store
 .env
