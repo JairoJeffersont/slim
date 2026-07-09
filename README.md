@@ -42,14 +42,22 @@ Sistema web para gestão de gabinetes parlamentares, desenvolvido com PHP 8.2+ e
 
 4. Edite o `.env` com os dados do banco e e-mail:
    ```env
-   DB_DRIVER=mysql
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_DATABASE=nome_do_banco
-   DB_USERNAME=usuario
-   DB_PASSWORD=senha
-   DB_CHARSET=utf8mb4
-   DB_COLLATION=utf8mb4_unicode_ci
+    DB_DRIVER=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=
+    DB_USERNAME=
+    DB_PASSWORD=
+    DB_CHARSET=utf8mb4
+    DB_COLLATION=utf8mb4_unicode_ci
+
+    SMTP_HOST=
+    SMTP_PORT=587
+    SMTP_USER=
+    SMTP_PASSWORD=
+    SMTP_SENDER=
+    SMTP_FROM=
+    SMTP_FROM_NAME=
    ```
 
 5. Importe o banco de dados:
@@ -85,35 +93,6 @@ slim/
 └── .env                 # Variáveis de ambiente (não versionado)
 ```
 
-## Rotas Principais
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| GET/POST | `/login` | Autenticação de usuários |
-| GET/POST | `/cadastro` | Cadastro de novo gabinete |
-| GET/POST | `/esqueci-senha` | Recuperação de senha |
-| GET/POST | `/nova-senha/{token}` | Redefinição de senha |
-| GET | `/dashboard` | Painel principal *(autenticado)* |
-| GET/POST | `/meu-gabinete` | Gerenciamento do gabinete *(autenticado)* |
-| GET | `/usuario/{id}` | Detalhes do usuário *(autenticado)* |
-| POST | `/usuario/{id}/tipo` | Atualizar tipo de usuário *(autenticado)* |
-| POST | `/usuario/{id}/status` | Alterar status do usuário *(autenticado)* |
-| POST | `/usuario/{id}/excluir` | Excluir usuário *(autenticado)* |
-| GET/POST | `/novo-usuario/{token}` | Aceitar convite de usuário *(autenticado)* |
-| GET | `/logout` | Encerrar sessão *(autenticado)* |
-
-## Ferramentas de Desenvolvimento
-
-```bash
-# Rodar testes
-composer test
-
-# Análise estática (PHPStan)
-composer analyse
-
-# Verificação de código (PHP_CodeSniffer)
-composer cs
-```
 
 ## Autor
 

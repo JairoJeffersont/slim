@@ -1,2 +1,4 @@
 /vendor/
 /storage/sessions/*
+/.env
+.env
