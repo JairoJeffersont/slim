@@ -8,6 +8,8 @@ use App\Models\Usuario;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Helpers\MailHelper;
+
 
 /**
  * Classe UsuarioController
@@ -288,9 +290,7 @@ class UsuarioController extends BaseController {
         $usuario = Usuario::where('email', $dados['email'])->first();
 
         if (!$usuario) {
-            return $this->render($request, $response, self::VIEW_ESQUECI_SENHA, $this->info(
-                'E-mail não encontrado'
-            ));
+            return $this->render($request, $response, self::VIEW_ESQUECI_SENHA, $this->info('E-mail não encontrado'));
         }
 
         $token = bin2hex(random_bytes(32));
@@ -299,11 +299,29 @@ class UsuarioController extends BaseController {
         $usuario->reset_token_expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
         $usuario->save();
 
-        // Aqui futuramente entra o envio do e-mail
+        $link = $_ENV['BASE_URL'] . 'nova-senha/' . $token;
 
-        return $this->render($request, $response, self::VIEW_ESQUECI_SENHA, $this->success(
-            'Um link de recuperação foi enviado para seu e-mail.'
-        ));
+        $mensagem = "
+                    <h2>Recuperação de senha</h2>
+                    <p>Olá {$usuario->nome},</p>
+                    <p>Recebemos uma solicitação para redefinir sua senha.</p>
+                    <p>Clique no botão abaixo para criar uma nova senha:</p>
+                    <p><a href='{$link}'>Recuperar senha</a></p>
+                    <p>Este link expira em 1 hora.</p>
+                ";
+
+        $email = MailHelper::enviar(
+            $usuario->email,
+            $usuario->nome,
+            'Recuperação de senha',
+            $mensagem
+        );
+
+        if ($email['status'] !== 'success') {
+            return $this->render($request, $response, self::VIEW_ESQUECI_SENHA, $this->info('Não foi possível enviar o e-mail de recuperação.'));
+        }
+
+        return $this->render($request, $response, self::VIEW_ESQUECI_SENHA, $this->success('Um link de recuperação foi enviado para seu e-mail.'));
     }
 
     /**

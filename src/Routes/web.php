@@ -23,8 +23,6 @@ return function (App $app) {
     $app->get('/nova-senha/{token}', [UsuarioController::class, 'novaSenha']);
     $app->post('/nova-senha/{token}', [UsuarioController::class, 'salvarNovaSenha']);
 
-
-
     $app->group('', function ($group) {
 
         $group->get('/dashboard', function ($request, $response) {
