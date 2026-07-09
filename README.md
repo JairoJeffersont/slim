@@ -71,6 +71,7 @@ Sistema web para gestão de gabinetes parlamentares, desenvolvido com PHP 8.2+ e
 
 ```
 slim/
+├── logs/                # Pasta de logs do sistema
 ├── public/              # Document root — ponto de entrada (index.php)
 │   ├── css/             # Estilos customizados
 │   ├── js/              # Scripts JavaScript
@@ -86,7 +87,7 @@ slim/
 │   └── Views/           # Templates Twig
 ├── storage/
 │   └── sessions/        # Sessões do servidor
-├── logs/                # Logs da aplicação
+│   └── cache/           # Pasta de cache do Twig (se configurado no .env)
 ├── vendor/              # Dependências PHP (Composer)
 ├── composer.json
 ├── db.sql               # Script de criação do banco de dados
