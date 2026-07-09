@@ -9,12 +9,38 @@ use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Classe UsuarioController
+ *
+ * Responsável por gerenciar o ciclo de vida dos usuários (criação via convite, alteração
+ * de status, modificação de cargos) e o fluxo de recuperação de senhas esquecidas.
+ * Includes regras de negócio específicas para impedir que um gabinete fique sem administradores ativos.
+ *
+ * @package App\Controllers
+ */
 class UsuarioController extends BaseController {
+
+    /** @var string Template para o formulário de cadastro de novo usuário via convite. */
     private const VIEW = 'pages/usuario/novo_usuario.twig';
+
+    /** @var string Template para a ficha de gerenciamento do usuário (visão do admin). */
     private const VIEW_FICHA = 'pages/usuario/ficha_usuario.twig';
+
+    /** @var string Template para a tela de solicitação de recuperação de senha. */
     private const VIEW_ESQUECI_SENHA = 'pages/usuario/esqueci_senha.twig';
+
+    /** @var string Template para a tela de definição da nova senha. */
     private const VIEW_NOVA_SENHA = 'pages/usuario/nova_senha.twig';
 
+    /**
+     * Exibe a ficha de detalhes e gerenciamento de um usuário específico.
+     * * Apenas administradores podem acessar.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota, contendo o ['id'] do usuário.
+     * @return Response Redirecionamento caso não tenha permissão, ou a view da ficha do usuário.
+     */
     public function index(Request $request, Response $response, array $args): Response {
         $id = (int) $args['id'];
 
@@ -30,6 +56,15 @@ class UsuarioController extends BaseController {
         ]);
     }
 
+    /**
+     * Atualiza o nível de permissão (tipo) de um usuário.
+     * * Impede a alteração se o usuário for o único administrador ativo do gabinete.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota, contendo o ['id'] do usuário.
+     * @return Response A resposta HTTP com a view atualizada e mensagem de feedback.
+     */
     public function atualizarTipo(Request $request, Response $response, array $args): Response {
         $id = (int) $args['id'];
         $dados = $this->input($request);
@@ -69,6 +104,15 @@ class UsuarioController extends BaseController {
         ));
     }
 
+    /**
+     * Alterna o status de atividade (Ativo/Inativo) de um usuário.
+     * * Impede a desativação se o usuário for o único administrador ativo do gabinete.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota, contendo o ['id'] do usuário.
+     * @return Response A resposta HTTP com a view atualizada e mensagem de feedback.
+     */
     public function alterarStatus(Request $request, Response $response, array $args): Response {
         $id = (int) $args['id'];
 
@@ -107,6 +151,14 @@ class UsuarioController extends BaseController {
         ));
     }
 
+    /**
+     * Exibe o formulário público de cadastro para um novo usuário aceitando um convite.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota, contendo o ['token'] do gabinete.
+     * @return Response A view de cadastro ou mensagem de erro de token inválido.
+     */
     public function novoUsuario(Request $request, Response $response, array $args): Response {
         $token = $args['token'];
         $gabinete = $this->buscarGabinetePorToken($token);
@@ -120,6 +172,14 @@ class UsuarioController extends BaseController {
         ]);
     }
 
+    /**
+     * Processa a submissão do formulário de convite e cria o novo usuário (com status inativo).
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota, contendo o ['token'] do gabinete.
+     * @return Response A resposta HTTP contendo mensagens de sucesso ou validação.
+     */
     public function salvarNovoUsuario(Request $request, Response $response, array $args): Response {
         $token = $args['token'];
         $dados = $this->input($request);
@@ -170,10 +230,22 @@ class UsuarioController extends BaseController {
         }
     }
 
+    /**
+     * Busca um gabinete correspondente ao token alfanumérico fornecido.
+     *
+     * @param string $token Token único do gabinete.
+     * @return Gabinete|null O modelo do gabinete localizado ou null.
+     */
     private function buscarGabinetePorToken(string $token): ?Gabinete {
         return Gabinete::where('token', $token)->first();
     }
 
+    /**
+     * Valida os campos do formulário de criação de novo usuário via convite.
+     *
+     * @param array $dados Dados vindos da requisição POST.
+     * @return string|null Texto descritivo do erro ou null se estiver válido.
+     */
     private function validarNovoUsuario(array $dados): ?string {
         if (empty($dados['nome']) || empty($dados['email']) || empty($dados['senha']) || empty($dados['confirmar_senha'])) {
             return 'Preencha os campos obrigatórios';
@@ -190,10 +262,26 @@ class UsuarioController extends BaseController {
         return null;
     }
 
+    /**
+     * Exibe a página pública para solicitação de recuperação de senha.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota.
+     * @return Response A view de esqueci a senha renderizada.
+     */
     public function esqueciSenha(Request $request, Response $response, array $args): Response {
         return $this->render($request, $response, self::VIEW_ESQUECI_SENHA);
     }
 
+    /**
+     * Gera e armazena um token temporário de recuperação se o e-mail existir na base de dados.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota.
+     * @return Response A resposta HTTP com mensagem de sucesso ou erro.
+     */
     public function enviarRecuperacaoSenha(Request $request, Response $response, array $args): Response {
         $dados = $this->input($request);
 
@@ -218,6 +306,14 @@ class UsuarioController extends BaseController {
         ));
     }
 
+    /**
+     * Valida o token recebido pela URL e exibe a tela de definição da nova senha.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota contendo o ['token'].
+     * @return Response A view para digitação da nova senha ou erro se expirado/inválido.
+     */
     public function novaSenha(Request $request, Response $response, array $args): Response {
         $token = $args['token'];
 
@@ -236,6 +332,15 @@ class UsuarioController extends BaseController {
         ]);
     }
 
+    /**
+     * Valida as credenciais digitadas e efetiva a alteração definitiva de senha do usuário.
+     * Limpa o token de recuperação após o sucesso.
+     *
+     * @param Request $request O objeto de requisição HTTP PSR-7.
+     * @param Response $response O objeto de resposta HTTP PSR-7.
+     * @param array $args Argumentos da rota contendo o ['token'].
+     * @return Response A resposta HTTP indicando o resultado do processo de alteração.
+     */
     public function salvarNovaSenha(Request $request, Response $response, array $args): Response {
         $token = $args['token'];
         $dados = $this->input($request);
