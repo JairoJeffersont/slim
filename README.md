@@ -14,6 +14,7 @@ Sistema web para gestão de gabinetes parlamentares, desenvolvido com PHP 8.2+ e
 - **Bootstrap** 5.3 + **Bootstrap Icons** 1.13
 - **jQuery** 4.0 + **jQuery Mask**
 - **TinyMCE** 8.5
+- **Jairojeffersont/easy-logger** 1.0
 
 ## Requisitos
 
