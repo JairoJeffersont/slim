@@ -224,7 +224,7 @@ function carregarPartidos() {
 
 
     $.ajax({
-        url: 'https://dadosabertos.camara.leg.br/api/v2/partidos?ordem=ASC&ordenarPor=sigla',
+        url: 'https://dadosabertos.camara.leg.br/api/v2/partidos?itens=100&ordem=ASC&ordenarPor=sigla',
         method: 'GET',
         dataType: 'json',
         success: function (data) {
