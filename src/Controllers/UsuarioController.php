@@ -6,56 +6,56 @@ use App\Models\Gabinete;
 use App\Models\TipoUsuario;
 use App\Models\Usuario;
 use Exception;
-
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UsuarioController extends BaseController {
 
     private const VIEW = 'pages/usuario/ficha-usuario.twig';
+    private const VIEW_NEW_USER = 'pages/usuario/form-novo-usuario.twig';
     private const ROUTE = '/usuario';
+    private const ROUTE_NEW_USER = '/novo-usuario/';
+
     private int $NIVEL_LOGADO;
     private int $LOGGED_USER_ID;
 
     public function __construct() {
-        $this->NIVEL_LOGADO = $_SESSION['usuario']['nivel'];
-        $this->LOGGED_USER_ID = $_SESSION['usuario']['id'];
+        $this->NIVEL_LOGADO = $_SESSION['usuario']['nivel'] ?? 0;
+        $this->LOGGED_USER_ID = $_SESSION['usuario']['id'] ?? 0;
+    }
+
+    private function getGabineteByToken(string $token): ?Gabinete {
+        return Gabinete::where('token', $token)->first();
     }
 
     public function index(Request $request, Response $response, array $args): Response {
 
-        if ($this->NIVEL_LOGADO != 1) {
+        if ($this->NIVEL_LOGADO !== 1) {
             $this->flash('info', 'Você não tem autorização para acessar essa área');
             return $this->redirect($response, '/dashboard');
         }
 
-        $id = $args['id'];
-
-        $payload = [];
-        $payload['aniversario'] = false;
-
         try {
 
-            $usuario = Usuario::with(['gabinete', 'logs' => function ($query) {
-                $query->orderBy('created_at', 'desc');
-            }])->find($id);
+            $usuario = Usuario::with([
+                'gabinete',
+                'logs' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                }
+            ])->find($args['id']);
 
             if (!$usuario) {
                 $this->flash('info', 'Usuário não encontrado');
                 return $this->redirect($response, '/gabinete');
             }
 
-            $tiposUsuario = TipoUsuario::get();
+            $payload = [
+                'usuario' => $usuario,
+                'tipos' => TipoUsuario::all(),
+                'aniversario' => $usuario->aniversario && date('m-d') === date('m-d', strtotime($usuario->aniversario))
+            ];
 
-            $payload['usuario'] = $usuario;
-            $payload['tipos'] = $tiposUsuario;
-
-            if ($usuario->aniversario && date('m-d') === date('m-d', strtotime($usuario->aniversario))) {
-                $payload['aniversario'] = true;
-            }
-
-            $payload = array_merge($payload, $this->getFlash());
-            return $this->renderView($request, $response, self::VIEW, $payload);
+            return $this->renderView($request, $response, self::VIEW, array_merge($payload, $this->getFlash()));
         } catch (Exception $e) {
             $this->flashError($e);
             return $this->renderView($request, $response, self::VIEW, $this->getFlash());
@@ -64,18 +64,24 @@ class UsuarioController extends BaseController {
 
     public function updateUser(Request $request, Response $response, array $args): Response {
 
-        try {
-            $id = $args['id'];
-            $dados = $request->getParsedBody();
+        $id = $args['id'];
 
+        try {
+
+            $dados = $request->getParsedBody();
             $usuario = Usuario::findOrFail($id);
 
-            if ($usuario->id == $this->LOGGED_USER_ID) {
+            $tipo = (int) $dados['tipo'];
+            $ativo = (int) $dados['ativo'];
 
-                $adminsAtivos = Usuario::where('tipo_usuario_id', 1)->where('ativo', 1)->count();
+            if ($usuario->id === $this->LOGGED_USER_ID) {
 
-                $vaiDeixarDeSerAdmin = (int) $dados['tipo'] !== 1;
-                $vaiDesativar = (int) $dados['ativo'] === 0;
+                $adminsAtivos = Usuario::where('tipo_usuario_id', 1)
+                    ->where('ativo', 1)
+                    ->count();
+
+                $vaiDeixarDeSerAdmin = $tipo !== 1;
+                $vaiDesativar = $ativo === 0;
 
                 if ($adminsAtivos === 1 && ($vaiDeixarDeSerAdmin || $vaiDesativar)) {
                     $this->flash('info', 'Você é o único administrador ativo');
@@ -84,8 +90,8 @@ class UsuarioController extends BaseController {
             }
 
             $usuario->update([
-                'tipo_usuario_id' => $dados['tipo'],
-                'ativo' => $dados['ativo']
+                'tipo_usuario_id' => $tipo,
+                'ativo' => $ativo
             ]);
 
             $this->flash('success', 'Usuário atualizado com sucesso');
@@ -101,78 +107,100 @@ class UsuarioController extends BaseController {
         try {
 
             $token = $args['token'];
-            $payload = [];
-
-            $gabinete = Gabinete::where('token', $token)->first();
+            $gabinete = $this->getGabineteByToken($token);
 
             if (!$gabinete) {
                 $this->flash('info', 'Token inválido');
-                return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $this->getFlash());
+                return $this->renderView($request, $response, self::VIEW_NEW_USER, $this->getFlash());
             }
 
-            $payload['gabinete'] = $gabinete;
-            $payload = array_merge($payload, $this->getFlash());
-
-            return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $payload);
+            return $this->renderView(
+                $request,
+                $response,
+                self::VIEW_NEW_USER,
+                array_merge([
+                    'gabinete' => $gabinete
+                ], $this->getFlash())
+            );
         } catch (Exception $e) {
             $this->flashError($e);
-            return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $this->getFlash());
+            return $this->renderView($request, $response, self::VIEW_NEW_USER, $this->getFlash());
         }
     }
 
     public function newUser(Request $request, Response $response, array $args): Response {
+
         try {
 
             $dados = $request->getParsedBody();
             $token = $args['token'];
 
+            $gabinete = $this->getGabineteByToken($token);
 
+            if (!$gabinete) {
+                $this->flash('info', 'Token inválido');
+                return $this->redirect($response, self::ROUTE_NEW_USER . $token);
+            }
 
-            $camposObrigatorios = ['nome', 'email', 'senha', 'telefone', 'aniversario'];
+            $camposObrigatorios = ['nome', 'email', 'senha', 'senha2', 'telefone', 'aniversario'];
 
             foreach ($camposObrigatorios as $campo) {
                 if (!isset($dados[$campo]) || trim((string) $dados[$campo]) === '') {
                     $this->flash('info', 'Todos os campos são obrigatórios');
-                    return $this->redirect($response, '/novo-usuario/' . $token);
+                    return $this->redirect($response, self::ROUTE_NEW_USER . $token);
                 }
             }
 
-            if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
+            $nome = trim($dados['nome']);
+            $email = strtolower(trim($dados['email']));
+            $telefone = preg_replace('/\D/', '', $dados['telefone']);
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->flash('info', 'E-mail inválido');
-                return $this->redirect($response, '/novo-usuario/' . $token);
+                return $this->redirect($response, self::ROUTE_NEW_USER . $token);
             }
 
             if ($dados['senha'] !== $dados['senha2']) {
-                $this->flash('info', 'Senhas não conferem');
-                return $this->redirect($response, '/novo-usuario/' . $token);
+                $this->flash('info', 'As senhas não conferem');
+                return $this->redirect($response, self::ROUTE_NEW_USER . $token);
             }
 
-            $usuario = Usuario::where('email', $dados['email'])->first();
-            $gabinete = Gabinete::where('token', $token)->first();
-
-            if ($usuario) {
+            if (Usuario::where('email', $email)->exists()) {
                 $this->flash('info', 'Esse usuário já está cadastrado');
-                return $this->redirect($response, '/novo-usuario/' . $token);
+                return $this->redirect($response, self::ROUTE_NEW_USER . $token);
+            }
+
+            $aniversario = null;
+
+            if (!empty($dados['aniversario'])) {
+                $partes = explode('/', $dados['aniversario']);
+
+                if (count($partes) !== 3) {
+                    $this->flash('info', 'Data de aniversário inválida');
+                    return $this->redirect($response, self::ROUTE_NEW_USER . $token);
+                }
+
+                [$dia, $mes] = $partes;
+
+                $aniversario = "2000-{$mes}-{$dia}";
             }
 
             Usuario::create([
-                'nome' => $dados['nome'],
-                'email' => $dados['email'],
+                'nome' => $nome,
+                'email' => $email,
                 'senha' => password_hash($dados['senha'], PASSWORD_DEFAULT),
-                'telefone' => $dados['telefone'] ?? null,
-                'aniversario' => !empty($dados['aniversario'])
-                    ? '2000-' . implode('-', array_reverse(explode('/', $dados['aniversario'])))
-                    : null,
+                'telefone' => $telefone,
+                'aniversario' => $aniversario,
                 'ativo' => 0,
                 'tipo_usuario_id' => 2,
                 'gabinete_id' => $gabinete->id
             ]);
 
-            $this->flash('success', 'Cadastrado com sucesso. Aguarde ativação...');
-            return $this->redirect($response, '/novo-usuario/' . $token);
+            $this->flash('success', 'Cadastro realizado com sucesso. Aguarde a ativação da sua conta.');
+            return $this->redirect($response, self::ROUTE_NEW_USER . $token);
         } catch (Exception $e) {
             $this->flashError($e);
-            return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $this->getFlash());
+            return $this->renderView($request, $response, self::VIEW_NEW_USER, $this->getFlash());
         }
     }
 }

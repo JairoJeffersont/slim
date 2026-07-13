@@ -19,6 +19,9 @@ class MailHelper {
         $mail->Port = (int) $_ENV['SMTP_PORT'];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
+        $mail->Timeout = 10;
+        $mail->SMTPKeepAlive = false;
+
         $mail->CharSet = 'UTF-8';
 
         $mail->setFrom($_ENV['SMTP_FROM'], $_ENV['SMTP_FROM_NAME']);
@@ -40,7 +43,7 @@ class MailHelper {
 
             return ['status' => 'success', 'message' => 'E-mail enviado com sucesso'];
         } catch (Exception $e) {
-            throw($e);
+            throw ($e);
         }
     }
 }

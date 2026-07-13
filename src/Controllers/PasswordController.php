@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Helpers\MailHelper;
 use App\Models\Usuario;
 use Exception;
-
+use JairoJeffersont\EasyLogger\Logger;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -83,7 +83,8 @@ class PasswordController extends BaseController {
             $this->flash('success', 'Link enviado com sucesso');
             return $this->renderView($request, $response, self::VIEW_RECOVER, $this->getFlash());
         } catch (Exception $e) {
-            $this->flashError($e);
+            $error_id = Logger::newLog('../logs', 'ERROR', static::class . ' | ' . $e->getMessage(), 'ERROR');
+            $this->flash('error', 'Erro ao enviar o email | '.$error_id);
             return $this->renderView($request, $response, self::VIEW_RECOVER, $this->getFlash());
         }
     }
