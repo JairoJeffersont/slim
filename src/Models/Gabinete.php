@@ -18,7 +18,8 @@ class Gabinete extends Model {
         'cidade',
         'estado',
         'ativo',
-        'tipo_gabinete_id'
+        'tipo_gabinete_id',
+        'assinaturas'
     ];
 
     protected $casts = [

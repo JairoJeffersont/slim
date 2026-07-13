@@ -89,6 +89,20 @@ class UsuarioController extends BaseController {
                 }
             }
 
+            if (!$usuario->ativo && $ativo === 1) {
+
+                $assinaturasUtilizadas = Usuario::where('gabinete_id', $usuario->gabinete_id)
+                    ->where('ativo', 1)
+                    ->count();
+
+                $gabinete = Gabinete::find($usuario->gabinete_id);
+
+                if ($assinaturasUtilizadas >= $gabinete->assinaturas) {
+                    $this->flash('info', 'Não há assinaturas disponíveis para ativar este usuário.');
+                    return $this->redirect($response, self::ROUTE . '/' . $id);
+                }
+            }
+
             $usuario->update([
                 'tipo_usuario_id' => $tipo,
                 'ativo' => $ativo
@@ -170,27 +184,15 @@ class UsuarioController extends BaseController {
                 return $this->redirect($response, self::ROUTE_NEW_USER . $token);
             }
 
-            $aniversario = null;
-
-            if (!empty($dados['aniversario'])) {
-                $partes = explode('/', $dados['aniversario']);
-
-                if (count($partes) !== 3) {
-                    $this->flash('info', 'Data de aniversário inválida');
-                    return $this->redirect($response, self::ROUTE_NEW_USER . $token);
-                }
-
-                [$dia, $mes] = $partes;
-
-                $aniversario = "2000-{$mes}-{$dia}";
-            }
 
             Usuario::create([
                 'nome' => $nome,
                 'email' => $email,
                 'senha' => password_hash($dados['senha'], PASSWORD_DEFAULT),
                 'telefone' => $telefone,
-                'aniversario' => $aniversario,
+                'aniversario' => !empty($dados['aniversario'])
+                    ? '2000-' . implode('-', array_reverse(explode('/', $dados['aniversario'])))
+                    : null,
                 'ativo' => 0,
                 'tipo_usuario_id' => 2,
                 'gabinete_id' => $gabinete->id

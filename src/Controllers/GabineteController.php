@@ -35,11 +35,20 @@ class GabineteController extends BaseController {
             $gabinete = Gabinete::find($usuario->gabinete_id);
             $usuarios = Usuario::where('gabinete_id', $usuario->gabinete_id)->get();
 
+            $assinaturasUtilizadas = Usuario::where('gabinete_id', $usuario->gabinete_id)
+                ->where('ativo', 1)
+                ->count();
+
+            $assinaturasDisponiveis = max(0, $gabinete->assinaturas - $assinaturasUtilizadas);
+
             $payload['gabinete'] = $gabinete;
             $payload['usuarios'] = $usuarios;
             $payload['usuario_logado'] = $this->LOGGED_USER_ID;
+            $payload['assinaturas_utilizadas'] = $assinaturasUtilizadas;
+            $payload['assinaturas_disponiveis'] = $assinaturasDisponiveis;
 
             $payload = array_merge($payload, $this->getFlash());
+
             return $this->renderView($request, $response, self::VIEW, $payload);
         } catch (Exception $e) {
             $this->flashError($e);

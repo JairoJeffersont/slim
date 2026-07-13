@@ -66,6 +66,7 @@ class CadastroController extends BaseController {
                 'token' => uniqid(),
                 'estado' => $dados['uf'],
                 'ativo' => 1,
+                'assinaturas' => 1,
                 'tipo_gabinete_id' => $dados['tipo_gabinete_id']
             ]);
 

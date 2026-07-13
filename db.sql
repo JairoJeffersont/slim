@@ -18,6 +18,7 @@ CREATE TABLE
         id_parlamentar VARCHAR(50) DEFAULT NULL,
         token CHAR(36) DEFAULT NULL,
         tipo_gabinete_id INT NOT NULL,
+        assinaturas INT DEFAULT NULL,
         ativo BOOLEAN NOT NULL DEFAULT TRUE,
         cidade VARCHAR(60) NOT NULL DEFAULT '',
         estado CHAR(2) NOT NULL DEFAULT '',
