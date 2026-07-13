@@ -97,6 +97,15 @@ table th {
     font-size: 0.8rem;
 }
 
+
+[aria-expanded="true"] .transition-icon {
+        transform: rotate(180deg);
+        transition: transform 0.2s ease-in-out;
+    }
+    .transition-icon {
+        transition: transform 0.2s ease-in-out;
+    }
+
 /*REGRAS PARA O SIDEBAR*/
 #wrapper {
     overflow-x: hidden;

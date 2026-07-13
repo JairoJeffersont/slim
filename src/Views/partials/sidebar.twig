@@ -1,11 +1,101 @@
 <div class="border-end bg-white" id="sidebar-wrapper">
-	<div class="sidebar-heading border-bottom bg-light">{{ app_name }}</div>
-	<div class="list-group list-group-flush">
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Dashboard</a>
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Shortcuts</a>
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Overview</a>
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Events</a>
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a>
+	<div class="sidebar-heading border-bottom bg-light"><img src="/img/logo.png" class="me-2" alt="Logo {{ app_name }}" style="height: 25px; width: auto; object-fit: contain;">
+		{{ app_name }}
+
 	</div>
+	<div class="list-group list-group-flush" id="sidebarMenu">
+
+
+		<!--<div>
+			<button class="list-group-item border-top-0 list-group-item-action list-group-item-light p-3 d-flex align-items-center justify-content-between text-muted fw-semibold small gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuLegislativo" aria-expanded="false" aria-controls="menuLegislativo">
+				<span class="d-flex align-items-center gap-2 text-dark">
+					<i class="bi bi-journal-text text-muted"></i>
+					Atividade Legislativa
+				</span>
+				<i class="bi bi-chevron-down small transition-icon"></i>
+			</button>
+
+			<div class="collapse" id="menuLegislativo" data-bs-parent="#sidebarMenu">
+				<div
+					class="bg-light ps-3">
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/projetos">
+						<i class="bi bi-file-earmark me-2 text-secondary"></i>
+						Proposições
+					</a>
+
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/notas-tecnicas">
+						<i class="bi bi-clipboard2-check me-2 text-secondary"></i>
+						Notas Técnicas
+					</a>
+
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/comissoes">
+						<i class="bi bi-person-workspace me-2 text-secondary"></i>
+						Comissões
+					</a>
+
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/agenda-legislativa">
+						<i class="bi bi-calendar-event me-2 text-secondary"></i>
+						Agenda Legislativa
+					</a>
+				</div>
+			</div>
+		</div>-->
+
+
+		<div>
+			<button class="list-group-item border-top-0 list-group-item-action list-group-item-light p-3 d-flex align-items-center justify-content-between text-muted fw-semibold small gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuRelacionamentos" aria-expanded="false" aria-controls="menuRelacionamentos">
+				<span class="d-flex align-items-center gap-2 text-dark">
+					<i class="bi bi-people text-muted"></i>
+					Relacionamentos
+				</span>
+				<i class="bi bi-chevron-down small transition-icon"></i>
+			</button>
+			<div class="collapse" id="menuRelacionamentos" data-bs-parent="#sidebarMenu">
+				<div
+					class="bg-light ps-3">
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/contatos">
+						<i class="bi bi-person-lines-fill me-2 text-secondary"></i>
+						Contatos
+					</a>
+
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/orgaos-entidades">
+						<i class="bi bi-building me-2 text-secondary"></i>
+						Órgãos e Entidades
+					</a>
+
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/liderancas">
+						<i class="bi bi-award me-2 text-secondary"></i>
+						Lideranças
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!--<div>
+			<button class="list-group-item border-top-0 list-group-item-action list-group-item-light p-3 d-flex align-items-center justify-content-between text-muted fw-semibold small gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuOrcamento" aria-expanded="false" aria-controls="menuOrcamento">
+				<span class="d-flex align-items-center gap-2 text-dark">
+					<i class="bi bi-cash-coin text-muted"></i>
+					Orçamento
+				</span>
+				<i class="bi bi-chevron-down small transition-icon"></i>
+			</button>
+			<div class="collapse" id="menuOrcamento" data-bs-parent="#sidebarMenu">
+				<div class="bg-light ps-3">
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/emendas">
+						<i class="bi bi-bank me-2 text-secondary"></i>
+						Emendas
+					</a>
+
+					<a class="list-group-item list-group-item-action py-2 px-3 small border-0" href="/relatorios">
+						<i class="bi bi-graph-up-arrow me-2 text-secondary"></i>
+						Relatórios
+					</a>
+				</div>
+			</div>
+		</div>-->
+
+
+	</div>
+
+
 </div>
