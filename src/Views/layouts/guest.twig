@@ -2,8 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-		<meta name="description" content=""/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"/>
+		<meta name="description" content="Sistema de Gestão de Gabinete Parlamentar"/>
 		<meta name="author" content=""/>
 		<title>{{ app_name }}</title>
 		<link href="/vendor/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet"/>
@@ -12,6 +12,24 @@
 		<script src="/vendor/jquery-4.0.0/jquery-4.0.0.min.js"></script>
 		<script src="/vendor/jquery-mask/jquery.mask.min.js"></script>
 		<script src="/vendor/tinymce-8.5.1/js/tinymce/tinymce.min.js"></script>
+		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+		<meta name="theme-color" content="#2e13dd" media="(prefers-color-scheme: dark)">
+
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+		<meta name="apple-mobile-web-app-title" content="{{ app_name }}"/>
+		<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96"/>
+		<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg"/>
+		<link rel="shortcut icon" href="/favicon/favicon.ico"/>
+		<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"/>
+		<meta name="apple-mobile-web-app-title" content="Mandato Digital"/>
+		<link rel="manifest" href="/favicon/site.webmanifest"/>
+		<style>
+			body {
+				-webkit-tap-highlight-color: transparent;
+				-webkit-touch-callout: none;
+			}
+		</style>
 	</head>
 	<body>
 		<main>
