@@ -83,8 +83,13 @@ class PasswordController extends BaseController {
             $this->flash('success', 'Link enviado com sucesso');
             return $this->renderView($request, $response, self::VIEW_RECOVER, $this->getFlash());
         } catch (Exception $e) {
+
+            $usuario->reset_token = null;
+            $usuario->reset_token_expira = null;
+            $usuario->save();
+
             $error_id = Logger::newLog('../logs', 'ERROR', static::class . ' | ' . $e->getMessage(), 'ERROR');
-            $this->flash('error', 'Erro ao enviar o email | '.$error_id);
+            $this->flash('error', 'Erro ao enviar o email | ' . $error_id);
             return $this->renderView($request, $response, self::VIEW_RECOVER, $this->getFlash());
         }
     }

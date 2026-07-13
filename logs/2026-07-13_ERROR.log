@@ -1,4 +1,0 @@
-[2026-07-13 14:57:39] [ERROR] [6a54fce39b83c] App\Controllers\GabineteController | Property [assinaturas] does not exist on the Eloquent builder instance.
-[2026-07-13 14:57:54] [ERROR] [6a54fcf234e87] App\Controllers\GabineteController | Call to undefined relationship [tipo_gabinete] on model [App\Models\Gabinete].
-[2026-07-13 14:58:12] [ERROR] [6a54fd049850d] App\Controllers\GabineteController | Call to undefined relationship [tipo_gabinete] on model [App\Models\Gabinete].
-[2026-07-13 15:13:42] [ERROR] [6a5500a6e0412] App\Controllers\GabineteController | Unexpected token "operator" of value "%" in "pages/gabinete/gabinete.twig" at line 45.
