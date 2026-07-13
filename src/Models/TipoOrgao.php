@@ -7,23 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TipoOrgao extends Model {
+
     protected $table = 'tipo_orgao';
 
     protected $fillable = [
         'nome',
-        'usuario_id',
-        'gabinete_id'
+        'gabinete_id',
+        'usuario_id'
     ];
-
-    public function usuario(): BelongsTo {
-        return $this->belongsTo(Usuario::class);
-    }
 
     public function gabinete(): BelongsTo {
         return $this->belongsTo(Gabinete::class);
     }
 
+    public function usuario(): BelongsTo {
+        return $this->belongsTo(Usuario::class);
+    }
+
     public function orgaos(): HasMany {
-        return $this->hasMany(Orgao::class);
+        return $this->hasMany(Orgao::class, 'tipo_orgao_id');
     }
 }
