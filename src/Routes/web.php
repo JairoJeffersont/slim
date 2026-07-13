@@ -46,6 +46,7 @@ return function (App $app) {
         $group->post('/orgaos/tipos', [TipoOrgaoController::class, 'newTipoOrgaos']);
         $group->get('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'buscarTipoOrgao']);
         $group->post('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'updateTipoOrgaos']);
+        $group->get('/orgaos/tipos/{id}/apagar', [TipoOrgaoController::class, 'apagarTipoOrgao']);
 
 
 

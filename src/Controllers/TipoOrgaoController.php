@@ -130,4 +130,25 @@ class TipoOrgaoController extends BaseController {
             return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
         }
     }
+
+    public function apagarTipoOrgao(Request $request, Response $response, array $args): Response {
+        try {
+            $id = (int) ($args['id'] ?? 0);
+
+            $tipo = $this->buscarTipo($id);
+
+            if (!$tipo) {
+                $this->flash('info', 'Tipo de órgão não encontrado');
+                return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+            }
+
+            $tipo->delete();
+
+            $this->flash('success', 'Tipo de órgão apagado com sucesso');
+            return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+        } catch (Exception $e) {
+            $this->flashError($e);
+            return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+        }
+    }
 }
