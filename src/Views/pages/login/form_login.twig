@@ -1,12 +1,12 @@
 {% extends "layouts/guest.twig" %}
 
 {% block content %}
-	<div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+	<div class="container-fluid d-flex justify-content-center align-items-center py-4" style="min-height: 100dvh;">
 		<div class="card border-0 bg-transparent" style="width: 100%; max-width: 400px;">
 			<div class="card-body">
 
 				<div class="text-center mb-3">
-					<img src="img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 120px;">
+					<img src="img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 100px;">
 				</div>
 
 				<h2 class="text-center mb-2 text-white fw-light">
@@ -15,26 +15,22 @@
 
 				<p class="card-text text-center text-white">{{ app_slogan }}</p>
 
-				{% if status == 'info' %}
-					<div class="alert alert-info rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2" data-time="3">
+				{% if status in ['success', 'info'] %}
+					<div class="alert alert-{{ status }} rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
 						{{ message }}
 					</div>
 				{% endif %}
 
-				{% if status == 'server_error' %}
+				{% if status == 'error' %}
 					<div class="alert alert-danger rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
 						{{ message }}
-						<br>
-						<small class="opacity-75">ID do Erro:
-							{{ error_id }}</small>
+						{{ error_id }}
 					</div>
 				{% endif %}
 
-				<form method="post" class="custom-form" enctype="application/x-www-form-urlencoded">
-					<div
-						class="mb-2">
-						{# Adicionado a tag 'value' dinâmica para não perder o e-mail digitado em caso de erro de senha #}
-						<input type="email" name="email" class="form-control rounded-pill py-2 px-4" value="{{ dados.email ?? 'jairojeffersont@gmail.com' }}" placeholder="E-mail" required>
+				<form method="post" class="custom-form">
+					<div class="mb-2">
+						<input type="email" name="email" class="form-control rounded-pill py-2 px-4" value="jairojeffersont@gmail.com" placeholder="E-mail" required>
 					</div>
 
 					<div class="mb-4">

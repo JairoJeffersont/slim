@@ -12,6 +12,7 @@ $twig = Twig::create(__DIR__ . '/../Views', [
 
 $twig->getEnvironment()->addGlobal('app_name', $_ENV['APP_NAME'] ?? '');
 $twig->getEnvironment()->addGlobal('app_slogan', $_ENV['APP_SLOGAN'] ?? '');
+$twig->getEnvironment()->addGlobal('base_url', $_ENV['BASE_URL'] ?? '');
 
 $session = new SessionManager();
 

@@ -194,7 +194,7 @@ function popularMunicipiosBrasil(estadoSelectId, municipioSelectId) {
             success: function (municipios) {
 
                 municipioSelect.empty();
-                municipioSelect.append('<option value="">Selecione um município*</option>');
+                municipioSelect.append('<option value="">Selecione um município</option>');
 
                 municipios.forEach(function (municipio) {
 
@@ -216,6 +216,40 @@ function popularMunicipiosBrasil(estadoSelectId, municipioSelectId) {
     if (estadoSelect.val()) {
         estadoSelect.trigger('change');
     }
+}
+
+function carregarPartidos() {
+    const select = $('#partidos');
+    const partidoSelecionado = select.data('selected');
+
+
+    $.ajax({
+        url: 'https://dadosabertos.camara.leg.br/api/v2/partidos?ordem=ASC&ordenarPor=sigla',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+
+            if (!data.dados || data.dados.length === 0) {
+                select.append('<option disabled>Nenhum partido encontrado</option>');
+                return;
+            }
+
+            data.dados
+                .filter(p => p.sigla)
+                .sort((a, b) => a.sigla.localeCompare(b.sigla, 'pt-BR'))
+                .forEach(function (p) {
+                    select.append(`<option value="${p.sigla}">${p.sigla}</option>`);
+                });
+
+            if (partidoSelecionado) {
+                select.val(partidoSelecionado);
+            }
+        },
+        error: function () {
+
+            select.append('<option disabled>Erro ao carregar partidos</option>');
+        }
+    });
 }
 
 /**

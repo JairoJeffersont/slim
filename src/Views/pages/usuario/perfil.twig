@@ -1,0 +1,129 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+		</div>
+	</div>
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
+	<div class="card mb-2 border-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff 10%, #8fc1f2 100%);">
+		<div class="card-body p-3">
+			<div class="d-flex align-items-center gap-3">
+				<div>
+					{% if usuario.tipo_usuario_id == 1 %}
+						<div class="mb-2">
+							<span class="badge bg-success-subtle text-black fw-light border border-success-subtle rounded-pill x-small">Administrador</span>
+						</div>
+					{% endif %}
+
+					<h5 class="card-title fw-bold text-dark mb-1">{{ usuario.nome|default('Erro ao buscar') }}</h5>
+
+					<p class="card-text text-muted mb-3 small">
+						{{ usuario.email|default('') }}
+					</p>
+
+					<p class="card-text text-secondary mb-0 x-small d-flex align-items-center gap-1 opacity-75" style="font-size:0.7em">
+						Adicionado em:
+						{{ usuario.created_at|date('d/m/Y') }}
+					</p>
+
+					{% if usuario.updated_at and usuario.created_at|date('d/m/Y') != usuario.updated_at|date('d/m/Y') %}
+						<p class="card-text text-secondary mb-0 x-small d-flex align-items-center gap-1 opacity-75" style="font-size:0.7em">
+							Última modificação em:
+							{{ usuario.updated_at|date('d/m/Y') }}
+						</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% if aniversario %}
+		<div class="alert alert-info py-2 px-3 border-0 small fw-semibold mb-2">
+			<i class="bi bi-cake2 me-2"></i>
+			Feliz aniversário
+		</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+
+			<div class="d-flex align-items-center gap-1 mb-3 ">
+				<h6 class="fw-bold text-muted mb-0 small">
+					Meus dados</h6>
+			</div>
+
+			<form class="row g-2 custom-form" id="form_novo" method="POST">
+
+				<div class="col-md-3 col-12">
+					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome" value="{{ usuario.nome|default('') }}">
+				</div>
+
+				<div class="col-md-3 col-12">
+					<input type="email" class="form-control form-control-sm" name="email" placeholder="Email" value="{{ usuario.email|default('') }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="telefone" data-mask="(00) 00000-0000" placeholder="Telefone" value="{{ usuario.telefone|default('') }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="aniversario" data-mask="00/00" placeholder="dd/mm" value="{{ usuario.aniversario ? usuario.aniversario|date('d/m') : '' }}">
+				</div>
+
+				<div class="col-md-2 col-12 d-flex align-items-end">
+					<button type="submit" class="btn btn-success btn-sm confirm w-100" data-text="Deseja atualizar seus dados?" name="btn_salvar">
+						<i class="bi bi-floppy-fill"></i>
+						Salvar
+					</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+	<div class="card border-0 shadow-sm">
+		<div class="card-body p-3">
+			<div class="d-flex align-items-center gap-1 mb-3 ">
+				<h6 class="fw-bold text-muted mb-0  small">
+					Meus últimos acessos</h6>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+					<thead>
+						<tr>
+							<th scope="col" class="text-muted fw-semibold">Data/Hora</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for log in usuario.logs %}
+							<tr>
+								<td class="fw-medium text-dark">{{ log.created_at|date('d/m/Y H:i') }}</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td class="fw-medium text-muted">Nenhum acesso registrado</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}

@@ -46,13 +46,14 @@ function carregarDeputados(uf, select) {
             }
 
             data.dados.forEach(function (p) {
-                select.append(`<option value="${p.id
-                    }">${p.nome
-                    }</option>`);
+                select.append(`<option value="${p.id}" data-nome="${p.nome}" data-partido="${p.siglaPartido}">${p.nome} - ${p.siglaPartido}</option>`);
             });
 
             select.off("change").on("change", function () {
-                $('input[name="nome_parlamentar"]').val($(this).find('option:selected').text());
+                const option = $(this).find('option:selected');
+
+                $('input[name="nome_parlamentar"]').val(option.data('nome'));
+                $('input[name="partido"]').val(option.data('partido'));
             });
         },
         error: function () {
@@ -78,13 +79,12 @@ function carregarSenadores(uf, select) {
                 if (ufSenador !== uf.toUpperCase())
                     return;
 
-
-
                 const id = $(this).find("CodigoParlamentar").first().text().trim();
                 const nome = $(this).find("NomeParlamentar").first().text().trim();
+                const partido = $(this).find("SiglaPartidoParlamentar").first().text().trim();
 
                 if (id && nome) {
-                    senadores.push({ id, nome });
+                    senadores.push({ id, nome, partido });
                 }
             });
 
@@ -94,13 +94,14 @@ function carregarSenadores(uf, select) {
             }
 
             senadores.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")).forEach(function (s) {
-                select.append(`<option value="${s.id
-                    }">${s.nome
-                    }</option>`);
+                select.append(`<option value="${s.id}" data-nome="${s.nome}" data-partido="${s.partido}">${s.nome} - ${s.partido}</option>`);
             });
 
             select.off("change").on("change", function () {
-                $('input[name="nome_parlamentar"]').val($(this).find('option:selected').text());
+                const option = $(this).find('option:selected');
+
+                $('input[name="nome_parlamentar"]').val(option.data('nome'));
+                $('input[name="partido"]').val(option.data('partido'));
             });
         },
         error: function () {

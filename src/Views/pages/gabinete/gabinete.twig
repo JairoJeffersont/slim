@@ -1,0 +1,228 @@
+{% extends "layouts/app.twig" %}
+
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+		</div>
+	</div>
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff 10%, #8fc1f2 100%);">
+		<div class="card-body p-3">
+			<div class="d-flex align-items-center gap-3">
+
+				<img src="{% if gabinete.tipo_gabinete_id == 1 %}https://www.camara.leg.br/internet/deputado/bandep/{{ gabinete.id_parlamentar }}.jpg{% else %}https://legis.senado.leg.br/senadores/fotos-oficiais/{{ gabinete.id_parlamentar }}{% endif %}" alt="Foto do Parlamentar" class="rounded-circle border border-2 border-white shadow-sm" style="width: 80px; height: 80px; object-fit: cover;" onerror="this.src='img/perfil_placeholder.png';">
+				<div>
+					<h5 class="card-title fw-bold text-dark mb-0">{{ gabinete.nome|default('Erro ao buscar') }}</h5>
+
+					{% if gabinete.partido %}
+						<p class="text-secondary fw-semibold mb-0 small opacity-75 text-uppercase" style="letter-spacing: 0.5px;">
+							{{ gabinete.partido }}/{{ gabinete.estado }}
+						</p>
+					{% endif %}
+
+					{% if gabinete.cidade %}
+						<p class="card-text text-secondary mb-0 mt-0 d-flex align-items-center gap-1 opacity-75" style="font-size:0.8em">
+							{{ gabinete.cidade }}
+						</p>
+					{% endif %}
+
+					<p class="card-text text-secondary mb-0 d-flex align-items-center gap-1 opacity-75" style="font-size:0.8em">
+						{% if gabinete.tipo_gabinete_id == 1 %}
+							<a href="https://www.camara.leg.br/deputados/{{gabinete.id_parlamentar}}" target="_blank">Página na Câmara</a>
+						{% elseif gabinete.tipo_gabinete_id == 2 %}
+							<a href="https://www25.senado.leg.br/web/senadores/senador/-/perfil/{{gabinete.id_parlamentar}}" target="_blank">Página no Senado</a>
+						{% endif %}
+					</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+
+			<form class="row g-2 custom-form" id="form_novo" method="POST" action="/gabinete/atualizar">
+
+				<select id="estado" name="estado" style="display:none;">
+					<option value="AP" selected>AP</option>
+				</select>
+
+				<div class="col-md-1 col-4">
+					<select class="form-select form-select-sm" id="partidos" name="partido" data-selected="{{ gabinete.partido|default('') }}">
+						<option value="">Selecione um partido</option>
+					</select>
+				</div>
+				<div class="col-md-2 col-8">
+					<select class="form-select form-select-sm" id="municipio" data-selected="{{gabinete.cidade|default('')}}" name="cidade"></select>
+				</div>
+
+				<div class="col-md-1 col-12 d-flex align-items-end">
+					<button type="submit" class="btn btn-success btn-sm confirm w-100" data-text="Deseja atualizar seus dados?" name="btn_salvar">
+						<i class="bi bi-floppy-fill"></i>
+						Salvar
+					</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+	<div class="card border-0 bg-light mb-2">
+			<div class="card-body p-3">
+				<div class="d-flex align-items-center  mb-2 ">
+					<h6 class="fw-bold text-muted mb-0 text-uppercase small">Cadastrar novos usuários</h6>
+				</div>
+				<p class="text-muted small mb-2">Compartilhe o link abaixo para que novos membros se cadastrem diretamente neste gabinete:</p>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control bg-white" style="font-size: 0.9em;" id="linkConvite" value="{{ base_url }}novo-usuario/{{gabinete.token}}" readonly>
+					<button class="btn btn-success" type="button" style="font-size: 0.9em;" onclick="copiarLink()">
+						<i class="bi bi-copy"></i>
+						Copiar
+					</button>
+				</div>
+			</div>
+		</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<div class="d-flex align-items-center gap-1 mb-3 ">
+				<h6 class="fw-bold text-muted mb-0 small">
+					Úsuarios do gabinete</h6>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+					<thead>
+						<tr class="text-muted small text-uppercase">
+							<th scope="col">Nome</th>
+							<th scope="col">Email</th>
+							<th scope="col">Telefone</th>
+							<th scope="col">Incluído</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% set tem_ativo = false %}
+						{% for item in usuarios %}
+							{% if item.ativo %}
+								{% set tem_ativo = true %}
+								<tr>
+									<td class="fw-semibold">
+										<a href="/usuario/{{ item.id }}">{{ item.nome }}</a>
+									</td>
+
+									<td class="text-muted">{{ item.email }}</td>
+									<td class="text-muted">{{ item.telefone|default('-') }}</td>
+									<td class="text-muted">{{ item.created_at|date('d/m/Y') }}</td>
+								</tr>
+							{% endif %}
+						{% endfor %}
+
+						{% if not tem_ativo %}
+							<tr>
+								<td colspan="5" class="text-muted">Nenhum usuário ativo encontrado.</td>
+							</tr>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="accordion mb-2" id="accordionDesativados">
+		<div class="accordion-item border-0 shadow-sm rounded-3 overflow-hidden">
+			<h2 class="accordion-header">
+				<button class="accordion-button collapsed bg-white text-danger fw-bold text-uppercase py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesativados" aria-expanded="false" aria-controls="collapseDesativados" style="font-size: 0.38em;">
+					<i class="bi bi-person-x-fill me-2"></i>
+					Usuários Desativados
+				</button>
+			</h2>
+			<div id="collapseDesativados" class="accordion-collapse collapse" data-bs-parent="#accordionDesativados">
+				<div class="accordion-body p-3 bg-white">
+
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+							<thead>
+								<tr class="text-muted small text-uppercase">
+									<th scope="col">Nome</th>
+									<th scope="col">Email</th>
+									<th scope="col">Telefone</th>
+									<th scope="col">Incluído</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% set tem_desativado = false %}
+								{% for item in usuarios %}
+									{% if not item.ativo %}
+										{% set tem_desativado = true %}
+										<tr>
+											<td class="fw-semibold">
+												<a href="/usuario/{{ item.id }}">{{ item.nome }}</a>
+											</td>
+											<td class="text-muted">{{ item.email }}</td>
+											<td class="text-muted">{{ item.telefone|default('-') }}</td>
+											<td class="text-muted">{{ item.created_at|date('d/m/Y') }}</td>
+										</tr>
+									{% endif %}
+								{% endfor %}
+
+								{% if not tem_desativado %}
+									<tr>
+										<td colspan="5" class="text-muted">Nenhum usuário desativado encontrado.</td>
+									</tr>
+								{% endif %}
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$ (function () {
+carregarPartidos ();
+popularMunicipiosBrasil ('#estado', '#municipio');
+$ ('#estado').trigger ('change');
+});
+
+
+function copiarLink () {
+				var copyText = document.getElementById ("linkConvite");
+				copyText.select ();
+				copyText.setSelectionRange (0, 99999); // Para dispositivos móveis
+				navigator.clipboard.writeText (copyText.value);
+
+				// Opcional: Mudar o texto do botão temporariamente para dar feedback
+				const btn = event.currentTarget;
+				const originalHTML = btn.innerHTML;
+				btn.innerHTML = '<i class="bi bi-check-lg"></i> Copiado!';
+				btn.classList.remove ('btn-success');
+				btn.classList.add ('btn-outline-success');
+
+				setTimeout ( () => {
+				btn.innerHTML = originalHTML;
+				btn.classList.remove ('btn-outline-success');
+				btn.classList.add ('btn-success');
+				}, 2000);
+		}
+	</script>
+{% endblock %}

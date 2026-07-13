@@ -17,6 +17,7 @@ $twig = require __DIR__ . '/../src/Config/twig.php';
 
 $app->add(TwigMiddleware::create($app, $twig));
 
+
 (require __DIR__ . '/../src/Routes/web.php')($app);
 
 $app->run();

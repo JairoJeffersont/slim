@@ -2,6 +2,18 @@
 
 
 {% block content %}
+{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
 	<h2>Dashboard</h2>
 	<p>Bem-vindo ao sistema.</p>
 {% endblock %}

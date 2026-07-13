@@ -13,6 +13,7 @@ class Gabinete extends Model {
     protected $fillable = [
         'id_parlamentar',
         'token',
+        'partido',
         'nome',
         'cidade',
         'estado',

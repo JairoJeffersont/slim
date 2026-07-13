@@ -17,6 +17,7 @@ CREATE TABLE
     gabinete (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nome VARCHAR(255) NOT NULL,
+        partido VARCHAR(15) DEFAULT NULL,
         id_parlamentar VARCHAR(50) DEFAULT NULL,
         token CHAR(36) DEFAULT NULL,
         tipo_gabinete_id INT NOT NULL,
