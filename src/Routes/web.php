@@ -4,6 +4,7 @@ use App\Controllers\CadastroController;
 use App\Controllers\DashboardController;
 use App\Controllers\GabineteController;
 use App\Controllers\LoginController;
+use App\Controllers\TipoOrgaoController;
 use App\Controllers\PasswordController;
 use App\Controllers\PerfilController;
 use App\Controllers\UsuarioController;
@@ -40,6 +41,12 @@ return function (App $app) {
 
         $group->get('/usuario/{id}', [UsuarioController::class, 'index']);
         $group->post('/usuario/{id}', [UsuarioController::class, 'updateUser']);
+
+        $group->get('/orgaos/tipos', [TipoOrgaoController::class, 'indexTiposOrgaos']);
+        $group->post('/orgaos/tipos', [TipoOrgaoController::class, 'newTipoOrgaos']);
+        $group->get('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'buscarTipoOrgao']);
+        $group->post('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'updateTipoOrgaos']);
+
 
 
 
