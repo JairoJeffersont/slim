@@ -25,8 +25,8 @@ return function (App $app) {
     $app->get('/nova-senha/{token}', [PasswordController::class, 'formNewPass']);
     $app->post('/nova-senha/{token}', [PasswordController::class, 'newPass']);
 
-    //$app->get('/novo-usuario/{token}', [UsuarioController::class, 'formNewUser']);
-    //$app->post('/novo-usuario/{token}', [UsuarioController::class, 'newUser']);
+    $app->get('/novo-usuario/{token}', [UsuarioController::class, 'formNewUser']);
+    $app->post('/novo-usuario/{token}', [UsuarioController::class, 'newUser']);
 
     $app->group('', function ($group) {
 

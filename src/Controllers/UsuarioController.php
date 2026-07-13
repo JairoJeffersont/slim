@@ -95,4 +95,84 @@ class UsuarioController extends BaseController {
             return $this->redirect($response, self::ROUTE . '/' . $id);
         }
     }
+
+    public function formNewUser(Request $request, Response $response, array $args): Response {
+
+        try {
+
+            $token = $args['token'];
+            $payload = [];
+
+            $gabinete = Gabinete::where('token', $token)->first();
+
+            if (!$gabinete) {
+                $this->flash('info', 'Token inválido');
+                return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $this->getFlash());
+            }
+
+            $payload['gabinete'] = $gabinete;
+            $payload = array_merge($payload, $this->getFlash());
+
+            return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $payload);
+        } catch (Exception $e) {
+            $this->flashError($e);
+            return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $this->getFlash());
+        }
+    }
+
+    public function newUser(Request $request, Response $response, array $args): Response {
+        try {
+
+            $dados = $request->getParsedBody();
+            $token = $args['token'];
+
+
+
+            $camposObrigatorios = ['nome', 'email', 'senha', 'telefone', 'aniversario'];
+
+            foreach ($camposObrigatorios as $campo) {
+                if (!isset($dados[$campo]) || trim((string) $dados[$campo]) === '') {
+                    $this->flash('info', 'Todos os campos são obrigatórios');
+                    return $this->redirect($response, '/novo-usuario/' . $token);
+                }
+            }
+
+            if (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
+                $this->flash('info', 'E-mail inválido');
+                return $this->redirect($response, '/novo-usuario/' . $token);
+            }
+
+            if ($dados['senha'] !== $dados['senha2']) {
+                $this->flash('info', 'Senhas não conferem');
+                return $this->redirect($response, '/novo-usuario/' . $token);
+            }
+
+            $usuario = Usuario::where('email', $dados['email'])->first();
+            $gabinete = Gabinete::where('token', $token)->first();
+
+            if ($usuario) {
+                $this->flash('info', 'Esse usuário já está cadastrado');
+                return $this->redirect($response, '/novo-usuario/' . $token);
+            }
+
+            Usuario::create([
+                'nome' => $dados['nome'],
+                'email' => $dados['email'],
+                'senha' => password_hash($dados['senha'], PASSWORD_DEFAULT),
+                'telefone' => $dados['telefone'] ?? null,
+                'aniversario' => !empty($dados['aniversario'])
+                    ? '2000-' . implode('-', array_reverse(explode('/', $dados['aniversario'])))
+                    : null,
+                'ativo' => 0,
+                'tipo_usuario_id' => 2,
+                'gabinete_id' => $gabinete->id
+            ]);
+
+            $this->flash('success', 'Cadastrado com sucesso. Aguarde ativação...');
+            return $this->redirect($response, '/novo-usuario/' . $token);
+        } catch (Exception $e) {
+            $this->flashError($e);
+            return $this->renderView($request, $response, 'pages/usuario/form-novo-usuario.twig', $this->getFlash());
+        }
+    }
 }

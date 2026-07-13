@@ -1,0 +1,78 @@
+{% extends "layouts/guest.twig" %}
+
+
+{% block content %}
+
+	<div class="container-fluid d-flex justify-content-center align-items-center py-4" style="min-height: 100dvh;">
+		<div class="card border-0 bg-transparent" style="width: 100%; max-width: 400px;">
+			<div class="card-body">
+
+				<div class="text-center mb-3">
+					<img src="/img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 100px;">
+				</div>
+
+				<h2 class="text-center mb-2 text-white fw-light">
+					{{ app_name }}
+				</h2>
+
+				{% if gabinete %}
+					<p class="card-text text-center text-white">{{ gabinete.nome }}
+						{% if gabinete.partido %}
+							-
+							{{ gabinete.partido }}/{{ gabinete.estado }}
+						{% else %}
+							-
+							{{ gabinete.estado }}
+						{% endif %}
+					</p>
+
+					{% else%}
+					<p class="card-text text-center text-white">{{ app_slogan }}</p>
+				{% endif %}
+
+				{% if status in ['success', 'info'] %}
+					<div class="alert alert-{{ status }} rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+					</div>
+				{% endif %}
+
+				{% if status == 'error' %}
+					<div class="alert alert-danger rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+						{{ error_id }}
+					</div>
+				{% endif %}
+
+				<form class="row g-2 custom-form" method="POST">
+					<div class="col-12">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="nome" placeholder="Nome " required>
+					</div>
+
+					<div class="col-12">
+						<input type="email" class="form-control rounded-pill py-2 px-4 border-0" name="email" placeholder="E-mail" required>
+					</div>
+
+					<div class="col-6">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="aniversario" data-mask="00/00" placeholder="Aniversário (dd/mm)" required>
+					</div>
+					<div class="col-6">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="telefone" data-mask="(00) 00000-0000" placeholder="Telefone" required>
+					</div>
+
+					<div class="col-6">
+						<input type="password" class="form-control rounded-pill py-2 px-4 border-0" name="senha" placeholder="Senha" required>
+					</div>
+					<div class="col-6">
+						<input type="password" class="form-control rounded-pill py-2 px-4 border-0" name="senha2" placeholder="Confirme a senha" required>
+					</div>
+
+					<div class="col-12 d-flex gap-2 mt-3">
+						<button type="submit" name="btn_salvar" class="btn btn-success confirm rounded-pill py-2 w-100" data-text="Seus dados estão corretos?">Salvar</button>
+						<a href="/login" class="btn btn-primary rounded-pill py-2 w-100">Voltar</a>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+{% endblock %}
