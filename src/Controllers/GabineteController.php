@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Gabinete;
+use App\Models\TipoGabinete;
 use App\Models\Usuario;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;

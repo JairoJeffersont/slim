@@ -7,8 +7,8 @@ CREATE TABLE
 INSERT INTO
     tipo_gabinete (id, nome)
 VALUES
-    (1, 'Deputado Federal'),
-    (2, 'Senador');
+    (1, 'Deputado(a) Federal'),
+    (2, 'Senador(a)');
 
 CREATE TABLE
     gabinete (
