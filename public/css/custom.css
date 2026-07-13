@@ -89,6 +89,14 @@ table th {
     font-size: 1.5rem;
 }
 
+#sidebarToggle{
+    font-size: 0.8rem;
+}
+
+#sidebar-heading-text{
+    font-size: 0.8rem;
+}
+
 /*REGRAS PARA O SIDEBAR*/
 #wrapper {
     overflow-x: hidden;
@@ -101,7 +109,7 @@ table th {
 }
 
 #sidebar-wrapper .sidebar-heading {
-    padding: 0.87rem 1.25rem;
+    padding: 0.79rem 1.25rem;
     font-size: 1.2rem;
 }
 
