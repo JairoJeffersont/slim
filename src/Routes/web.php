@@ -2,6 +2,7 @@
 
 use App\Controllers\CadastroController;
 use App\Controllers\DashboardController;
+use App\Controllers\FichaOrgaoController;
 use App\Controllers\GabineteController;
 use App\Controllers\LoginController;
 use App\Controllers\OrgaoController;
@@ -53,6 +54,12 @@ return function (App $app) {
 
         $group->get('/orgaos', [OrgaoController::class, 'indexOrgaos']);
         $group->post('/orgaos', [OrgaoController::class, 'newOrgao']);
+
+        $group->get('/orgaos/{id}', [FichaOrgaoController::class, 'index']);
+        $group->post('/orgaos/{id}', [FichaOrgaoController::class, 'updateOrgao']);
+        $group->get('/orgaos/{id}/apagar', [FichaOrgaoController::class, 'apagarOrgao']);
+
+
 
 
 

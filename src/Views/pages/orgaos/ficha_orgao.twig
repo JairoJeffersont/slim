@@ -1,0 +1,132 @@
+{% extends "layouts/app.twig" %}
+
+
+{% block content %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+			<a class="btn btn-success btn-sm custom-nav" href="/orgaos" role="button">
+				<i class="bi bi-arrow-left"></i>
+				Voltar
+			</a>
+		</div>
+	</div>
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<div>
+				<h6 class="mb-0 fw-bold mb-2">{{orgao.nome}}</h6>
+				<p class="card-text text-muted mb-0 small">
+					<i class="bi bi-info-circle"></i>
+					|
+					{{ orgao.tipoOrgao.nome|default('Tipo não informado') }}
+				</p>
+
+				<p class="card-text text-muted mb-0 small">
+					<i class="bi bi-envelope"></i>
+					|
+					{{ orgao.email|default('Email não informado') }}
+				</p>
+				<p class="card-text text-muted mb-0 small">
+					<i class="bi bi-telephone"></i>
+					|
+					{{ orgao.telefone|default('Telefone não informado') }}
+				</p>
+				<p class="card-text text-muted mb-0 small">
+					<i class="bi bi-geo-alt"></i>
+					|
+					{# Filtra para remover valores vazios/nulos e junta com vírgula #}
+					{{ [orgao.endereco, orgao.cidade, orgao.estado]|filter(v => v is not empty)|join(', ')|default('Endereço não informado') }}
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-2">
+			<form class="row g-2 custom-form" method="POST">
+				<div class="col-md-4 col-12">
+					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome*" value="{{orgao.nome}}" required>
+				</div>
+				<div class="col-md-3 col-12">
+					<input type="text" class="form-control form-control-sm" name="email" placeholder="Email" value="{{orgao.email}}">
+				</div>
+				<div class="col-md-5 col-6">
+					<input type="text" class="form-control form-control-sm" name="endereco" placeholder="Endereço" value="{{orgao.endereco}}">
+				</div>
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="bairro" placeholder="Bairro" value="{{orgao.bairro}}">
+				</div>
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="estado" id="uf" data-selected="{{orgao.estado}}" required>
+						<option disabled selected value="">Escolha o estado*</option>
+					</select>
+				</div>
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="cidade" id="municipio" data-selected="{{orgao.cidade}}" required>
+						<option disabled selected value="">Selecione o municipio*</option>
+					</select>
+				</div>
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="telefone" placeholder="Telefone" value="{{orgao.telefone}}" data-mask="(00) 00000-0000" length="11">
+				</div>
+				<div class="col-md-4 col-6">
+					<div class="input-group">
+						<select class="form-control form-control-sm" name="tipo_orgao_id">
+							<option value="" {% if orgao.tipo_orgao_id is not defined or orgao.tipo_orgao_id is null %} selected {% endif %}>Tipo não informado</option>
+
+							{% for item in tipos %}
+								<option value="{{ item.id }}" {% if orgao.tipo_orgao_id is defined and orgao.tipo_orgao_id == item.id %} selected {% endif %}>
+									{{ item.nome }}
+								</option>
+							{% endfor %}
+						</select>
+						<a href="/orgaos/tipos" class="btn btn-primary btn-sm confirm" data-message="Deseja inserir um novo tipo?">
+							<i class="bi bi-plus-circle"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-md-12 col-12">
+					<textarea type="text" class="form-control form-control-sm" name="informacoes" rows="5" placeholder="Informações">{{orgao.informacoes}}</textarea>
+				</div>
+				<div class="col-md-7">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja atualizar esse órgão?" name="btn_salvar">
+						<i class="bi bi-floppy-fill"></i>
+						Atualizar
+					</button>
+
+					<a class="btn btn-danger btn-sm confirm" data-text="Deseja apagar esse órgão?" href="/orgaos/{{orgao.id}}/apagar" name="btn_salvar">
+						<i class="bi bi-trash"></i>
+						Apagar
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+	<script>
+		$ (document).ready (function () {
+popularEstadosBrasil ('#uf');
+popularEstadosBrasil ('#estado');
+
+popularMunicipiosBrasil ('#uf', '#municipio');
+});
+	</script>
+{% endblock %}
