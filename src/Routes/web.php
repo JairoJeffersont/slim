@@ -42,11 +42,13 @@ return function (App $app) {
         $group->get('/usuario/{id}', [UsuarioController::class, 'index']);
         $group->post('/usuario/{id}', [UsuarioController::class, 'updateUser']);
 
+        $group->get('/orgaos/tipos/inserir', [TipoOrgaoController::class, 'inserirTiposPadrao']);
         $group->get('/orgaos/tipos', [TipoOrgaoController::class, 'indexTiposOrgaos']);
         $group->post('/orgaos/tipos', [TipoOrgaoController::class, 'newTipoOrgaos']);
         $group->get('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'buscarTipoOrgao']);
         $group->post('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'updateTipoOrgaos']);
         $group->get('/orgaos/tipos/{id}/apagar', [TipoOrgaoController::class, 'apagarTipoOrgao']);
+
 
 
 

@@ -1,0 +1,22 @@
+[
+    { "nome": "Prefeitura" },
+    { "nome": "Vice-Prefeitura" },
+    { "nome": "Câmara Municipal" },
+    { "nome": "Gabinete Parlamentar" },
+
+    { "nome": "Secretaria Municipal" },
+    { "nome": "Secretaria Estadual" },
+    { "nome": "Ministério" },
+
+    { "nome": "Governo Estadual" },
+    { "nome": "Governo Federal" },
+    { "nome": "Assembleia Legislativa" },
+    { "nome": "Senado Federal" },
+    { "nome": "Câmara dos Deputados" },
+
+    { "nome": "Autarquia" },
+    { "nome": "Fundação Pública" },
+    { "nome": "Empresa Pública" },
+    { "nome": "Sociedade de Economia Mista" },
+    { "nome": "Agência Reguladora" }
+]

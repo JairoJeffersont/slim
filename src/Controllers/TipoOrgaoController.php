@@ -12,16 +12,19 @@ class TipoOrgaoController extends BaseController {
     private const VIEW_TIPOS_ROUTE = '/orgaos/tipos';
 
     private int $LOGGED_USER_ID;
+    private int $LOGGED_USER_LEVEL;
     private int $LOGGED_GABINETE;
 
     public function __construct() {
         $this->LOGGED_USER_ID = $_SESSION['usuario']['id'];
+        $this->LOGGED_USER_LEVEL = $_SESSION['usuario']['nivel'];
         $this->LOGGED_GABINETE = $_SESSION['usuario']['gabinete_id'];
     }
 
     private function listarTipos() {
         return TipoOrgao::with('usuario')
             ->where('gabinete_id', $this->LOGGED_GABINETE)
+            ->orderBy('nome', 'asc')
             ->get();
     }
 
@@ -133,6 +136,13 @@ class TipoOrgaoController extends BaseController {
 
     public function apagarTipoOrgao(Request $request, Response $response, array $args): Response {
         try {
+
+
+            if ($this->LOGGED_USER_LEVEL != 1) {
+                $this->flash('info', 'Você não tem autorização para apagar tipos');
+                return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+            }
+
             $id = (int) ($args['id'] ?? 0);
 
             $tipo = $this->buscarTipo($id);
@@ -145,6 +155,43 @@ class TipoOrgaoController extends BaseController {
             $tipo->delete();
 
             $this->flash('success', 'Tipo de órgão apagado com sucesso');
+            return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+        } catch (Exception $e) {
+
+            if (str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                $this->flash('error', 'Este órgão não pode ser removido porque está vinculado a outros registros');
+                return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+            }
+
+            $this->flashError($e);
+            return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+        }
+    }
+
+    public function inserirTiposPadrao(Request $request, Response $response, array $args): Response {
+        try {
+
+            if ($this->LOGGED_USER_LEVEL != 1) {
+                $this->flash('info', 'Você não tem autorização para inserir tipos');
+                return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+            }
+
+            $json = file_get_contents(__DIR__ . '/../Json/tipos_orgaos.json');
+            $tiposOrgaos = json_decode($json, true);
+
+            foreach ($tiposOrgaos as $tipoOrgao) {
+                TipoOrgao::firstOrCreate(
+                    [
+                        'nome' => $tipoOrgao['nome'],
+                        'gabinete_id' => $this->LOGGED_GABINETE
+                    ],
+                    [
+                        'usuario_id' => $this->LOGGED_USER_ID
+                    ]
+                );
+            }
+
+            $this->flash('success', 'Tipos de órgãos padrão inseridos com sucesso');
             return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
         } catch (Exception $e) {
             $this->flashError($e);
