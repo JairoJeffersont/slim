@@ -4,6 +4,7 @@ use App\Controllers\CadastroController;
 use App\Controllers\DashboardController;
 use App\Controllers\GabineteController;
 use App\Controllers\LoginController;
+use App\Controllers\OrgaoController;
 use App\Controllers\TipoOrgaoController;
 use App\Controllers\PasswordController;
 use App\Controllers\PerfilController;
@@ -48,6 +49,11 @@ return function (App $app) {
         $group->get('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'buscarTipoOrgao']);
         $group->post('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'updateTipoOrgaos']);
         $group->get('/orgaos/tipos/{id}/apagar', [TipoOrgaoController::class, 'apagarTipoOrgao']);
+
+
+        $group->get('/orgaos', [OrgaoController::class, 'indexOrgaos']);
+        $group->post('/orgaos', [OrgaoController::class, 'newOrgao']);
+
 
 
 

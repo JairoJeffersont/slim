@@ -69,6 +69,7 @@ class LoginController extends BaseController {
                 'email'            => $usuario->email,
                 'nivel'            => $usuario->tipo_usuario_id,
                 'gabinete_id'      => $usuario->gabinete_id,
+                'gabinete_estado'  => $usuario->gabinete->estado,
                 'id_parlamentar'   => $usuario->gabinete->id_parlamentar,
                 'nome_parlamentar' => $usuario->gabinete->nome,
                 'tipo_gabinete'    => $usuario->gabinete->tipo_gabinete_id
