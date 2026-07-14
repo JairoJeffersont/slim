@@ -39,7 +39,9 @@ INSERT INTO
     tipo_usuario (id, nome)
 VALUES
     (1, 'Administrador'),
-    (2, 'Usuário');
+    (2, 'Orçamento'),
+    (3, 'Secretaria'),
+    (4, 'Legislativo');
 
 CREATE TABLE
     usuario (

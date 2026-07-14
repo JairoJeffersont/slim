@@ -48,6 +48,11 @@ class TipoOrgaoController extends BaseController {
     }
 
     public function newTipoOrgaos(Request $request, Response $response): Response {
+
+        if ($this->LOGGED_USER_LEVEL != 1) {
+            $this->flash('info', 'Você não tem autorização para criar novos tipos');
+            return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+        }
         try {
             $dados = $request->getParsedBody();
 
@@ -78,6 +83,12 @@ class TipoOrgaoController extends BaseController {
 
     public function updateTipoOrgaos(Request $request, Response $response, array $args): Response {
         try {
+
+            if ($this->LOGGED_USER_LEVEL != 1) {
+                $this->flash('info', 'Você não tem autorização para atualiza tipos');
+                return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
+            }
+
             $id = (int) ($args['id'] ?? 0);
 
             $tipo = $this->buscarTipo($id);
