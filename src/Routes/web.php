@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\AniversarianteController;
 use App\Controllers\CadastroController;
 use App\Controllers\CelulaController;
 use App\Controllers\DashboardController;
@@ -86,6 +87,8 @@ return function (App $app) {
         $group->post('/pessoas/{id}/remover-lider', [CelulaController::class, 'removerLider']);
         $group->get('/pessoas/{id}/liderados', [CelulaController::class, 'listarLiderados']);
         $group->get('/pessoas/liderancas', [CelulaController::class, 'listarLideres']);
+
+        $group->get('/aniversariantes', [AniversarianteController::class, 'index']);
 
         $group->get('/logout', [LoginController::class, 'logout']);
     })->add(new AuthMiddleware());
