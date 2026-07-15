@@ -85,6 +85,7 @@ return function (App $app) {
         $group->post('/pessoas/{id}/tornar-lider', [CelulaController::class, 'tornarLider']);
         $group->post('/pessoas/{id}/remover-lider', [CelulaController::class, 'removerLider']);
         $group->get('/pessoas/{id}/liderados', [CelulaController::class, 'listarLiderados']);
+        $group->get('/pessoas/liderancas', [CelulaController::class, 'listarLideres']);
 
         $group->get('/logout', [LoginController::class, 'logout']);
     })->add(new AuthMiddleware());

@@ -14,16 +14,24 @@ class CelulaController extends BaseController {
     private const VIEW_CADASTRO_CONVIDADO = 'pages/celulas/cadastro_convidado.twig';
     private const VIEW_SUCESSO_CADASTRO = 'pages/celulas/sucesso_cadastro.twig';
     private const VIEW_ROUTE_PESSOAS = '/pessoas';
+    private const VIEW_LISTA_LIDERES = 'pages/celulas/lista_lideres.twig';
 
     private array $usuario;
 
     public function __construct() {
-        $this->usuario = $_SESSION['usuario'];
+        $this->usuario = $_SESSION['usuario'] ?? [];
     }
 
     public function tornarLider(Request $request, Response $response, array $args): Response {
         try {
+
             $id = $args['id'];
+
+            if (!in_array($this->usuario['nivel'], [1, 3])) {
+                $this->flash('info', 'Você não tem autorização');
+                return $this->redirect($response, '/pessoas/' . $id);
+            }
+
             $pessoa = Pessoa::where([
                 'id' => $id,
                 'gabinete_id' => $this->usuario['gabinete_id']
@@ -50,6 +58,12 @@ class CelulaController extends BaseController {
     public function removerLider(Request $request, Response $response, array $args): Response {
         try {
             $id = $args['id'];
+
+            if (!in_array($this->usuario['nivel'], [1, 3])) {
+                $this->flash('info', 'Você não tem autorização');
+                return $this->redirect($response, '/pessoas/' . $id);
+            }
+
             $pessoa = Pessoa::where([
                 'id' => $id,
                 'gabinete_id' => $this->usuario['gabinete_id']
@@ -170,6 +184,9 @@ class CelulaController extends BaseController {
                 'telefone' => $dados['telefone'] ?: null,
                 'cidade' => $dados['cidade'],
                 'estado' => $dados['estado'],
+                'aniversario' => !empty($dados['aniversario'])
+                    ? '2000-' . implode('-', array_reverse(explode('/', $dados['aniversario'])))
+                    : null,
                 'gabinete_id' => $lider->gabinete_id,
                 'indicado_por_pessoa_id' => $lider->id,
                 'lideranca' => false
@@ -179,6 +196,47 @@ class CelulaController extends BaseController {
         } catch (Exception $e) {
             $this->flashError($e);
             return $this->redirect($response, '/login');
+        }
+    }
+
+    public function listarLideres(Request $request, Response $response): Response {
+        try {
+            // 1. Obtém o total de pessoas cadastradas no gabinete para o cálculo de porcentagem
+            $totalPessoasGabinete = Pessoa::where('gabinete_id', $this->usuario['gabinete_id'])->count();
+
+            // 2. Busca apenas os líderes do gabinete
+            $lideres = Pessoa::where([
+                'gabinete_id' => $this->usuario['gabinete_id'],
+                'lideranca' => true
+            ])
+                ->orderBy('nome')
+                ->get();
+
+            // 3. Para cada líder, conta quantos liderados ele possui
+            // (Isso evita carregar todos os dados dos liderados na memória, deixando a consulta muito rápida)
+            foreach ($lideres as $lider) {
+                $qtdLiderados = Pessoa::where([
+                    'indicado_por_pessoa_id' => $lider->id,
+                    'gabinete_id' => $this->usuario['gabinete_id']
+                ])->count();
+
+                $lider->total_liderados = $qtdLiderados + 1;
+
+                // Calcula a porcentagem em relação ao total do gabinete (evitando divisão por zero)
+                $lider->porcentagem = $totalPessoasGabinete > 0
+                    ? round(($qtdLiderados / $totalPessoasGabinete) * 100, 1)
+                    : 0;
+            }
+
+            $payload = [
+                'lideres' => $lideres,
+                'total_pessoas_gabinete' => $totalPessoasGabinete
+            ];
+
+            return $this->renderView($request, $response, self::VIEW_LISTA_LIDERES, array_merge($payload, $this->getFlash()));
+        } catch (Exception $e) {
+            $this->flashError($e);
+            return $this->redirect($response, self::VIEW_ROUTE_PESSOAS);
         }
     }
 }
