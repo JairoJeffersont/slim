@@ -11,19 +11,15 @@ class TipoOrgaoController extends BaseController {
     private const VIEW_TIPOS_ORGAOS = 'pages/orgaos/tipos-orgaos.twig';
     private const VIEW_TIPOS_ROUTE = '/orgaos/tipos';
 
-    private int $LOGGED_USER_ID;
-    private int $LOGGED_USER_LEVEL;
-    private int $LOGGED_GABINETE;
+    private array $usuario;
 
     public function __construct() {
-        $this->LOGGED_USER_ID = $_SESSION['usuario']['id'];
-        $this->LOGGED_USER_LEVEL = $_SESSION['usuario']['nivel'];
-        $this->LOGGED_GABINETE = $_SESSION['usuario']['gabinete_id'];
+        $this->usuario = $_SESSION['usuario'];
     }
 
     private function listarTipos() {
         return TipoOrgao::with('usuario')
-            ->where('gabinete_id', $this->LOGGED_GABINETE)
+            ->where('gabinete_id', $this->usuario['gabinete_id'])
             ->orderBy('nome', 'asc')
             ->get();
     }
@@ -31,7 +27,7 @@ class TipoOrgaoController extends BaseController {
     private function buscarTipo(int $id): ?TipoOrgao {
         return TipoOrgao::where([
             'id' => $id,
-            'gabinete_id' => $this->LOGGED_GABINETE
+            'gabinete_id' => $this->usuario['gabinete_id']
         ])->first();
     }
 
@@ -49,16 +45,17 @@ class TipoOrgaoController extends BaseController {
 
     public function newTipoOrgaos(Request $request, Response $response): Response {
 
-        if ($this->LOGGED_USER_LEVEL != 1) {
+        if (!in_array($this->usuario['nivel'], [1, 3])) {
             $this->flash('info', 'Você não tem autorização para criar novos tipos');
             return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
         }
+
         try {
             $dados = $request->getParsedBody();
 
             $busca = TipoOrgao::where([
                 'nome' => $dados['nome'],
-                'gabinete_id' => $this->LOGGED_GABINETE
+                'gabinete_id' => $this->usuario['gabinete_id']
             ])->first();
 
             if ($busca) {
@@ -68,8 +65,8 @@ class TipoOrgaoController extends BaseController {
 
             TipoOrgao::create([
                 'nome' => $dados['nome'],
-                'gabinete_id' => $this->LOGGED_GABINETE,
-                'usuario_id' => $this->LOGGED_USER_ID
+                'gabinete_id' => $this->usuario['gabinete_id'],
+                'usuario_id' => $this->usuario['id']
             ]);
 
             $this->flash('success', 'Tipo cadastrado com sucesso');
@@ -83,9 +80,8 @@ class TipoOrgaoController extends BaseController {
 
     public function updateTipoOrgaos(Request $request, Response $response, array $args): Response {
         try {
-
-            if ($this->LOGGED_USER_LEVEL != 1) {
-                $this->flash('info', 'Você não tem autorização para atualiza tipos');
+            if (!in_array($this->usuario['nivel'], [1, 3])) {
+                $this->flash('info', 'Você não tem autorização para atualizar tipos');
                 return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
             }
 
@@ -101,7 +97,7 @@ class TipoOrgaoController extends BaseController {
             $dados = $request->getParsedBody();
 
             $busca = TipoOrgao::where('nome', $dados['nome'])
-                ->where('gabinete_id', $this->LOGGED_GABINETE)
+                ->where('gabinete_id', $this->usuario['gabinete_id'])
                 ->where('id', '!=', $tipo->id)
                 ->first();
 
@@ -147,9 +143,7 @@ class TipoOrgaoController extends BaseController {
 
     public function apagarTipoOrgao(Request $request, Response $response, array $args): Response {
         try {
-
-
-            if ($this->LOGGED_USER_LEVEL != 1) {
+            if (!in_array($this->usuario['nivel'], [1, 3])) {
                 $this->flash('info', 'Você não tem autorização para apagar tipos');
                 return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
             }
@@ -168,9 +162,8 @@ class TipoOrgaoController extends BaseController {
             $this->flash('success', 'Tipo de órgão apagado com sucesso');
             return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
         } catch (Exception $e) {
-
             if (str_contains($e->getMessage(), 'foreign key constraint fails')) {
-                $this->flash('error', 'Este órgão não pode ser removido porque está vinculado a outros registros');
+                $this->flash('error', 'Este tipo não pode ser removido porque está vinculado a outros registros');
                 return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
             }
 
@@ -181,8 +174,7 @@ class TipoOrgaoController extends BaseController {
 
     public function inserirTiposPadrao(Request $request, Response $response, array $args): Response {
         try {
-
-            if ($this->LOGGED_USER_LEVEL != 1) {
+            if (!in_array($this->usuario['nivel'], [1, 3])) {
                 $this->flash('info', 'Você não tem autorização para inserir tipos');
                 return $this->redirect($response, self::VIEW_TIPOS_ROUTE);
             }
@@ -194,10 +186,10 @@ class TipoOrgaoController extends BaseController {
                 TipoOrgao::firstOrCreate(
                     [
                         'nome' => $tipoOrgao['nome'],
-                        'gabinete_id' => $this->LOGGED_GABINETE
+                        'gabinete_id' => $this->usuario['gabinete_id']
                     ],
                     [
-                        'usuario_id' => $this->LOGGED_USER_ID
+                        'usuario_id' => $this->usuario['id']
                     ]
                 );
             }

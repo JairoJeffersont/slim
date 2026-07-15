@@ -102,7 +102,7 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         CONSTRAINT uc_orgao_nome_gabinete UNIQUE (nome, gabinete_id),
-        FOREIGN KEY (tipo_orgao_id) REFERENCES tipo_orgao (id) ON DELETE SET NULL,
+        FOREIGN KEY (tipo_orgao_id) REFERENCES tipo_orgao (id) ON DELETE RESTRICT,
         FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT,
         FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
