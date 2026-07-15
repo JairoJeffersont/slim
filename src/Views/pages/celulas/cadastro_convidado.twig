@@ -43,18 +43,35 @@
 					</div>
 
 					<div class="col-6">
-						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="aniversario" placeholder="Aniversario (dd/mm)" data-mask="00/00">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00">
 					</div>
 
 					<div class="col-6">
-						<select class="form-control rounded-pill py-2 px-4 border-0" name="estado" id="uf" required>
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="endereco" placeholder="Endereço">
+					</div>
+
+					<div class="col-6">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="bairro" placeholder="Bairro">
+					</div>
+
+					<div class="col-6">
+						<select class="form-select rounded-pill py-2 px-4 border-0" name="estado" id="uf" required>
 							<option disabled selected value="">Escolha o estado*</option>
 						</select>
 					</div>
+
 					<div class="col-6">
-						<select class="form-control rounded-pill py-2 px-4 border-0" name="cidade" id="municipio" required>
-							<option disabled selected value="">Selecione o municipio*</option>
+						<select class="form-select rounded-pill py-2 px-4 border-0" name="cidade" id="municipio" required>
+							<option disabled selected value="">Selecione o município*</option>
 						</select>
+					</div>
+
+					<div class="col-6">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="instagram" placeholder="Instagram">
+					</div>
+
+					<div class="col-6">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="facebook" placeholder="Facebook">
 					</div>
 
 					<div class="col-12 d-flex gap-2 mt-3">
@@ -67,11 +84,8 @@
 
 	<script>
 		$ (document).ready (function () {
-$ (document).ready (function () {
 popularEstadosBrasil ('#uf');
-
 popularMunicipiosBrasil ('#uf', '#municipio');
-});
 });
 	</script>
 {% endblock %}

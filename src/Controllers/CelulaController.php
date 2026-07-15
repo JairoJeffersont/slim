@@ -183,6 +183,10 @@ class CelulaController extends BaseController {
                 'email' => $dados['email'] ?: null,
                 'telefone' => $dados['telefone'] ?: null,
                 'cidade' => $dados['cidade'],
+                'endereco' => $dados['endereco'],
+                'bairro' => $dados['bairro'],
+                'instagram' => $dados['instagram'],
+                'facebook' => $dados['facebook'],
                 'estado' => $dados['estado'],
                 'aniversario' => !empty($dados['aniversario'])
                     ? '2000-' . implode('-', array_reverse(explode('/', $dados['aniversario'])))
@@ -201,10 +205,8 @@ class CelulaController extends BaseController {
 
     public function listarLideres(Request $request, Response $response): Response {
         try {
-            // 1. Obtém o total de pessoas cadastradas no gabinete para o cálculo de porcentagem
             $totalPessoasGabinete = Pessoa::where('gabinete_id', $this->usuario['gabinete_id'])->count();
 
-            // 2. Busca apenas os líderes do gabinete
             $lideres = Pessoa::where([
                 'gabinete_id' => $this->usuario['gabinete_id'],
                 'lideranca' => true
@@ -212,8 +214,7 @@ class CelulaController extends BaseController {
                 ->orderBy('nome')
                 ->get();
 
-            // 3. Para cada líder, conta quantos liderados ele possui
-            // (Isso evita carregar todos os dados dos liderados na memória, deixando a consulta muito rápida)
+
             foreach ($lideres as $lider) {
                 $qtdLiderados = Pessoa::where([
                     'indicado_por_pessoa_id' => $lider->id,
@@ -222,7 +223,6 @@ class CelulaController extends BaseController {
 
                 $lider->total_liderados = $qtdLiderados + 1;
 
-                // Calcula a porcentagem em relação ao total do gabinete (evitando divisão por zero)
                 $lider->porcentagem = $totalPessoasGabinete > 0
                     ? round(($qtdLiderados / $totalPessoasGabinete) * 100, 1)
                     : 0;
