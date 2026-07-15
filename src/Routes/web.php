@@ -14,6 +14,7 @@ use App\Controllers\PasswordController;
 use App\Controllers\PerfilController;
 use App\Controllers\PessoaController;
 use App\Controllers\ProfissaoController;
+use App\Controllers\TipoDocumentoController;
 use App\Controllers\UsuarioController;
 use App\Middleware\AuthMiddleware;
 use Slim\App;
@@ -89,6 +90,14 @@ return function (App $app) {
         $group->get('/pessoas/liderancas', [CelulaController::class, 'listarLideres']);
 
         $group->get('/aniversariantes', [AniversarianteController::class, 'index']);
+
+
+        $group->get('/documentos/tipos', [TipoDocumentoController::class, 'indexTiposDocumentos']);
+        $group->post('/documentos/tipos', [TipoDocumentoController::class, 'newTipoDocumentos']);
+        $group->get('/documentos/tipos/{id}', [TipoDocumentoController::class, 'buscarTipoDocumento']);
+        $group->post('/documentos/tipos/{id}/editar', [TipoDocumentoController::class, 'updateTipoDocumentos']);
+        $group->get('/documentos/tipos/{id}/deletar', [TipoDocumentoController::class, 'apagarTipoDocumento']);
+        $group->get('/documentos/tipos/inserir/padrao', [TipoDocumentoController::class, 'inserirTiposPadrao']);
 
         $group->get('/logout', [LoginController::class, 'logout']);
     })->add(new AuthMiddleware());

@@ -1,6 +1,5 @@
 {% extends "layouts/app.twig" %}
 
-
 {% block content %}
 	<div class="card mb-2 border-0 shadow-sm">
 		<div class="card-body p-1">
@@ -11,16 +10,15 @@
 		</div>
 	</div>
 
-
 	<div class="card mb-2 border-0 shadow-sm">
 		<div class="card-body p-3">
 			<div>
-				<h6 class="mb-0 fw-bold mb-1">Gerenciamento de Tipos de Órgãos</h6>
+				<h6 class="mb-0 fw-bold mb-1">Gerenciamento de Tipos de Documentos</h6>
 				<small class="text-muted">
-					Utilize esta seção para cadastrar, editar, visualizar e remover os tipos de órgãos e entidades integrados ao sistema.
+					Utilize esta seção para cadastrar, editar, visualizar e remover os tipos de documentos integrados ao sistema.
 					<br>O botão
 					<strong class="text-primary">"Inserir tipos padrão"</strong>
-					permite adicionar rapidamente os tipos mais comuns de órgãos e entidades do sistema.
+					permite adicionar rapidamente os tipos mais comuns de documentos do sistema.
 				</small>
 			</div>
 		</div>
@@ -41,21 +39,29 @@
 
 	<div class="card mb-2 border-0 shadow-sm">
 		<div class="card-body p-2">
-			<form class="row g-2 custom-form" method="POST" action="{% if tipo %}/orgaos/tipos/{{ tipo.id }}{% else %}/orgaos/tipos{% endif %}">
-				<div class="col-md-2 col-12">
-					<input type="text" class="form-control form-control-sm" name="nome" value="{{tipo.nome|default('')}}" placeholder="Tipo" required>
+			<form class="row g-2 custom-form" method="POST" action="{% if tipo %}/documentos/tipos/{{ tipo.id }}/editar{% else %}/documentos/tipos{% endif %}">
+
+				<div class="col-md-3 col-12">
+					<input type="text" class="form-control form-control-sm" name="nome" value="{{ tipo.nome|default('') }}" placeholder="Nome do Tipo (ex: Ofício)" required>
 				</div>
-				<div class="col-md-7">
-					<button type="submit" class="btn btn-success btn-sm confirm" data-text="{% if tipo %}Deseja atualizar esse tipo de órgão?{% else %}Deseja inserir esse tipo de órgão?{% endif %}" name="btn_salvar">
+
+				<div class="col-md-2 col-12">
+					<input type="text" class="form-control form-control-sm" name="sigla" maxlength="3" value="{{ tipo.sigla|default('') }}" placeholder="SIGLA (ex: OFC)">
+				</div>
+
+				<div class="col-md-7 col-12">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="{% if tipo %}Deseja atualizar esse tipo de documento?{% else %}Deseja inserir esse tipo de documento?{% endif %}" name="btn_salvar">
 						<i class="bi bi-floppy-fill"></i>
 						{% if tipo %}Atualizar{% else %}Salvar
 						{% endif %}
 					</button>
+
 					{% if not tipo %}
-						<a href="/orgaos/tipos/inserir" class="btn btn-primary btn-sm confirm" data-text="Deseja inserir os tipos padrão do sistema?">
+						<a href="/documentos/tipos/inserir/padrao" class="btn btn-primary btn-sm confirm" data-text="Deseja inserir os tipos padrão do sistema?">
 							<i class="bi bi-plus-circle-fill"></i>
 							Inserir tipos padrão
 						</a>
+
 					{% endif %}
 				</div>
 			</form>
@@ -69,24 +75,26 @@
 				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
 					<thead>
 						<tr>
-							<th scope="col">Tipo</th>
-							<!--<th scope="col">Criado</th>-->
-							<th scope="col">Apagar</th>
+							<th scope="col" style="width: 50%;">Tipo de Documento</th>
+							<th scope="col" style="width: 30%;">SIGLA</th>
+							<th scope="col" style="width: 20%;">Ações</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for item in tipos %}
 							<tr>
 								<td>
-									<a href="/orgaos/tipos/{{ item.id }}">{{ item.nome }}</a>
+									<a href="/documentos/tipos/{{ item.id }}">
+										{{ item.nome }}
+									</a>
 								</td>
-								<!--<td>
-																																									{{ item.created_at|date('d/m/Y H:i') }}
-																																									-
-																																									{{ item.usuario.nome }}
-																																								</td>-->
 								<td>
-									<a href="/orgaos/tipos/{{ item.id }}/apagar" class="confirm badge border border-danger text-danger text-decoration-none" data-text="Tem certeza que deseja apagar esse registro?">
+									<span>
+										{{ item.sigla|default('-') }}
+									</span>
+								</td>
+								<td>
+									<a href="/documentos/tipos/{{ item.id }}/deletar" class="confirm badge border border-danger text-danger text-decoration-none py-1.5" data-text="Tem certeza que deseja apagar esse registro?">
 										<i class="bi bi-trash3-fill me-1"></i>
 										Apagar
 									</a>
@@ -94,7 +102,9 @@
 							</tr>
 						{% else %}
 							<tr>
-								<td class="text-muted" colspan="3">Nenhum tipo de órgão cadastrado</td>
+								<td class="text-muted" colspan="3">
+									Nenhum tipo de documento cadastrado.
+								</td>
 							</tr>
 						{% endfor %}
 					</tbody>

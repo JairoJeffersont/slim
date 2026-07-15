@@ -1,0 +1,6 @@
+[
+    { "nome": "Ofício", "sigla": "OFC" },
+    { "nome": "Requerimento", "sigla": "REQ" },
+    { "nome": "Memorando", "sigla": "MEM" },
+    { "nome": "Ata de Reunião", "sigla": "ATA" }
+]

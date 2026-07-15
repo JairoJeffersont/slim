@@ -150,4 +150,16 @@ CREATE TABLE
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
-
+CREATE TABLE
+    tipo_documento (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        sigla VARCHAR(20) DEFAULT NULL,
+        usuario_id INT DEFAULT NULL,
+        gabinete_id INT NOT NULL,
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT uc_tipo_documento_nome_gabinete UNIQUE (nome, sigla, gabinete_id)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
