@@ -89,14 +89,17 @@ class PessoaController extends BaseController {
         try {
             $dados = $request->getParsedBody();
 
-            if (
-                Pessoa::where([
+            if (!empty($dados['email'])) {
+                $pessoaExistente = Pessoa::where([
                     'nome' => $dados['nome'],
+                    'email' => $dados['email'],
                     'gabinete_id' => $this->usuario['gabinete_id']
-                ])->first()
-            ) {
-                $this->flash('info', 'Esta pessoa já está cadastrada');
-                return $this->redirect($response, self::VIEW_ROUTE);
+                ])->first();
+
+                if ($pessoaExistente) {
+                    $this->flash('info', 'Esta pessoa com este e-mail já está cadastrada');
+                    return $this->redirect($response, self::VIEW_ROUTE);
+                }
             }
 
             Pessoa::create([

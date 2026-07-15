@@ -143,7 +143,6 @@ CREATE TABLE
         FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
         FOREIGN KEY (orgao_id) REFERENCES orgao (id) ON DELETE RESTRICT,
         FOREIGN KEY (profissao_id) REFERENCES profissao (id) ON DELETE RESTRICT,
-        CONSTRAINT uc_pessoa_nome_gabinete UNIQUE (nome, gabinete_id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

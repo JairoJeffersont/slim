@@ -178,12 +178,6 @@
 							<tr>
 								<td>
 									<a href="/pessoas/{{ pessoa.id }}">{{ pessoa.nome }}</a>
-									{% if pessoa.aniversario %}
-										<span class="badge bg-info text-dark ms-1" title="Aniversário">
-											<i class="bi bi-cake2-fill"></i>
-											{{ pessoa.aniversario|date('d/m') }}
-										</span>
-									{% endif %}
 								</td>
 
 								<td>
