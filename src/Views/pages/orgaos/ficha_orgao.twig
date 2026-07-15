@@ -29,7 +29,7 @@
 	{% endif %}
 
 	<div class="card mb-2 border-0 shadow-sm">
-		<div class="card-body p-2">
+		<div class="card-body p-3">
 
 			<div class="text-start custom-form">
 
@@ -94,7 +94,7 @@
 	</div>
 
 	<div class="card mb-2 border-0 shadow-sm">
-		<div class="card-body p-2">
+		<div class="card-body p-3">
 			<form class="row g-2 custom-form" method="POST">
 				<div class="col-md-4 col-12">
 					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome*" value="{{orgao.nome}}" required>
@@ -156,17 +156,67 @@
 	</div>
 
 	<div class="card mb-2 border-0 shadow-sm">
-		<div class="card-body p-1">
-			TODO: colocar a pessoas do orgao aqui
+		<div class="card-body p-3">
+			<div class="d-flex align-items-center mb-2">
+				<h6 class="fw-bold text-muted mb-0 text-uppercase small">Pessoas vinculadas à esse órgão</h6>
+			</div>
+			<div class="table-responsive mb-0">
+				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+					<thead>
+						<tr>
+							<th scope="col">Nome</th>
+							<th scope="col">Vínculo / Profissão</th>
+							<th scope="col">Contato</th>
+							<th scope="col">Localização</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for pessoa in pessoas %}
+							<tr>
+								<td>
+									<a href="/pessoas/{{ pessoa.id }}">{{ pessoa.nome }}</a>
+								</td>
+
+								<td>
+									<small class="d-block text-dark">
+										<strong>Órgão:</strong>
+										{{ pessoa.orgao.nome|default('Não informado') }}</small>
+									<small class="d-block text-muted">
+										<strong>Profissão:</strong>
+										{{ pessoa.profissao.nome|default('Não informada') }}</small>
+								</td>
+
+								<td>
+									<div class="small">{{ pessoa.email|default('E-mail não informado') }}</div>
+									<div class="small text-muted">{{ pessoa.telefone|default('Telefone não informado') }}</div>
+								</td>
+
+								<td>
+									{{ pessoa.cidade|default('Cidade não informada') }}
+									-
+									{{ pessoa.estado|default('UF') }}
+								</td>
+
+
+							</tr>
+						{% else %}
+							<tr>
+								<td class="text-muted" colspan="4">Nenhuma pessoa cadastrada</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
+	</div>
 
 
-		<script>
-			$ (document).ready (function () {
+	<script>
+		$ (document).ready (function () {
 popularEstadosBrasil ('#uf');
 popularEstadosBrasil ('#estado');
 
 popularMunicipiosBrasil ('#uf', '#municipio');
 });
-		</script>
-	{% endblock %}
+	</script>
+{% endblock %}

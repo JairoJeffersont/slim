@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Orgao;
+use App\Models\Pessoa;
 use App\Models\TipoOrgao;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -19,6 +20,16 @@ class FichaOrgaoController extends BaseController {
 
     private function listarTipos() {
         return TipoOrgao::with('usuario')->where('gabinete_id', $this->usuario['gabinete_id'])->orderBy('nome')->get();
+    }
+
+    private function listarPessoas(int $orgaoId) {
+        return Pessoa::with('profissao')
+            ->where([
+                'orgao_id' => $orgaoId,
+                'gabinete_id' => $this->usuario['gabinete_id']
+            ])
+            ->orderBy('nome')
+            ->get();
     }
 
     private function buscarOrgao(int $id): ?Orgao {
@@ -42,6 +53,7 @@ class FichaOrgaoController extends BaseController {
             }
 
             $payload['tipos'] = $this->listarTipos();
+            $payload['pessoas'] = $this->listarPessoas($id);
             $payload['orgao'] = $orgao;
 
             return $this->renderView($request, $response, self::VIEW_FICHA_ORGAOS, array_merge($payload, $this->getFlash()));
