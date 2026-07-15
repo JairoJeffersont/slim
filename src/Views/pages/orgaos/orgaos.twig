@@ -73,8 +73,10 @@
 								<option value="{{item.id}}">{{item.nome}}</option>
 							{% endfor %}
 
+							<option value="+">+ Novo tipo</option>
+
 						</select>
-						<a href="/orgaos/tipos" class="btn btn-primary btn-sm confirm" data-message="Deseja inserir um novo tipo?">
+						<a href="/orgaos/tipos" class="btn btn-primary btn-sm confirm" data-text="Deseja inserir um novo tipo?">
 							<i class="bi bi-plus-circle"></i>
 						</a>
 					</div>
@@ -234,6 +236,20 @@ popularEstadosBrasil ('#uf');
 popularEstadosBrasil ('#estado');
 
 popularMunicipiosBrasil ('#uf', '#municipio');
+});
+
+document.addEventListener ('DOMContentLoaded', function () {
+const select = document.querySelector ('select[name="tipo_orgao_id"]');
+
+select.addEventListener ('change', function () {
+if (this.value === '+') {
+if (confirm ('Deseja inserir um novo tipo?')) {
+window.location.href = '/orgaos/tipos';
+} else {
+this.value = '';
+}
+}
+});
 });
 	</script>
 
