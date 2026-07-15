@@ -1,0 +1,108 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+			<a class="btn btn-success btn-sm custom-nav" href="/pessoas/{{ lider.id }}" role="button">
+				<i class="bi bi-arrow-left"></i>
+				Voltar
+			</a>
+		</div>
+	</div>
+
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-2">
+			<div class="text-start custom-form">
+				<div class="d-flex align-items-center gap-2 p-2 bg-light rounded border">
+					<i class="bi bi-star-fill text-warning"></i>
+					<div class="text-truncate">
+						<small class="text-muted d-block" style="font-size:10px;">LÍDER DA CÉLULA</small>
+						<span class="small fw-bold text-dark text-truncate d-block">
+							{{ lider.nome }}
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<div class="d-flex align-items-center mb-2">
+				<h6 class="fw-bold text-muted mb-0 text-uppercase small">Pessoas lideradas</h6>
+			</div>
+
+			{% if liderados is empty %}
+				<div class="text-center py-5">
+					<i class="bi bi-people text-muted fs-2 d-block mb-2"></i>
+					<p class="text-muted small mb-0">Nenhum liderado cadastrado nesta célula até o momento.</p>
+				</div>
+			{% else %}
+				<div class="table-responsive mb-0">
+					<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+						<thead>
+							<tr>
+								<th scope="col">Nome</th>
+								<th scope="col">Vínculo / Profissão</th>
+								<th scope="col">Contato</th>
+								<th scope="col">Localização</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for liderado in liderados %}
+								<tr>
+									<td>
+										<a href="/pessoas/{{ liderado.id }}" class="fw-bold text-decoration-none">
+											{{ liderado.nome }}
+										</a>
+									</td>
+
+									<td>
+										<small class="d-block text-dark">
+											<strong>Órgão:</strong>
+											{{ liderado.orgao.nome|default('Não informado') }}
+										</small>
+										<small class="d-block text-muted">
+											<strong>Profissão:</strong>
+											{{ liderado.profissao.nome|default('Não informada') }}
+										</small>
+									</td>
+
+									<td>
+										<div class="small">{{ liderado.email|default('E-mail não informado') }}</div>
+										<div class="small text-muted">{{ liderado.telefone|default('Telefone não informado') }}</div>
+									</td>
+
+									<td>
+										{{ liderado.cidade|default('Cidade não informada') }}
+										-
+										{{ liderado.estado|default('UF') }}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}

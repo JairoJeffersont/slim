@@ -34,6 +34,7 @@
         "illuminate/database": "^13.9",
         "jairojeffersont/easy-logger": "^1.0",
         "jairojeffersont/easy-file-uploader": "^1.0",
-        "phpmailer/phpmailer": "^7.1"
+        "phpmailer/phpmailer": "^7.1",
+        "ramsey/uuid": "^4.9"
     }
 }

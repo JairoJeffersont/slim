@@ -133,9 +133,12 @@ CREATE TABLE
         bairro VARCHAR(100) DEFAULT NULL,
         cidade VARCHAR(60) NOT NULL,
         estado CHAR(2) NOT NULL,
+        lideranca BOOLEAN NOT NULL DEFAULT FALSE,
         instagram VARCHAR(100) DEFAULT NULL,
         facebook VARCHAR(100) DEFAULT NULL,
         foto VARCHAR(255) DEFAULT NULL,
+        indicado_por_pessoa_id INT DEFAULT NULL,
+        token CHAR(36) DEFAULT NULL,
         informacoes TEXT DEFAULT NULL,
         usuario_id INT DEFAULT NULL,
         gabinete_id INT NOT NULL,
@@ -146,3 +149,5 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+

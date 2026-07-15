@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\CadastroController;
+use App\Controllers\CelulaController;
 use App\Controllers\DashboardController;
 use App\Controllers\FichaOrgaoController;
 use App\Controllers\FichaPessoaController;
@@ -33,6 +34,9 @@ return function (App $app) {
 
     $app->get('/novo-usuario/{token}', [UsuarioController::class, 'formNewUser']);
     $app->post('/novo-usuario/{token}', [UsuarioController::class, 'newUser']);
+
+    $app->get('/convite', [CelulaController::class, 'cadastroConvidado']);
+    $app->post('/convite/salvar', [CelulaController::class, 'salvarConvidado']);
 
     $app->group('', function ($group) {
 
@@ -77,6 +81,10 @@ return function (App $app) {
         $group->get('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'index']);
         $group->post('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'updatePessoa']);
         $group->get('/pessoas/{id:[0-9]+}/apagar', [FichaPessoaController::class, 'apagarPessoa']);
+
+        $group->post('/pessoas/{id}/tornar-lider', [CelulaController::class, 'tornarLider']);
+        $group->post('/pessoas/{id}/remover-lider', [CelulaController::class, 'removerLider']);
+        $group->get('/pessoas/{id}/liderados', [CelulaController::class, 'listarLiderados']);
 
         $group->get('/logout', [LoginController::class, 'logout']);
     })->add(new AuthMiddleware());

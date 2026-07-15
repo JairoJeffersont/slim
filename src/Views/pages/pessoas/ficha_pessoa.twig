@@ -35,11 +35,19 @@
 
 				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
 					<i class="bi bi-person-fill text-secondary"></i>
-					<div class="text-truncate">
-						<small class="text-muted d-block" style="font-size:10px;">NOME</small>
-						<span class="small fw-bold text-dark text-truncate d-block">
-							{{ pessoa.nome }}
-						</span>
+					<div class="text-truncate w-100 d-flex align-items-center justify-content-between">
+						<div class="text-truncate">
+							<small class="text-muted d-block" style="font-size:10px;">NOME</small>
+							<span class="small fw-bold text-dark text-truncate d-block">
+								{{ pessoa.nome }}
+							</span>
+						</div>
+						{% if pessoa.lideranca %}
+							<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded">
+								<i class="bi bi-star-fill"></i>
+								Líder
+							</span>
+						{% endif %}
 					</div>
 				</div>
 
@@ -122,6 +130,25 @@
 		</div>
 	</div>
 
+	{% if pessoa.lideranca %}
+		<div class="card mb-2 border-0 shadow-sm">
+			<div class="card-body p-2">
+				<small class="text-muted d-block mb-1" style="font-size:10px; font-weight: bold;">LINK DE CONVITE DA CÉLULA</small>
+				<div class="input-group">
+					<input type="text"  style="font-size:0.8em" class="form-control form-control-sm bg-white" id="linkConvite" value="{{ base_url }}convite?token={{ pessoa.token }}" readonly>
+					<button class="btn btn-outline-secondary btn-sm"  style="font-size:0.8em" type="button" onclick="copiarLink()">
+						<i class="bi bi-clipboard"></i>
+						Copiar
+					</button>
+					<a href="/pessoas/{{ pessoa.id }}/liderados"  style="font-size:0.8em" class="btn btn-primary btn-sm">
+						<i class="bi bi-people-fill"></i>
+						Ver Liderados
+					</a>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="card mb-2 border-0 shadow-sm">
 		<div class="card-body p-2">
 			<form class="row g-2 custom-form" method="POST" action="/pessoas/{{ pessoa.id }}">
@@ -139,7 +166,7 @@
 				</div>
 
 				<div class="col-md-2 col-6">
-					<input type="teste" class="form-control form-control-sm" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00" value="{{ pessoa.aniversario }}">
+					<input type="text" class="form-control form-control-sm" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00" value="{{ pessoa.aniversario }}">
 				</div>
 
 				<div class="col-md-6 col-6">
@@ -202,7 +229,7 @@
 					<textarea class="form-control form-control-sm" name="informacoes" rows="5" placeholder="Informações">{{ pessoa.informacoes }}</textarea>
 				</div>
 
-				<div class="col-md-7">
+				<div class="col-md-12 d-flex flex-wrap gap-2">
 					<button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja atualizar este cadastro?" name="btn_salvar">
 						<i class="bi bi-floppy-fill"></i>
 						Atualizar
@@ -212,6 +239,18 @@
 						<i class="bi bi-trash"></i>
 						Apagar
 					</a>
+
+					{% if pessoa.lideranca %}
+						<button type="submit" formaction="/pessoas/{{ pessoa.id }}/remover-lider" class="btn btn-warning btn-sm confirm" data-text="Deseja desativar a liderança desta pessoa?">
+							<i class="bi bi-star-off"></i>
+							Remover Liderança
+						</button>
+					{% else %}
+						<button type="submit" formaction="/pessoas/{{ pessoa.id }}/tornar-lider" class="btn btn-info btn-sm confirm" data-text="Deseja tornar esta pessoa um líder?">
+							<i class="bi bi-star-fill"></i>
+							Tornar Líder
+						</button>
+					{% endif %}
 				</div>
 			</form>
 		</div>
@@ -238,5 +277,13 @@ this.value = '';
 }
 });
 });
+
+function copiarLink () {
+const copyText = document.getElementById ("linkConvite");
+copyText.select ();
+copyText.setSelectionRange (0, 99999);
+navigator.clipboard.writeText (copyText.value);
+alert ("Link de convite copiado para a área de transferência!");
+}
 	</script>
 {% endblock %}

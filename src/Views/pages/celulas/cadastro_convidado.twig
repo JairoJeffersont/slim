@@ -1,0 +1,73 @@
+{% extends "layouts/guest.twig" %}
+
+{% block content %}
+	<div class="container-fluid d-flex justify-content-center align-items-center py-4" style="min-height: 100dvh;">
+		<div class="card border-0 bg-transparent" style="width: 100%; max-width: 470px;">
+			<div class="card-body">
+				<div class="text-center mb-3">
+					<img src="img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 100px;">
+				</div>
+
+				<h2 class="text-center mb-2 text-white fw-light">
+					{{ app_name }}
+				</h2>
+
+				<p class="card-text text-center text-white mb-4">Você foi convidado por
+					<strong>{{ lider.nome }}</strong>
+					para fazer parte da nossa rede!</p>
+
+				{% if status in ['success', 'info'] %}
+					<div class="alert alert-{{ status }} rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+					</div>
+				{% endif %}
+
+				{% if status == 'error' %}
+					<div class="alert alert-danger rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">
+						{{ message }}
+						{{ error_id }}
+					</div>
+				{% endif %}
+
+				<form class="row g-2 custom-form" method="POST" action="/convite/salvar?token={{ token }}">
+					<div class="col-12">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="nome" placeholder="Seu nome completo" required>
+					</div>
+
+					<div class="col-12">
+						<input type="email" class="form-control rounded-pill py-2 px-4 border-0" name="email" placeholder="E-mail (opcional)">
+					</div>
+
+					<div class="col-12">
+						<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="telefone" placeholder="Telefone" data-mask="(00) 00000-0000">
+					</div>
+
+					<div class="col-6">
+						<select class="form-control rounded-pill py-2 px-4 border-0" name="estado" id="uf" required>
+							<option disabled selected value="">Escolha o estado*</option>
+						</select>
+					</div>
+					<div class="col-6">
+						<select class="form-control rounded-pill py-2 px-4 border-0" name="cidade" id="municipio" required>
+							<option disabled selected value="">Selecione o municipio*</option>
+						</select>
+					</div>
+
+					<div class="col-12 d-flex gap-2 mt-3">
+						<button type="submit" class="btn btn-success rounded-pill py-2 w-100">Confirmar Cadastro</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$ (document).ready (function () {
+$ (document).ready (function () {
+popularEstadosBrasil ('#uf');
+
+popularMunicipiosBrasil ('#uf', '#municipio');
+});
+});
+	</script>
+{% endblock %}
