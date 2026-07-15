@@ -6,11 +6,32 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+
+				<li class="nav-item dropdown">
+
+					<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="bi bi-gear-fill me-1"></i>
+						Configurações
+					</a>
+
+					<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="/orgaos/tipos">
+							<i class="bi bi-diagram-3-fill me-2"></i>Tipo de órgãos e entidades
+						</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/pessoas/profissoes">
+							<i class="bi bi-briefcase-fill me-2"></i>Profissões
+						</a>
+					</div>
+
+				</li>
+
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<i class="bi bi-person-circle me-1"></i>
 						{{ auth.user.nome }}
 					</a>
+
 					<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="/gabinete">
 							<i class="bi bi-building me-2"></i>Gabinete

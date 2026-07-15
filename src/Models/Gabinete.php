@@ -38,12 +38,15 @@ class Gabinete extends Model {
         return $this->hasMany(TipoOrgao::class);
     }
 
-
     public function profissoes(): HasMany {
         return $this->hasMany(Profissao::class);
     }
 
     public function orgaos(): HasMany {
         return $this->hasMany(Orgao::class);
+    }
+
+    public function pessoas(): HasMany {
+        return $this->hasMany(Pessoa::class);
     }
 }

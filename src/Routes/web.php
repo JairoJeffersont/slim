@@ -3,12 +3,14 @@
 use App\Controllers\CadastroController;
 use App\Controllers\DashboardController;
 use App\Controllers\FichaOrgaoController;
+use App\Controllers\FichaPessoaController;
 use App\Controllers\GabineteController;
 use App\Controllers\LoginController;
 use App\Controllers\OrgaoController;
 use App\Controllers\TipoOrgaoController;
 use App\Controllers\PasswordController;
 use App\Controllers\PerfilController;
+use App\Controllers\PessoaController;
 use App\Controllers\ProfissaoController;
 use App\Controllers\UsuarioController;
 use App\Middleware\AuthMiddleware;
@@ -69,12 +71,12 @@ return function (App $app) {
         $group->post('/pessoas/profissoes/{id}', [ProfissaoController::class, 'updateProfissao']);
 
 
+        $group->get('/pessoas', [PessoaController::class, 'indexPessoas']);
+        $group->post('/pessoas', [PessoaController::class, 'newPessoa']);
 
-
-
-
-
-
+        $group->get('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'index']);
+        $group->post('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'updatePessoa']);
+        $group->get('/pessoas/{id:[0-9]+}/apagar', [FichaPessoaController::class, 'apagarPessoa']);
 
         $group->get('/logout', [LoginController::class, 'logout']);
     })->add(new AuthMiddleware());

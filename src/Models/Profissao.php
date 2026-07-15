@@ -23,6 +23,4 @@ class Profissao extends Model {
     public function usuario(): BelongsTo {
         return $this->belongsTo(Usuario::class);
     }
-
-
 }

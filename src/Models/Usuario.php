@@ -55,5 +55,7 @@ class Usuario extends Model {
         return $this->hasMany(Orgao::class);
     }
 
-
+    public function pessoas(): HasMany {
+        return $this->hasMany(Pessoa::class);
+    }
 }

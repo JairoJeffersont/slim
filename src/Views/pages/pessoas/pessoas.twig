@@ -1,0 +1,273 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<div>
+				<h6 class="mb-0 fw-bold mb-1">Gerenciamento de Pessoas</h6>
+				<small class="text-muted">
+					Utilize esta seção para cadastrar, editar, visualizar e remover os contatos e pessoas integradas ao sistema.
+				</small>
+			</div>
+		</div>
+	</div>
+
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-2">
+			<form class="row g-2 custom-form" method="POST" action="{% if pessoa %}/pessoas/{{ pessoa.id }}{% else %}/pessoas{% endif %}">
+
+				<div class="col-md-4 col-12">
+					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome*" value="{{ pessoa.nome|default('') }}" required>
+				</div>
+
+				<div class="col-md-4 col-12">
+					<input type="email" class="form-control form-control-sm" name="email" placeholder="Email" value="{{ pessoa.email|default('') }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="telefone" placeholder="Telefone" data-mask="(00) 00000-0000" value="{{ pessoa.telefone|default('') }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00" value="{{ pessoa.aniversario|default('') }}">
+				</div>
+
+				<div class="col-md-6 col-6">
+					<input type="text" class="form-control form-control-sm" name="endereco" placeholder="Endereço" value="{{ pessoa.endereco|default('') }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="bairro" placeholder="Bairro" value="{{ pessoa.bairro|default('') }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="estado" id="uf" required>
+						<option disabled selected value="">Escolha o estado*</option>
+					</select>
+				</div>
+
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="cidade" id="municipio" required>
+						<option disabled selected value="">Selecione o municipio*</option>
+					</select>
+				</div>
+
+				<div class="col-md-6 col-12">
+					<select class="form-control form-control-sm" name="orgao_id">
+						<option value="" selected>Órgão não informado</option>
+						{% for item in orgaos %}
+							<option value="{{ item.id }}" {% if pessoa.orgao_id == item.id %} selected {% endif %}>{{ item.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+
+				<div class="col-md-6 col-12">
+					<div class="input-group">
+						<select class="form-control form-control-sm" name="profissao_id">
+							<option value="" selected>Profissão não informada</option>
+							{% for item in profissoes %}
+								<option value="{{ item.id }}" {% if pessoa.profissao_id == item.id %} selected {% endif %}>{{ item.nome }}</option>
+							{% endfor %}
+							<option value="+">+ Nova profissão</option>
+						</select>
+						<a href="/pessoas/profissoes" class="btn btn-primary btn-sm confirm" data-text="Deseja cadastrar uma nova profissão?">
+							<i class="bi bi-plus-circle"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-6">
+					<input type="text" class="form-control form-control-sm" name="instagram" placeholder="Instagram (ex: @usuario)" value="{{ pessoa.instagram|default('') }}">
+				</div>
+
+				<div class="col-md-6 col-6">
+					<input type="text" class="form-control form-control-sm" name="facebook" placeholder="Facebook (link ou usuário)" value="{{ pessoa.facebook|default('') }}">
+				</div>
+
+				<div class="col-md-12 col-12">
+					<textarea class="form-control form-control-sm" name="informacoes" rows="4" placeholder="Informações adicionais">{{ pessoa.informacoes|default('') }}</textarea>
+				</div>
+
+				<div class="col-md-7">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="{% if pessoa %}Deseja atualizar este cadastro?{% else %}Deseja cadastrar esta pessoa?{% endif %}" name="btn_salvar">
+						<i class="bi bi-floppy-fill"></i>
+						{% if pessoa %}Atualizar{% else %}Salvar
+						{% endif %}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="card border-0 shadow-sm">
+		<div class="card-body p-2">
+			<form class="row g-2 custom-form mb-2" method="GET">
+				<div class="col-md-3 col-6">
+					<select class="form-control form-control-sm" name="ordenarPor">
+						<option value="nome" {% if (parametros.ordenarPor ?? 'nome') == 'nome' %} selected {% endif %}>Ordenar por: Nome</option>
+						<option value="created_at" {% if (parametros.ordenarPor ?? 'nome') == 'created_at' %} selected {% endif %}>Ordenar por: Data de Cadastro</option>
+						<option value="cidade" {% if (parametros.ordenarPor ?? 'cidade') == 'cidade' %} selected {% endif %}>Ordenar por: Município</option>
+					</select>
+				</div>
+
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="ordem">
+						<option value="asc" {% if (parametros.ordem ?? 'asc') == 'asc' %} selected {% endif %}>Crescente</option>
+						<option value="desc" {% if (parametros.ordem ?? 'asc') == 'desc' %} selected {% endif %}>Decrescente</option>
+					</select>
+				</div>
+
+				<div class="col-md-2 col-3">
+					<select class="form-control form-control-sm" name="itens">
+						<option value="10" {% if (parametros.itens ?? '10') == '10' %} selected {% endif %}>10 itens</option>
+						<option value="25" {% if (parametros.itens ?? '25') == '25' %} selected {% endif %}>25 itens</option>
+						<option value="50" {% if (parametros.itens ?? '50') == '50' %} selected {% endif %}>50 itens</option>
+						<option value="100" {% if (parametros.itens ?? '100') == '100' %} selected {% endif %}>100 itens</option>
+					</select>
+				</div>
+
+				<div class="col-md-2 col-9">
+					<select class="form-control form-control-sm" name="estado" id="estado" data-selected="{{ estado_gabinete }}"></select>
+				</div>
+
+				<div class="col-md-2 col-10">
+					<input type="text" class="form-control form-control-sm" name="busca" placeholder="Buscar por nome" value="{{ parametros.busca }}">
+				</div>
+
+				<div class="col-md-1 col-2">
+					<button type="submit" class="btn btn-success btn-sm w-100">
+						<i class="bi bi-search"></i>
+					</button>
+				</div>
+			</form>
+
+			<div class="table-responsive mb-0">
+				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+					<thead>
+						<tr>
+							<th scope="col">Nome</th>
+							<th scope="col">Vínculo / Profissão</th>
+							<th scope="col">Contato</th>
+							<th scope="col">Localização</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for pessoa in pessoas %}
+							<tr>
+								<td>
+									<a href="/pessoas/{{ pessoa.id }}">{{ pessoa.nome }}</a>
+									{% if pessoa.aniversario %}
+										<span class="badge bg-info text-dark ms-1" title="Aniversário">
+											<i class="bi bi-cake2-fill"></i>
+											{{ pessoa.aniversario|date('d/m') }}
+										</span>
+									{% endif %}
+								</td>
+
+								<td>
+									<small class="d-block text-dark">
+										<strong>Órgão:</strong>
+										{{ pessoa.orgao.nome|default('Não informado') }}</small>
+									<small class="d-block text-muted">
+										<strong>Profissão:</strong>
+										{{ pessoa.profissao.nome|default('Não informada') }}</small>
+								</td>
+
+								<td>
+									<div class="small">{{ pessoa.email|default('E-mail não informado') }}</div>
+									<div class="small text-muted">{{ pessoa.telefone|default('Telefone não informado') }}</div>
+								</td>
+
+								<td>
+									{{ pessoa.cidade|default('Cidade não informada') }}
+									-
+									{{ pessoa.estado|default('UF') }}
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td class="text-muted" colspan="4">Nenhuma pessoa cadastrada</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+			{% if total_paginas is defined and total_paginas > 1 %}
+				<nav>
+					<ul class="pagination mt-2 mb-0 custom-pagination">
+						{% set anterior = pagina_atual - 1 %}
+						{% set proxima = pagina_atual + 1 %}
+
+						{% if pagina_atual > 1 %}
+							{% set query = parametros|merge({'pagina': anterior}) %}
+							<li class="page-item">
+								<a class="page-link" href="?{{ query|url_encode }}">Anterior</a>
+							</li>
+						{% endif %}
+
+						{% for pagina in 1..total_paginas %}
+							{% set query = parametros|merge({'pagina': pagina}) %}
+							<li class="page-item {% if pagina == pagina_atual %}active{% endif %}">
+								<a class="page-link" href="?{{ query|url_encode }}">{{ pagina }}</a>
+							</li>
+						{% endfor %}
+
+						{% if pagina_atual < total_paginas %}
+							{% set query = parametros|merge({'pagina': proxima}) %}
+							<li class="page-item">
+								<a class="page-link" href="?{{ query|url_encode }}">Próxima</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			{% endif %}
+
+		</div>
+	</div>
+
+	<script>
+		$ (document).ready (function () {
+popularEstadosBrasil ('#uf');
+popularEstadosBrasil ('#estado');
+
+popularMunicipiosBrasil ('#uf', '#municipio');
+});
+
+document.addEventListener ('DOMContentLoaded', function () {
+const selectProfissao = document.querySelector ('select[name="profissao_id"]');
+
+selectProfissao.addEventListener ('change', function () {
+if (this.value === '+') {
+if (confirm ('Deseja cadastrar uma nova profissão?')) {
+window.location.href = '/pessoas/profissoes';
+} else {
+this.value = '';
+}
+}
+});
+});
+	</script>
+{% endblock %}

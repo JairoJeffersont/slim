@@ -1,0 +1,242 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+			<a class="btn btn-success btn-sm custom-nav" href="/pessoas" role="button">
+				<i class="bi bi-arrow-left"></i>
+				Voltar
+			</a>
+		</div>
+	</div>
+
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
+
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-2">
+
+			<div class="text-start custom-form">
+
+				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+					<i class="bi bi-person-fill text-secondary"></i>
+					<div class="text-truncate">
+						<small class="text-muted d-block" style="font-size:10px;">NOME</small>
+						<span class="small fw-bold text-dark text-truncate d-block">
+							{{ pessoa.nome }}
+						</span>
+					</div>
+				</div>
+
+				<div class="row g-2 mb-2">
+					<div class="col-6">
+						<div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
+							<i class="bi bi-building text-secondary fs-6"></i>
+							<div class="text-truncate">
+								<small class="text-muted d-block" style="font-size:10px;">VÍNCULO / ÓRGÃO</small>
+								<span class="small fw-medium text-dark text-truncate d-block">
+									{{ pessoa.orgao.nome|default('Não informado') }}
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
+							<i class="bi bi-person-workspace text-secondary fs-6"></i>
+							<div class="text-truncate">
+								<small class="text-muted d-block" style="font-size:10px;">PROFISSÃO</small>
+								<span class="small fw-medium text-dark text-truncate d-block">
+									{{ pessoa.profissao.nome|default('Não informada') }}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+					<i class="bi bi-envelope-fill text-secondary"></i>
+					<div class="text-truncate">
+						<small class="text-muted d-block" style="font-size:10px;">EMAIL</small>
+						<span class="small fw-medium text-dark">
+							{{ pessoa.email|default('Não informado') }}
+						</span>
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+					<i class="bi bi-telephone-fill text-secondary"></i>
+					<div>
+						<small class="text-muted d-block" style="font-size:10px;">TELEFONE</small>
+						<span class="small fw-medium text-dark">
+							{{ pessoa.telefone|default('Não informado') }}
+						</span>
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+					<i class="bi bi-geo-alt-fill text-secondary"></i>
+					<div class="text-truncate">
+						<small class="text-muted d-block" style="font-size:10px;">LOCALIZAÇÃO</small>
+						<span class="small fw-medium text-dark text-truncate d-block">
+							{{ [pessoa.endereco, pessoa.bairro, pessoa.cidade, pessoa.estado]|filter(v => v is not empty)|join(', ')|default('Não informado') }}
+						</span>
+					</div>
+				</div>
+
+				<div class="row g-2 mb-0">
+					<div class="col-6">
+						<div class="p-2 bg-light rounded border">
+							<small class="text-muted d-block" style="font-size:10px;">INSTAGRAM</small>
+							<span class="small fw-medium text-dark text-truncate d-block">
+								{{ pessoa.instagram|default('Não informado') }}
+							</span>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<div class="p-2 bg-light rounded border">
+							<small class="text-muted d-block" style="font-size:10px;">FACEBOOK</small>
+							<span class="small fw-medium text-dark text-truncate d-block">
+								{{ pessoa.facebook|default('Não informado') }}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-2">
+			<form class="row g-2 custom-form" method="POST" action="/pessoas/{{ pessoa.id }}">
+
+				<div class="col-md-4 col-12">
+					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome*" value="{{ pessoa.nome }}" required>
+				</div>
+
+				<div class="col-md-4 col-12">
+					<input type="email" class="form-control form-control-sm" name="email" placeholder="Email" value="{{ pessoa.email }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="telefone" placeholder="Telefone" value="{{ pessoa.telefone }}" data-mask="(00) 00000-0000">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="teste" class="form-control form-control-sm" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00" value="{{ pessoa.aniversario }}">
+				</div>
+
+				<div class="col-md-6 col-6">
+					<input type="text" class="form-control form-control-sm" name="endereco" placeholder="Endereço" value="{{ pessoa.endereco }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="bairro" placeholder="Bairro" value="{{ pessoa.bairro }}">
+				</div>
+
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="estado" id="uf" data-selected="{{ pessoa.estado }}" required>
+						<option disabled selected value="">Escolha o estado*</option>
+					</select>
+				</div>
+
+				<div class="col-md-2 col-6">
+					<select class="form-control form-control-sm" name="cidade" id="municipio" data-selected="{{ pessoa.cidade }}" required>
+						<option disabled selected value="">Selecione o municipio*</option>
+					</select>
+				</div>
+
+				<div class="col-md-6 col-12">
+					<select class="form-control form-control-sm" name="orgao_id">
+						<option value="" {% if pessoa.orgao_id is null %} selected {% endif %}>Órgão não informado</option>
+						{% for item in orgaos %}
+							<option value="{{ item.id }}" {% if pessoa.orgao_id == item.id %} selected {% endif %}>
+								{{ item.nome }}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+
+				<div class="col-md-6 col-12">
+					<div class="input-group">
+						<select class="form-control form-control-sm" name="profissao_id">
+							<option value="" {% if pessoa.profissao_id is null %} selected {% endif %}>Profissão não informada</option>
+							{% for item in profissoes %}
+								<option value="{{ item.id }}" {% if pessoa.profissao_id == item.id %} selected {% endif %}>
+									{{ item.nome }}
+								</option>
+							{% endfor %}
+							<option value="+">+ Nova profissão</option>
+						</select>
+						<a href="/pessoas/profissoes" class="btn btn-primary btn-sm confirm" data-message="Deseja cadastrar uma nova profissão?">
+							<i class="bi bi-plus-circle"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-6">
+					<input type="text" class="form-control form-control-sm" name="instagram" placeholder="Instagram" value="{{ pessoa.instagram }}">
+				</div>
+
+				<div class="col-md-6 col-6">
+					<input type="text" class="form-control form-control-sm" name="facebook" placeholder="Facebook" value="{{ pessoa.facebook }}">
+				</div>
+
+				<div class="col-md-12 col-12">
+					<textarea class="form-control form-control-sm" name="informacoes" rows="5" placeholder="Informações">{{ pessoa.informacoes }}</textarea>
+				</div>
+
+				<div class="col-md-7">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja atualizar este cadastro?" name="btn_salvar">
+						<i class="bi bi-floppy-fill"></i>
+						Atualizar
+					</button>
+
+					<a class="btn btn-danger btn-sm confirm" data-text="Deseja apagar essa pessoa do sistema?" href="/pessoas/{{ pessoa.id }}/apagar">
+						<i class="bi bi-trash"></i>
+						Apagar
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		$ (document).ready (function () {
+popularEstadosBrasil ('#uf');
+popularEstadosBrasil ('#estado');
+
+popularMunicipiosBrasil ('#uf', '#municipio');
+});
+
+document.addEventListener ('DOMContentLoaded', function () {
+const selectProfissao = document.querySelector ('select[name="profissao_id"]');
+
+selectProfissao.addEventListener ('change', function () {
+if (this.value === '+') {
+if (confirm ('Deseja cadastrar uma nova profissão?')) {
+window.location.href = '/pessoas/profissoes';
+} else {
+this.value = '';
+}
+}
+});
+});
+	</script>
+{% endblock %}
