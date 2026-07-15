@@ -9,6 +9,7 @@ use App\Controllers\OrgaoController;
 use App\Controllers\TipoOrgaoController;
 use App\Controllers\PasswordController;
 use App\Controllers\PerfilController;
+use App\Controllers\ProfissaoController;
 use App\Controllers\UsuarioController;
 use App\Middleware\AuthMiddleware;
 use Slim\App;
@@ -59,6 +60,13 @@ return function (App $app) {
         $group->post('/orgaos/{id}', [FichaOrgaoController::class, 'updateOrgao']);
         $group->get('/orgaos/{id}/apagar', [FichaOrgaoController::class, 'apagarOrgao']);
 
+
+        $group->get('/pessoas/profissoes/inserir', [ProfissaoController::class, 'inserirProfissoesPadrao']);
+        $group->get('/pessoas/profissoes', [ProfissaoController::class, 'indexProfissoes']);
+        $group->post('/pessoas/profissoes', [ProfissaoController::class, 'newProfissao']);
+        $group->get('/pessoas/profissoes/{id}/apagar', [ProfissaoController::class, 'apagarProfissao']);
+        $group->get('/pessoas/profissoes/{id}', [ProfissaoController::class, 'obterProfissao']);
+        $group->post('/pessoas/profissoes/{id}', [ProfissaoController::class, 'updateProfissao']);
 
 
 

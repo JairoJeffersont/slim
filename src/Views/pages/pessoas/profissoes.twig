@@ -1,0 +1,95 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+    <div class="card mb-2 border-0 shadow-sm">
+        <div class="card-body p-1">
+            <a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+                <i class="bi bi-house-door-fill"></i>
+                Início
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-2 border-0 shadow-sm">
+        <div class="card-body p-3">
+            <div>
+                <h6 class="mb-0 fw-bold mb-1">Gerenciamento de Profissões</h6>
+                <small class="text-muted">
+                    Utilize esta seção para cadastrar, editar, visualizar e remover as profissões integradas ao sistema.
+                    <br>O botão
+                    <strong class="text-primary">"Inserir profissões padrão"</strong>
+                    permite adicionar rapidamente as profissões mais comuns do sistema.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    {% if status in ['success', 'info'] %}
+        <div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    {% if status == 'error' %}
+        <div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
+            {{ message }}
+            {{ error_id }}
+        </div>
+    {% endif %}
+
+    <div class="card mb-2 border-0 shadow-sm">
+        <div class="card-body p-2">
+            <form class="row g-2 custom-form" method="POST" action="{% if profissao %}/pessoas/profissoes/{{ profissao.id }}{% else %}/pessoas/profissoes{% endif %}">
+                <div class="col-md-2 col-12">
+                    <input type="text" class="form-control form-control-sm" name="nome" value="{{ profissao.nome|default('') }}" placeholder="Profissão" required>
+                </div>
+                <div class="col-md-7">
+                    <button type="submit" class="btn btn-success btn-sm confirm" data-text="{% if profissao %}Deseja atualizar esta profissão?{% else %}Deseja inserir esta profissão?{% endif %}" name="btn_salvar">
+                        <i class="bi bi-floppy-fill"></i>
+                        {% if profissao %}Atualizar{% else %}Salvar{% endif %}
+                    </button>
+                    <a href="/pessoas/profissoes/inserir" class="btn btn-primary btn-sm confirm" data-text="Deseja inserir as profissões padrão do sistema?">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        Inserir profissões padrão
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-2">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Profissão</th>
+                            <th scope="col">Apagar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in profissoes %}
+                            <tr>
+                                <td>
+                                    <a href="/pessoas/profissoes/{{ item.id }}">{{ item.nome }}</a>
+                                </td>
+                                <td>
+                                    <a href="/pessoas/profissoes/{{ item.id }}/apagar" class="confirm badge border border-danger text-danger text-decoration-none" data-text="Tem certeza que deseja apagar esse registro?">
+                                        <i class="bi bi-trash3-fill me-1"></i>
+                                        Apagar
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="text-muted" colspan="2">Nenhuma profissão cadastrada</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
