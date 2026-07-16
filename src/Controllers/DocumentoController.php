@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\UploadHelper;
 use App\Models\Documento;
 use App\Models\TipoDocumento;
 use Exception;
@@ -100,7 +101,7 @@ class DocumentoController extends BaseController {
                     return $this->redirect($response, self::VIEW_ROUTE);
                 }
 
-                $arquivoUrl = $this->processarUpload($arquivos['arquivo']);
+                $arquivoUrl = UploadHelper::processar($arquivos['arquivo'], 'documentos/'.$this->usuario['gabinete_id']);
             }
 
             $tipo = TipoDocumento::find($dados['tipo_documento_id']);
@@ -138,18 +139,5 @@ class DocumentoController extends BaseController {
     }
 
 
-    private function processarUpload(UploadedFile $uploadedFile): string {
-        $diretorioUpload = __DIR__ . '/../../public/uploads/documentos';
 
-        if (!is_dir($diretorioUpload)) {
-            mkdir($diretorioUpload, 0755, true);
-        }
-
-        $extensao = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
-        $nomeUnico = sprintf('%s-%s.%s', uniqid(), bin2hex(random_bytes(8)), $extensao);
-
-        $uploadedFile->moveTo($diretorioUpload . DIRECTORY_SEPARATOR . $nomeUnico);
-
-        return '/uploads/documentos/' . $nomeUnico;
-    }
 }

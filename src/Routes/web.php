@@ -50,29 +50,29 @@ return function (App $app) {
         $group->get('/gabinete', [GabineteController::class, 'index']);
         $group->post('/gabinete/atualizar', [GabineteController::class, 'updateGabinete']);
 
-        $group->get('/usuario/{id}', [UsuarioController::class, 'index']);
-        $group->post('/usuario/{id}', [UsuarioController::class, 'updateUser']);
+        $group->get('/usuario/{id:[0-9]+}', [UsuarioController::class, 'index']);
+        $group->post('/usuario/{id:[0-9]+}', [UsuarioController::class, 'updateUser']);
 
         $group->get('/orgaos/tipos/inserir', [TipoOrgaoController::class, 'inserirTiposPadrao']);
         $group->get('/orgaos/tipos', [TipoOrgaoController::class, 'indexTiposOrgaos']);
         $group->post('/orgaos/tipos', [TipoOrgaoController::class, 'newTipoOrgaos']);
-        $group->get('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'buscarTipoOrgao']);
-        $group->post('/orgaos/tipos/{id}', [TipoOrgaoController::class, 'updateTipoOrgaos']);
-        $group->get('/orgaos/tipos/{id}/apagar', [TipoOrgaoController::class, 'apagarTipoOrgao']);
+        $group->get('/orgaos/tipos/{id:[0-9]+}', [TipoOrgaoController::class, 'buscarTipoOrgao']);
+        $group->post('/orgaos/tipos/{id:[0-9]+}', [TipoOrgaoController::class, 'updateTipoOrgaos']);
+        $group->get('/orgaos/tipos/{id:[0-9]+}/apagar', [TipoOrgaoController::class, 'apagarTipoOrgao']);
 
         $group->get('/orgaos', [OrgaoController::class, 'indexOrgaos']);
         $group->post('/orgaos', [OrgaoController::class, 'newOrgao']);
 
-        $group->get('/orgaos/{id}', [FichaOrgaoController::class, 'index']);
-        $group->post('/orgaos/{id}', [FichaOrgaoController::class, 'updateOrgao']);
-        $group->get('/orgaos/{id}/apagar', [FichaOrgaoController::class, 'apagarOrgao']);
+        $group->get('/orgaos/{id:[0-9]+}', [FichaOrgaoController::class, 'index']);
+        $group->post('/orgaos/{id:[0-9]+}', [FichaOrgaoController::class, 'updateOrgao']);
+        $group->get('/orgaos/{id:[0-9]+}/apagar', [FichaOrgaoController::class, 'apagarOrgao']);
 
         $group->get('/pessoas/profissoes/inserir', [ProfissaoController::class, 'inserirProfissoesPadrao']);
         $group->get('/pessoas/profissoes', [ProfissaoController::class, 'indexProfissoes']);
         $group->post('/pessoas/profissoes', [ProfissaoController::class, 'newProfissao']);
-        $group->get('/pessoas/profissoes/{id}/apagar', [ProfissaoController::class, 'apagarProfissao']);
-        $group->get('/pessoas/profissoes/{id}', [ProfissaoController::class, 'obterProfissao']);
-        $group->post('/pessoas/profissoes/{id}', [ProfissaoController::class, 'updateProfissao']);
+        $group->get('/pessoas/profissoes/{id:[0-9]+}/apagar', [ProfissaoController::class, 'apagarProfissao']);
+        $group->get('/pessoas/profissoes/{id:[0-9]+}', [ProfissaoController::class, 'obterProfissao']);
+        $group->post('/pessoas/profissoes/{id:[0-9]+}', [ProfissaoController::class, 'updateProfissao']);
 
         $group->get('/pessoas', [PessoaController::class, 'indexPessoas']);
         $group->post('/pessoas', [PessoaController::class, 'newPessoa']);
@@ -81,26 +81,26 @@ return function (App $app) {
         $group->post('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'updatePessoa']);
         $group->get('/pessoas/{id:[0-9]+}/apagar', [FichaPessoaController::class, 'apagarPessoa']);
 
-        $group->post('/pessoas/{id}/tornar-lider', [CelulaController::class, 'tornarLider']);
-        $group->post('/pessoas/{id}/remover-lider', [CelulaController::class, 'removerLider']);
-        $group->get('/pessoas/{id}/liderados', [CelulaController::class, 'listarLiderados']);
+        $group->post('/pessoas/{id:[0-9]+}/tornar-lider', [CelulaController::class, 'tornarLider']);
+        $group->post('/pessoas/{id:[0-9]+}/remover-lider', [CelulaController::class, 'removerLider']);
+        $group->get('/pessoas/{id:[0-9]+}/liderados', [CelulaController::class, 'listarLiderados']);
         $group->get('/pessoas/liderancas', [CelulaController::class, 'listarLideres']);
 
         $group->get('/aniversariantes', [AniversarianteController::class, 'index']);
 
         $group->get('/documentos/tipos', [TipoDocumentoController::class, 'indexTiposDocumentos']);
         $group->post('/documentos/tipos', [TipoDocumentoController::class, 'newTipoDocumentos']);
-        $group->get('/documentos/tipos/{id}', [TipoDocumentoController::class, 'buscarTipoDocumento']);
-        $group->post('/documentos/tipos/{id}/editar', [TipoDocumentoController::class, 'updateTipoDocumentos']);
-        $group->get('/documentos/tipos/{id}/deletar', [TipoDocumentoController::class, 'apagarTipoDocumento']);
+        $group->get('/documentos/tipos/{id:[0-9]+}', [TipoDocumentoController::class, 'buscarTipoDocumento']);
+        $group->post('/documentos/tipos/{id:[0-9]+}/editar', [TipoDocumentoController::class, 'updateTipoDocumentos']);
+        $group->get('/documentos/tipos/{id:[0-9]+}/deletar', [TipoDocumentoController::class, 'apagarTipoDocumento']);
         $group->get('/documentos/tipos/inserir/padrao', [TipoDocumentoController::class, 'inserirTiposPadrao']);
 
         $group->get('/documentos', [DocumentoController::class, 'indexDocumentos']);
         $group->post('/documentos', [DocumentoController::class, 'newDocumentos']);
 
-        $group->get('/documentos/{id}', [FichaDocumentoController::class, 'indexDocumento']);
-        $group->post('/documentos/{id}', [FichaDocumentoController::class, 'updateDocumentos']);
-        $group->get('/documentos/{id}/apagar', [FichaDocumentoController::class, 'apagarDocumento']);
+        $group->get('/documentos/{id:[0-9]+}', [FichaDocumentoController::class, 'indexDocumento']);
+        $group->post('/documentos/{id:[0-9]+}', [FichaDocumentoController::class, 'updateDocumentos']);
+        $group->get('/documentos/{id:[0-9]+}/apagar', [FichaDocumentoController::class, 'apagarDocumento']);
 
 
 
