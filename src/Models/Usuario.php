@@ -62,4 +62,8 @@ class Usuario extends Model {
     public function tiposDocumentos(): HasMany {
         return $this->hasMany(TipoDocumento::class);
     }
+
+    public function documentos(): HasMany {
+        return $this->hasMany(Documento::class);
+    }
 }

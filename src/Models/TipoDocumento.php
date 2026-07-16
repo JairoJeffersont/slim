@@ -25,4 +25,7 @@ class TipoDocumento extends Model {
         return $this->belongsTo(Usuario::class);
     }
 
+    public function documentos(): HasMany {
+        return $this->hasMany(Documento::class, 'tipo_documento_id');
+    }
 }
