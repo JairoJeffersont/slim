@@ -1,5 +1,7 @@
 /vendor/
 /storage/sessions/*
 /storage/cache/*
+/public/upload/*
+!/public/upload/.gitkeep
 **/.DS_Store
 .env
