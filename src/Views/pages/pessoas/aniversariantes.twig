@@ -64,36 +64,33 @@
 							<th scope="col" style="width: 40%;">Nome</th>
 							<th scope="col" style="width: 15%;">Aniversário</th>
 							<th scope="col" style="width: 25%;">Contato</th>
-							<th scope="col" style="width: 20%;">Localização</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for pessoa in aniversariantes %}
+						{% for niver in aniversariantes %}
 							<tr>
 								<td>
-									<a href="/pessoas/{{ pessoa.id }}" >
-										{{ pessoa.nome }}
+									<a href="{{ niver.link }}" class="fw-bold text-decoration-none">
+										{{ niver.nome }}
 									</a>
+
+									{# Se for usuário (Equipe), exibe uma tag verde diferenciando #}
+									{% if niver.tipo_registro == 'usuario' %}
+										<span class="badge bg-success ms-1" style="font-size: 10px;">Equipe / Assessor </span>
+									{% endif %}
 								</td>
 								<td>
-									{{ pessoa.aniversario|date('d/m') }}
+									{# Formata o aniversário considerando que é um objeto de data #}
+									{{ niver.aniversario|date('d/m') }}
 								</td>
 								<td>
-									<div class="small text-dark">{{ pessoa.telefone|default('Sem telefone') }}</div>
-									<div class="small text-muted">{{ pessoa.email|default('Sem e-mail') }}</div>
-								</td>
-								<td>
-									<small class="text-muted">
-										{{ pessoa.cidade|default('Não informada') }}
-										-
-										{{ pessoa.estado|default('UF') }}
-									</small>
+									{{ niver.telefone|default('-') }}
 								</td>
 							</tr>
 						{% else %}
 							<tr>
-								<td colspan="4" class="text-muted">
-									Nenhum aniversariante encontrado para este período.
+								<td colspan="3">
+									Nenhum aniversariante encontrado neste período.
 								</td>
 							</tr>
 						{% endfor %}
