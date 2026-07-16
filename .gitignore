@@ -2,6 +2,6 @@
 /storage/sessions/*
 /storage/cache/*
 /public/upload/*
-!/public/upload/.gitkeep
+!/public/uploads/.gitkeep
 **/.DS_Store
 .env
