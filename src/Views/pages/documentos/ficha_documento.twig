@@ -1,0 +1,145 @@
+{% extends "layouts/app.twig" %}
+
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início
+			</a>
+			<a class="btn btn-success btn-sm custom-nav" href="/documentos" role="button">
+				<i class="bi bi-arrow-left"></i>
+				Voltar
+			</a>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+
+			<div class="text-start custom-form">
+
+
+				<div class="row g-2 mb-2">
+					<div class="col-6">
+						<div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
+							<div class="text-truncate">
+								<small class="text-muted d-block" style="font-size:10px;">TIPO</small>
+								<span class="small fw-medium text-dark text-truncate d-block">
+									{{ documento.tipo.nome }}
+									|
+									{{documento.titulo}}
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
+							<div class="text-truncate">
+								<small class="text-muted d-block" style="font-size:10px;">INSERIDO POR</small>
+								<span class="small fw-medium text-dark text-truncate d-block">
+									{{ documento.usuario.nome|default('Não informado') }}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+					<div class="text-truncate">
+						<small class="text-muted d-block" style="font-size:10px;">RESUMO</small>
+						<span class="small fw-medium text-dark text-truncate d-block">
+							{{ documento.resumo }}
+						</span>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+
+			<form class="row g-2 custom-form" method="POST" enctype="multipart/form-data">
+				<div class="col-md-3 col-12">
+					<div class="input-group">
+						<select class="form-select form-select-sm" name="tipo_documento_id" required>
+							<option value="">Tipo de Documento*</option>
+
+							{% for tipo in tipos %}
+								<option value="{{ tipo.id }}" {% if documento.tipo_documento_id == tipo.id %} selected {% endif %}>
+									{{ tipo.nome }}
+									{% if tipo.siga %}({{ tipo.siga }})
+									{% endif %}
+								</option>
+							{% endfor %}
+
+							<option value="+">+ Novo tipo</option>
+						</select>
+						<a href="/documentos/tipos" class="btn btn-primary btn-sm confirm" data-text="Deseja cadastrar uma novo tipo de documento?">
+							<i class="bi bi-plus-circle"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-md-2 col-6">
+					<input type="text" class="form-control form-control-sm" name="numero" value="{{documento.numero|default('')}}" placeholder="Número (ex: 123)" required>
+				</div>
+
+				<div class="col-md-1 col-6">
+					<input type="number" class="form-control form-control-sm" value="{{documento.ano|default('')}}" min="1900" max="2100" name="ano" data-mask="0000" placeholder="Ano" required>
+				</div>
+				<div class="col-md-6 col-12">
+					<input type="file" class="form-control form-control-sm" name="arquivo">
+				</div>
+
+				<div class="col-12">
+					<textarea class="form-control form-control-sm" name="resumo" rows="4" placeholder="Descrição detalhada, andamento ou observações importantes...">{{ documento.resumo|default('') }}</textarea>
+				</div>
+
+				<div class="col-12 mt-2">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja salvar as informações deste documento?">
+						<i class="bi bi-floppy-fill me-1"></i>
+						Salvar
+					</button>
+
+					<a class="btn btn-danger btn-sm confirm" data-text="Deseja apagar esse documento?" href="/documentos/{{documento.id}}/apagar" name="btn_salvar">
+						<i class="bi bi-trash"></i>
+						Apagar
+					</a>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+
+			{% set extensao = documento.arquivo_url|split('.')|last|lower %}
+
+			{% if extensao == 'pdf' %}
+
+				<iframe src="{{documento.arquivo_url}}" width="100%" height="850" style="border:1px solid #dee2e6;border-radius:0.375rem;background:#fff;"></iframe>
+
+			{% elseif extensao in ['doc', 'docx', 'xls', 'xlsx'] %}
+
+				<iframe src="https://view.officeapps.live.com/op/embed.aspx?src={{ documento.arquivo_url|url_encode }}" width="100%" height="850" style="border:1px solid #dee2e6;border-radius:0.375rem;background:#fff;"></iframe>
+
+			{% else %}
+
+				<div class="alert alert-warning mb-0">
+					Este tipo de arquivo não pode ser visualizado diretamente no navegador.
+					<a href="{{documento.arquivo_url}}" target="_blank">Clique aqui para baixar ou abrir o documento.</a>
+				</div>
+
+			{% endif %}
+
+		</div>
+	</div>
+{% endblock %}

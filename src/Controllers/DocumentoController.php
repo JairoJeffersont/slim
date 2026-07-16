@@ -24,7 +24,7 @@ class DocumentoController extends BaseController {
         return TipoDocumento::with('usuario')->where('gabinete_id', $this->usuario['gabinete_id'])->orderBy('nome')->get();
     }
 
-    private function listarDocumentos(?int $ano = null, ?int $tipo = null) {
+    private function listarDocumentos(?int $ano = null, ?int $tipo = null, ?string $busca = null) {
         return Documento::with(['tipo', 'usuario'])
             ->where('gabinete_id', $this->usuario['gabinete_id'])
 
@@ -36,7 +36,14 @@ class DocumentoController extends BaseController {
                 return $query->where('tipo_documento_id', $tipo);
             })
 
-            ->orderBy('ano', 'desc')
+            ->when(!empty($busca), function ($query) use ($busca) {
+                return $query->where(function ($q) use ($busca) {
+                    $q->where('titulo', 'like', "%{$busca}%")
+                        ->orWhere('resumo', 'like', "%{$busca}%");
+                });
+            })
+
+            ->orderBy('titulo', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -55,8 +62,9 @@ class DocumentoController extends BaseController {
             }
 
             $tipo = isset($query['tipo']) && trim($query['tipo']) !== '' ? (int) $query['tipo'] : null;
+            $busca = isset($query['busca']) && trim($query['busca']) !== '' ? trim($query['busca']) : null;
 
-            $documentos = $this->listarDocumentos($ano, $tipo);
+            $documentos = $this->listarDocumentos($ano, $tipo, $busca);
 
             $payload['tipos'] = $this->listarTipos();
             $payload['documentos'] = $documentos;

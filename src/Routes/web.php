@@ -5,6 +5,7 @@ use App\Controllers\CadastroController;
 use App\Controllers\CelulaController;
 use App\Controllers\DashboardController;
 use App\Controllers\DocumentoController;
+use App\Controllers\FichaDocumentoController;
 use App\Controllers\FichaOrgaoController;
 use App\Controllers\FichaPessoaController;
 use App\Controllers\GabineteController;
@@ -96,6 +97,13 @@ return function (App $app) {
 
         $group->get('/documentos', [DocumentoController::class, 'indexDocumentos']);
         $group->post('/documentos', [DocumentoController::class, 'newDocumentos']);
+
+        $group->get('/documentos/{id}', [FichaDocumentoController::class, 'indexDocumento']);
+        $group->post('/documentos/{id}', [FichaDocumentoController::class, 'updateDocumentos']);
+        $group->get('/documentos/{id}/apagar', [FichaDocumentoController::class, 'apagarDocumento']);
+
+
+
 
 
         $group->get('/logout', [LoginController::class, 'logout']);
