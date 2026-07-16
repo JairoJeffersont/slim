@@ -74,7 +74,7 @@
 					</select>
 				</div>
 
-				<div class="col-md-6 col-12">
+				<div class="col-md-3 col-12">
 					<select class="form-control form-control-sm" name="orgao_id">
 						<option value="" selected>Órgão não informado</option>
 						{% for item in orgaos %}
@@ -83,7 +83,7 @@
 					</select>
 				</div>
 
-				<div class="col-md-6 col-12">
+				<div class="col-md-3 col-12">
 					<div class="input-group">
 						<select class="form-control form-control-sm" name="profissao_id">
 							<option value="" selected>Profissão não informada</option>
@@ -98,11 +98,11 @@
 					</div>
 				</div>
 
-				<div class="col-md-6 col-6">
+				<div class="col-md-3 col-6">
 					<input type="text" class="form-control form-control-sm" name="instagram" placeholder="Instagram (ex: @usuario)" value="{{ pessoa.instagram|default('') }}">
 				</div>
 
-				<div class="col-md-6 col-6">
+				<div class="col-md-3 col-6">
 					<input type="text" class="form-control form-control-sm" name="facebook" placeholder="Facebook (link ou usuário)" value="{{ pessoa.facebook|default('') }}">
 				</div>
 
