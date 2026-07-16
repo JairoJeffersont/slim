@@ -8,7 +8,6 @@ use App\Models\TipoDocumento;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Psr7\UploadedFile;
 
 class FichaDocumentoController extends BaseController {
     private const VIEW_FICHA_DOCUMENTO = 'pages/documentos/ficha_documento.twig';
@@ -161,19 +160,5 @@ class FichaDocumentoController extends BaseController {
         }
     }
 
-    private function removerArquivo(?string $arquivoUrl): void {
-        if (!$arquivoUrl) {
-            return;
-        }
 
-        $caminho = parse_url($arquivoUrl, PHP_URL_PATH);
-
-        if ($caminho) {
-            $arquivo = $_SERVER['DOCUMENT_ROOT'] . $caminho;
-
-            if (file_exists($arquivo)) {
-                unlink($arquivo);
-            }
-        }
-    }
 }
