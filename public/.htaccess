@@ -1,0 +1,79 @@
+RewriteEngine On
+
+# Impede acesso direto a arquivos ocultos
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Bloqueia arquivos sensíveis
+<FilesMatch "\.(env|ini|log|sql|conf|config|json|lock|yml|yaml|xml)$">
+    Require all denied
+</FilesMatch>
+
+# Bloqueia acesso ao vendor caso esteja dentro da pasta pública
+RewriteRule ^vendor/ - [F,L]
+
+# Remove assinatura do Apache
+ServerSignature Off
+
+# Desabilita listagem de diretórios
+Options -Indexes
+
+# Mantém arquivos e pastas existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Envia tudo para o Slim
+RewriteRule ^ index.php [QSA,L]
+
+
+# ==========================
+# Headers de segurança
+# ==========================
+
+<IfModule mod_headers.c>
+
+    # Evita MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Proteção contra iframe clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Política de referência
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Controle de permissões do navegador
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    # Proteção XSS para navegadores antigos
+    Header always set X-XSS-Protection "1; mode=block"
+
+</IfModule>
+
+
+# ==========================
+# Compressão
+# ==========================
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json application/xml
+</IfModule>
+
+
+# ==========================
+# Cache de arquivos estáticos
+# ==========================
+
+<IfModule mod_expires.c>
+
+    ExpiresActive On
+
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+
+</IfModule>
