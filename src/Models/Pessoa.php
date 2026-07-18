@@ -48,5 +48,9 @@ class Pessoa extends Model {
         return $this->belongsTo(Profissao::class);
     }
 
+    public function agendas(): HasMany {
+        return $this->hasMany('App\\Models\\Agenda', 'pessoa_id');
+    }
+
 
 }

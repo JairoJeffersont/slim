@@ -1,0 +1,86 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+    <div class="card mb-2 border-0 shadow-sm">
+        <div class="card-body p-1">
+            <a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+                <i class="bi bi-house-door-fill"></i> Início
+            </a>
+            <a class="btn btn-success btn-sm custom-nav" href="/agenda" role="button">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+
+    {% if status in ['success', 'info'] %}
+        <div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">{{ message }}</div>
+    {% endif %}
+
+    {% if status == 'error' %}
+        <div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">{{ message }} {{ error_id }}</div>
+    {% endif %}
+
+    {# --- EXIBIÇÃO DO COMPROMISSO --- #}
+    <div class="card mb-2 border-0 shadow-sm">
+        <div class="card-body p-3">
+            <h6 class="mb-3 fw-bold"><i class="bi bi-calendar-event"></i> Detalhes do Compromisso</h6>
+            <div class="row g-2">
+                <div class="col-md-6 col-12"><div class="p-2 bg-light rounded border h-100"><small class="text-muted d-block" style="font-size:10px;">COMPROMISSO</small><span class="small fw-medium text-dark d-block">{{ agenda.titulo }}</span><small class="text-muted">{{ agenda.tipoAgenda.nome }} | {{ agenda.situacaoAgenda.nome }}</small></div></div>
+                <div class="col-md-6 col-12"><div class="p-2 bg-light rounded border h-100"><small class="text-muted d-block" style="font-size:10px;">DATA E HORA</small><span class="small fw-medium text-dark d-block">{{ agenda.data_hora|date('d/m/Y H:i') }}</span>{% if agenda.data_hora_fim %}<small class="text-muted">Até {{ agenda.data_hora_fim|date('d/m/Y H:i') }}</small>{% endif %}</div></div>
+                <div class="col-md-6 col-12"><div class="p-2 bg-light rounded border h-100"><small class="text-muted d-block" style="font-size:10px;">PESSOA VINCULADA</small><span class="small fw-medium text-dark d-block">{{ agenda.pessoa.nome|default('Não informada') }}</span></div></div>
+                <div class="col-md-6 col-12"><div class="p-2 bg-light rounded border h-100"><small class="text-muted d-block" style="font-size:10px;">INSERIDO POR</small><span class="small fw-medium text-dark d-block">{{ agenda.usuario.nome|default('Não informado') }}</span></div></div>
+                {% if agenda.descricao %}<div class="col-12"><div class="p-2 bg-light rounded border h-100"><small class="text-muted d-block" style="font-size:10px;">DESCRIÇÃO</small><span class="small fw-medium text-dark d-block">{{ agenda.descricao }}</span></div></div>{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# --- FILTRO DE LOCALIZAÇÃO (ISOLADO) --- #}
+    <div class="card mb-2 border-0 shadow-sm bg-light">
+        <div class="card-body p-3">
+            <h6 class="small fw-bold text-muted mb-2"><i class="bi bi-funnel-fill"></i> Filtrar pessoas por localização</h6>
+            <form class="row g-2 custom-form" method="GET" action="/agenda/{{ agenda.id }}">
+                <div class="col-md-3">
+                    <select class="form-control form-control-sm" name="pessoa_estado" id="uf-pessoa-ficha" data-selected="{{ parametros_pessoas.estado }}">
+                        <option disabled selected value="">Estado</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-control form-control-sm" name="pessoa_cidade" id="municipio-pessoa-ficha" data-selected="{{ parametros_pessoas.cidade }}">
+                        <option disabled selected value="">Município</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-secondary btn-sm w-100">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# --- FORMULÁRIO DE EDIÇÃO --- #}
+    <div class="card mb-2 border-0 shadow-sm">
+        <div class="card-body p-3">
+            <h6 class="mb-3 fw-bold">Editar Compromisso</h6>
+            <form class="row g-2 custom-form" method="POST">
+                <div class="col-md-3"><select class="form-select form-select-sm" name="tipo_agenda_id" required>{% for tipo in tipos %}<option value="{{ tipo.id }}" {% if agenda.tipo_agenda_id == tipo.id %}selected{% endif %}>{{ tipo.nome }}</option>{% endfor %}</select></div>
+                <div class="col-md-3"><select class="form-select form-select-sm" name="situacao_agenda_id" required>{% for situacao in situacoes %}<option value="{{ situacao.id }}" {% if agenda.situacao_agenda_id == situacao.id %}selected{% endif %}>{{ situacao.nome }}</option>{% endfor %}</select></div>
+                <div class="col-md-6"><select class="form-select form-select-sm" name="pessoa_id"><option value="">Sem pessoa vinculada</option>{% for pessoa in pessoas %}<option value="{{ pessoa.id }}" {% if agenda.pessoa_id == pessoa.id %}selected{% endif %}>{{ pessoa.nome }}</option>{% endfor %}</select></div>
+                <div class="col-md-6"><input type="text" class="form-control form-control-sm" name="titulo" value="{{ agenda.titulo }}" placeholder="Título" required></div>
+                <div class="col-md-6"><input type="text" class="form-control form-control-sm" name="local" value="{{ agenda.local }}" placeholder="Local"></div>
+                <div class="col-md-6"><input type="datetime-local" class="form-control form-control-sm" name="data_hora" value="{{ agenda.data_hora|date('Y-m-d\\TH:i') }}" required></div>
+                <div class="col-md-6"><input type="datetime-local" class="form-control form-control-sm" name="data_hora_fim" value="{{ agenda.data_hora_fim|date('Y-m-d\\TH:i') }}"></div>
+                <div class="col-12"><textarea class="form-control form-control-sm" name="descricao" rows="3" placeholder="Descrição">{{ agenda.descricao }}</textarea></div>
+                <div class="col-12 mt-2">
+                    <button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja salvar as alterações?"><i class="bi bi-floppy-fill me-1"></i> Salvar Alterações</button>
+                    <a class="btn btn-danger btn-sm confirm" data-text="Deseja apagar esse compromisso?" href="/agenda/{{ agenda.id }}/apagar"><i class="bi bi-trash"></i> Apagar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            popularEstadosBrasil('#uf-pessoa-ficha');
+            popularMunicipiosBrasil('#uf-pessoa-ficha', '#municipio-pessoa-ficha');
+        });
+    </script>
+{% endblock %}

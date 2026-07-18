@@ -188,7 +188,7 @@ function popularMunicipiosBrasil(estadoSelectId, municipioSelectId) {
         }
 
         $.ajax({
-            url: `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`,
+            url: `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`,
             type: 'GET',
             dataType: 'json',
             success: function (municipios) {

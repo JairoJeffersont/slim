@@ -61,4 +61,12 @@ class Gabinete extends Model {
     public function situacaoAgenda(): HasMany {
         return $this->hasMany(SituacaoAgenda::class);
     }
+
+    public function tiposAgenda(): HasMany {
+        return $this->hasMany(TipoAgenda::class);
+    }
+
+    public function agendas(): HasMany {
+        return $this->hasMany('App\\Models\\Agenda');
+    }
 }

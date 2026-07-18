@@ -1,10 +1,12 @@
 <?php
 
 use App\Controllers\AniversarianteController;
+use App\Controllers\AgendaController;
 use App\Controllers\CadastroController;
 use App\Controllers\CelulaController;
 use App\Controllers\DashboardController;
 use App\Controllers\DocumentoController;
+use App\Controllers\FichaAgendaController;
 use App\Controllers\FichaDocumentoController;
 use App\Controllers\FichaOrgaoController;
 use App\Controllers\FichaPessoaController;
@@ -17,6 +19,7 @@ use App\Controllers\PerfilController;
 use App\Controllers\PessoaController;
 use App\Controllers\ProfissaoController;
 use App\Controllers\SituacaoAgendaController;
+use App\Controllers\TipoAgendaController;
 use App\Controllers\TipoDocumentoController;
 use App\Controllers\UsuarioController;
 use App\Middleware\AuthMiddleware;
@@ -110,11 +113,18 @@ return function (App $app) {
         $group->get('/agenda/situacoes/{id:[0-9]+}/apagar', [SituacaoAgendaController::class, 'apagarSituacao']);
         $group->get('/agenda/situacoes/inserir/padrao', [SituacaoAgendaController::class, 'inserirSituacoesPadrao']);
 
+        $group->get('/agenda', ['App\\Controllers\\AgendaController', 'indexAgenda']);
+        $group->post('/agenda', ['App\\Controllers\\AgendaController', 'newAgenda']);
+        $group->get('/agenda/{id:[0-9]+}', [FichaAgendaController::class, 'indexAgenda']);
+        $group->post('/agenda/{id:[0-9]+}', [FichaAgendaController::class, 'updateAgenda']);
+        $group->get('/agenda/{id:[0-9]+}/apagar', [FichaAgendaController::class, 'apagarAgenda']);
 
-
-
-
-
+        $group->get('/agenda/tipos', [TipoAgendaController::class, 'indexTiposAgenda']);
+        $group->post('/agenda/tipos', [TipoAgendaController::class, 'newTipoAgenda']);
+        $group->get('/agenda/tipos/{id:[0-9]+}', [TipoAgendaController::class, 'buscarTipoAgenda']);
+        $group->post('/agenda/tipos/{id:[0-9]+}/editar', [TipoAgendaController::class, 'updateTipoAgenda']);
+        $group->get('/agenda/tipos/{id:[0-9]+}/apagar', [TipoAgendaController::class, 'apagarTipoAgenda']);
+        $group->get('/agenda/tipos/inserir/padrao', [TipoAgendaController::class, 'inserirTiposPadrao']);
 
 
         $group->get('/logout', [LoginController::class, 'logout']);

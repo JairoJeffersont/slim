@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class SituacaoAgenda extends Model {
+class TipoAgenda extends Model {
 
-    protected $table = 'situacao_agenda';
+    protected $table = 'tipo_agenda';
 
     protected $fillable = [
         'nome',
@@ -31,6 +31,6 @@ class SituacaoAgenda extends Model {
     }
 
     public function agendas(): HasMany {
-        return $this->hasMany('App\\Models\\Agenda', 'situacao_agenda_id');
+        return $this->hasMany('App\\Models\\Agenda', 'tipo_agenda_id');
     }
 }
