@@ -42,6 +42,8 @@
 				<input type="hidden" name="tipo" value="{{ tipoGet }}">
 				<input type="hidden" name="situacao" value="{{ situacaoGet }}">
 				<input type="hidden" name="busca" value="{{ busca }}">
+				<input type="hidden" name="data" value="{{ dataGet }}">
+				<input type="hidden" name="periodo" value="{{ periodoGet|default('dia') }}">
 
 				<div class="col-md-3">
 					<select class="form-control form-control-sm" name="pessoa_estado" id="uf-pessoa-agenda" data-selected="{{ parametros_pessoas.estado }}">
@@ -153,6 +155,16 @@
 				</div>
 				<div class="col-md-5">
 					<input type="text" class="form-control form-control-sm" name="busca" value="{{ busca }}" placeholder="Buscar por título, local, descrição ou pessoa">
+				</div>
+				<div class="col-md-2">
+					<select class="form-select form-select-sm" name="periodo">
+						<option value="dia" {% if (periodoGet|default('dia')) == 'dia' %}selected{% endif %}>Dia</option>
+						<option value="mes" {% if (periodoGet|default('dia')) == 'mes' %}selected{% endif %}>Mês</option>
+						<option value="todos" {% if (periodoGet|default('dia')) == 'todos' %}selected{% endif %}>Todos</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<input type="date" class="form-control form-control-sm" name="data" value="{{ dataGet }}">
 				</div>
 				<div class="col-md-1">
 					<button type="submit" class="btn btn-success btn-sm w-100">

@@ -62,9 +62,18 @@ class AgendaController extends BaseController {
         return $pessoas;
     }
 
-    private function listarAgendas(?int $tipo = null, ?int $situacao = null, ?string $busca = null) {
+    private function listarAgendas(?int $tipo = null, ?int $situacao = null, ?string $busca = null, ?string $data = null, string $periodo = 'dia') {
         return Agenda::with(['tipoAgenda', 'situacaoAgenda', 'pessoa', 'usuario'])
             ->where('gabinete_id', $this->usuario['gabinete_id'])
+            ->when($periodo === 'dia' && $data !== null, function ($query) use ($data) {
+                return $query->whereDate('data_hora', $data);
+            })
+            ->when($periodo === 'mes' && $data !== null, function ($query) use ($data) {
+                $inicioMes = date('Y-m-01 00:00:00', strtotime($data));
+                $fimMes = date('Y-m-t 23:59:59', strtotime($data));
+
+                return $query->whereBetween('data_hora', [$inicioMes, $fimMes]);
+            })
             ->when($tipo !== null, function ($query) use ($tipo) {
                 return $query->where('tipo_agenda_id', $tipo);
             })
@@ -128,6 +137,16 @@ class AgendaController extends BaseController {
         try {
             $query = $request->getQueryParams();
             $filtrosPessoas = $this->getFiltrosPessoas($query);
+            $periodoParam = trim((string) ($query['periodo'] ?? 'dia'));
+            $periodo = in_array($periodoParam, ['dia', 'mes', 'todos'], true) ? $periodoParam : 'dia';
+
+            if (!array_key_exists('data', $query)) {
+                $data = date('Y-m-d');
+            } elseif (trim((string) $query['data']) === '') {
+                $data = date('Y-m-d');
+            } else {
+                $data = trim((string) $query['data']);
+            }
 
             $tipo = isset($query['tipo']) && trim($query['tipo']) !== '' ? (int) $query['tipo'] : null;
             $situacao = isset($query['situacao']) && trim($query['situacao']) !== '' ? (int) $query['situacao'] : null;
@@ -136,10 +155,12 @@ class AgendaController extends BaseController {
             $payload['tipos'] = $this->listarTipos();
             $payload['situacoes'] = $this->listarSituacoes();
             $payload['pessoas'] = $this->listarPessoas($filtrosPessoas);
-            $payload['agendas'] = $this->listarAgendas($tipo, $situacao, $busca);
+            $payload['agendas'] = $this->listarAgendas($tipo, $situacao, $busca, $data, $periodo);
             $payload['tipoGet'] = $tipo;
             $payload['situacaoGet'] = $situacao;
             $payload['busca'] = $busca;
+            $payload['dataGet'] = $data;
+            $payload['periodoGet'] = $periodo;
             $payload['parametros_pessoas'] = $filtrosPessoas;
 
             return $this->renderView($request, $response, self::VIEW_AGENDA, array_merge($payload, $this->getFlash()));
