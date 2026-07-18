@@ -87,6 +87,7 @@ return function (App $app) {
         $group->get('/pessoas', [PessoaController::class, 'indexPessoas']);
         $group->post('/pessoas', [PessoaController::class, 'newPessoa']);
 
+
         $group->get('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'index']);
         $group->post('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'updatePessoa']);
         $group->get('/pessoas/{id:[0-9]+}/apagar', [FichaPessoaController::class, 'apagarPessoa']);
@@ -119,9 +120,9 @@ return function (App $app) {
         $group->get('/agenda/situacoes/{id:[0-9]+}/apagar', [SituacaoAgendaController::class, 'apagarSituacao']);
         $group->get('/agenda/situacoes/inserir/padrao', [SituacaoAgendaController::class, 'inserirSituacoesPadrao']);
 
-        $group->get('/agenda', ['App\\Controllers\\AgendaController', 'indexAgenda']);
-        $group->post('/agenda', ['App\\Controllers\\AgendaController', 'newAgenda']);
-        $group->get('/agenda/imprimir', ['App\\Controllers\\AgendaController', 'imprimirAgenda']);
+        $group->get('/agenda', [AgendaController::class, 'indexAgenda']);
+        $group->post('/agenda', [AgendaController::class, 'newAgenda']);
+        $group->get('/agenda/imprimir', [AgendaController::class, 'imprimirAgenda']);
         $group->get('/agenda/{id:[0-9]+}', [FichaAgendaController::class, 'indexAgenda']);
         $group->post('/agenda/{id:[0-9]+}', [FichaAgendaController::class, 'updateAgenda']);
         $group->get('/agenda/{id:[0-9]+}/apagar', [FichaAgendaController::class, 'apagarAgenda']);

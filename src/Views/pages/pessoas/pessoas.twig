@@ -75,12 +75,17 @@
 				</div>
 
 				<div class="col-md-3 col-12">
-					<select class="form-control form-control-sm" name="orgao_id">
-						<option value="" selected>Órgão não informado</option>
-						{% for item in orgaos %}
-							<option value="{{ item.id }}" {% if pessoa.orgao_id == item.id %} selected {% endif %}>{{ item.nome }}</option>
-						{% endfor %}
-					</select>
+					<div class="input-group">
+						<select class="form-control form-control-sm" name="orgao_id">
+							<option value="" selected>Órgão não informado</option>
+							{% for item in orgaos %}
+								<option value="{{ item.id }}" {% if pessoa.orgao_id == item.id %} selected {% endif %}>{{ item.nome }}</option>
+							{% endfor %}
+						</select>
+						<a href="/orgaos" class="btn btn-primary btn-sm confirm" data-text="Deseja cadastrar um novo órgão/entidade?">
+							<i class="bi bi-plus-circle"></i>
+						</a>
+					</div>
 				</div>
 
 				<div class="col-md-3 col-12">

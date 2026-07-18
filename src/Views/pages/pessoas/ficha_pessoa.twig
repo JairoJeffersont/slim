@@ -135,12 +135,12 @@
 			<div class="card-body p-2">
 				<small class="text-muted d-block mb-1" style="font-size:10px; font-weight: bold;">LINK DE CONVITE DA CÉLULA</small>
 				<div class="input-group">
-					<input type="text"  style="font-size:0.8em" class="form-control form-control-sm bg-white" id="linkConvite" value="{{ base_url }}convite?token={{ pessoa.token }}" readonly>
-					<button class="btn btn-outline-secondary btn-sm"  style="font-size:0.8em" type="button" onclick="copiarLink()">
+					<input type="text" style="font-size:0.8em" class="form-control form-control-sm bg-white" id="linkConvite" value="{{ base_url }}convite?token={{ pessoa.token }}" readonly>
+					<button class="btn btn-outline-secondary btn-sm" style="font-size:0.8em" type="button" onclick="copiarLink()">
 						<i class="bi bi-clipboard"></i>
 						Copiar
 					</button>
-					<a href="/pessoas/{{ pessoa.id }}/liderados"  style="font-size:0.8em" class="btn btn-primary btn-sm">
+					<a href="/pessoas/{{ pessoa.id }}/liderados" style="font-size:0.8em" class="btn btn-primary btn-sm">
 						<i class="bi bi-people-fill"></i>
 						Ver Liderados
 					</a>
@@ -166,7 +166,7 @@
 				</div>
 
 				<div class="col-md-2 col-6">
-					<input type="text" class="form-control form-control-sm" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00" value="{{ pessoa.aniversario }}">
+					<input type="text" class="form-control form-control-sm" name="aniversario" placeholder="Aniversário (dd/mm)" data-mask="00/00" value="{% if pessoa.aniversario %}{{ pessoa.aniversario|date('d/m') }}{% endif %}">
 				</div>
 
 				<div class="col-md-6 col-6">
@@ -190,14 +190,21 @@
 				</div>
 
 				<div class="col-md-6 col-12">
-					<select class="form-control form-control-sm" name="orgao_id">
-						<option value="" {% if pessoa.orgao_id is null %} selected {% endif %}>Órgão não informado</option>
-						{% for item in orgaos %}
-							<option value="{{ item.id }}" {% if pessoa.orgao_id == item.id %} selected {% endif %}>
-								{{ item.nome }}
-							</option>
-						{% endfor %}
-					</select>
+					<div class="input-group">
+						<select class="form-control form-control-sm" name="orgao_id">
+							<option value="" {% if pessoa.orgao_id is null %} selected {% endif %}>Órgão não informado</option>
+							{% for item in orgaos %}
+								<option value="{{ item.id }}" {% if pessoa.orgao_id == item.id %} selected {% endif %}>
+									{{ item.nome }}
+								</option>
+							{% endfor %}
+							<option value="+">+ Novo órgão/entidade</option>
+
+						</select>
+						<a href="/orgaos" class="btn btn-primary btn-sm confirm" data-text="Deseja cadastrar um novo órgão/entidade?">
+							<i class="bi bi-plus-circle"></i>
+						</a>
+					</div>
 				</div>
 
 				<div class="col-md-6 col-12">
@@ -265,8 +272,10 @@ popularMunicipiosBrasil ('#uf', '#municipio');
 });
 
 document.addEventListener ('DOMContentLoaded', function () {
+
 const selectProfissao = document.querySelector ('select[name="profissao_id"]');
 
+if (selectProfissao) {
 selectProfissao.addEventListener ('change', function () {
 if (this.value === '+') {
 if (confirm ('Deseja cadastrar uma nova profissão?')) {
@@ -276,6 +285,22 @@ this.value = '';
 }
 }
 });
+}
+
+const selectOrgao = document.querySelector ('select[name="orgao_id"]');
+
+if (selectOrgao) {
+selectOrgao.addEventListener ('change', function () {
+if (this.value === '+') {
+if (confirm ('Deseja cadastrar um novo órgão/entidade?')) {
+window.location.href = '/orgaos';
+} else {
+this.value = '';
+}
+}
+});
+}
+
 });
 
 function copiarLink () {
