@@ -15,36 +15,33 @@
 		</div>
 	{% endif %}
 
-	{# Layout Empilhado (Largura Total) #}
+	{# Layout do Dashboard #}
 	<div
 		class="d-flex flex-column gap-2">
 
-		{# Seção: Compromissos do Dia #}
+		{# Seção: Compromissos do Dia (Largura Total) #}
 		<div class="card border-0 shadow-sm">
 			<div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-				<h5 class="fw-bold mb-0 text-dark">
-					<i class="bi bi-calendar-check text-primary me-2"></i>Compromissos do Dia
-				</h5>
-				<!-- Acessa o total real retornado pelo método -->
+				<div class="d-flex align-items-center gap-3">
+					<h5 class="fw-bold mb-0 text-dark">
+						<i class="bi bi-calendar-check text-primary me-2"></i>Compromissos do Dia
+					</h5>
+
+				</div>
 				<span class="badge bg-primary-subtle text-primary rounded-pill fw-semibold small px-2 py-1">
 					{{ compromissos_data.total }}
-					{{ compromissos_data.total == 1 ? 'hoje' : 'hoje' }}
+					hoje
 				</span>
 			</div>
 
 			<div class="card-body px-4 pb-3">
 				<div class="list-group list-group-flush gap-2">
-
-					<!-- Loop lendo a lista limitada a 5 compromissos -->
-					<!-- Loop lendo a lista limitada a 5 compromissos -->
-						{% for compromisso in compromissos_data.lista %}
-							<div
-							class="list-group-item bg-light rounded p-0 border-0 d-flex align-items-stretch gap-3 position-relative overflow-hidden mb-1"> <!-- Horário do Compromisso (Ocupando 100% da altura) -->
+					{% for compromisso in compromissos_data.lista %}
+						<div class="list-group-item bg-light rounded p-0 border-0 d-flex align-items-stretch gap-3 position-relative overflow-hidden mb-1">
 							<span class="badge bg-primary fw-bold text-center flex-shrink-0 d-flex align-items-center justify-content-center align-self-stretch rounded-start rounded-0" style="width: 60px; font-size: 13px;">
 								{{ compromisso.horario }}
 							</span>
 
-							<!-- Conteúdo com padding apenas para afastar das bordas -->
 							<div class="text-truncate py-2 pe-3">
 								<h6 class="fw-bold text-dark mb-1 small text-truncate">
 									<a href="{{ compromisso.link }}" class="text-decoration-none text-dark hover-underline stretched-link">
@@ -58,7 +55,6 @@
 							</div>
 						</div>
 					{% else %}
-						{# Estado Vazio Minimalista se não houver agenda #}
 						<div class="text-center py-2 border border-dashed rounded bg-light-subtle">
 							<small class="text-muted text-uppercase fw-semibold tracking-wider" style="font-size: 10px; letter-spacing: 0.5px;">
 								<i class="bi bi-calendar-x me-1 opacity-75"></i>
@@ -67,7 +63,6 @@
 						</div>
 					{% endfor %}
 
-					{# Link "Ver todos" abaixo da lista #}
 					{% if compromissos_data.total > 5 %}
 						<div class="d-flex justify-content-end pt-3">
 							<a href="/agenda" class="text-decoration-none small text-muted hover-underline fw-medium" style="font-size: 12px;">
@@ -76,82 +71,147 @@
 							</a>
 						</div>
 					{% endif %}
-
 				</div>
 			</div>
 		</div>
 
-		{# Seção: Aniversariantes do Dia #}
-		<div class="card border-0 shadow-sm">
-			<div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-				<h5 class="fw-bold mb-0 text-dark">
-					<i class="bi bi-cake2 text-danger me-2"></i>Aniversariantes do Dia
-				</h5>
-				<!-- Acessa o total real retornado pelo método -->
-				<span class="badge bg-danger-subtle text-danger rounded-pill fw-semibold small px-2 py-1">
-					{{ aniversariantes_data.total }}
-					hoje
-				</span>
-			</div>
+		{# Grid com Duas Colunas (Aniversariantes | Lideranças) #}
+		<div
+			class="row g-2">
 
-			<div class="card-body px-4 pb-4">
-				<div
-					class="list-group list-group-flush gap-2">
+			{# Coluna Esquerda: Aniversariantes #}
+			<div class="col-md-6">
+				<div class="card border-0 shadow-sm h-100">
+					<div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+						<h5 class="fw-bold mb-0 text-dark">
+							<i class="bi bi-cake2 text-danger me-2"></i>Aniversariantes do Dia
+						</h5>
+						<span class="badge bg-danger-subtle text-danger rounded-pill fw-semibold small px-2 py-1">
+							{{ aniversariantes_data.total }}
+							hoje
+						</span>
+					</div>
 
-					<!-- Loop agora lê .lista -->
-					{% for niver in aniversariantes_data.lista %}
-						<div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
-							<div class="d-flex align-items-center gap-3">
+					<div class="card-body px-4 pb-4">
+						<div class="list-group list-group-flush gap-2">
+							{% for niver in aniversariantes_data.lista %}
+								<div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
+									<div class="d-flex align-items-center gap-3">
+										{% if niver.tipo_registro == 'pessoa' and niver.foto %}
+											<img src="{{ niver.foto }}" alt="{{ niver.nome }}" class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;">
+										{% else %}
+											{% if niver.tipo_registro == 'usuario' %}
+												<div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Equipe Interna">
+													<i class="bi bi-person-badge-fill fs-5"></i>
+												</div>
+											{% else %}
+												<div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Contato Externo">
+													<i class="bi bi-person-fill fs-5"></i>
+												</div>
+											{% endif %}
+										{% endif %}
 
-								{% if niver.tipo_registro == 'pessoa' and niver.foto %}
-									<img src="{{ niver.foto }}" alt="{{ niver.nome }}" class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;">
-								{% else %}
-									{% if niver.tipo_registro == 'usuario' %}
-										<div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Equipe Interna">
-											<i class="bi bi-person-badge-fill fs-5"></i>
+										<div class="text-truncate">
+											<h6 class="fw-semibold text-dark mb-0 small text-truncate">
+												<a href="{{ niver.link }}" class="text-decoration-none text-dark hover-underline">
+													{{ niver.nome }}
+												</a>
+											</h6>
+											<small class="text-muted">
+												{{ niver.tipo_registro == 'usuario' ? 'Equipe / Gabinete' : niver.orgao }}
+											</small>
 										</div>
-									{% else %}
-										<div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Contato Externo">
-											<i class="bi bi-person-fill fs-5"></i>
-										</div>
-									{% endif %}
-								{% endif %}
-
-								<div class="text-truncate">
-									<h6 class="fw-semibold text-dark mb-0 small text-truncate">
-										<a href="{{ niver.link }}">
-											{{ niver.nome }}
-										</a>
-									</h6>
-									<small class="text-muted">
-										{{ niver.tipo_registro == 'usuario' ? 'Equipe / Gabinete' : niver.orgao }}
+									</div>
+								</div>
+							{% else %}
+								<div class="text-center py-2 border border-dashed rounded bg-light-subtle">
+									<small class="text-muted text-uppercase fw-semibold tracking-wider" style="font-size: 10px; letter-spacing: 0.5px;">
+										<i class="bi bi-calendar-x me-1 opacity-75"></i>
+										Sem aniversariantes hoje
 									</small>
 								</div>
-							</div>
+							{% endfor %}
 
+							{% if aniversariantes_data.total > 5 %}
+								<div class="d-flex justify-content-end pt-3">
+									<a href="/aniversariantes" class="text-decoration-none small text-muted hover-underline fw-medium" style="font-size: 12px;">
+										Ver todos (+{{ aniversariantes_data.total - 5 }})
+										<i class="bi bi-arrow-right small ms-1"></i>
+									</a>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{# Coluna Direita: Ranking de Lideranças #}
+			<div class="col-md-6">
+				<div class="card border-0 shadow-sm h-100">
+					<div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+						<h5 class="fw-bold mb-0 text-dark">
+							<i class="bi bi-trophy text-warning me-2"></i>Top Lideranças
+						</h5>
+						<span class="badge bg-warning-subtle text-warning-emphasis rounded-pill fw-semibold small px-2 py-1">
+							Ranking
+						</span>
+					</div>
+
+					<div class="card-body px-4 pb-4">
+						<div class="list-group list-group-flush gap-3">
+
+							{% for lider in ranking_liderancas %}
+								<div class="list-group-item p-0 border-0 d-flex flex-column gap-1">
+									<div class="d-flex align-items-center justify-content-between">
+										<div
+											class="d-flex align-items-center gap-2 text-truncate">
+											{# Aplica cores estilizadas para o TOP 3 dinamicamente #}
+											{% if loop.index == 1 %}
+												<span class="fw-bold text-warning small me-1" style="width: 15px;">1º</span>
+											{% elseif loop.index == 2 %}
+												<span class="fw-bold text-secondary small me-1" style="width: 15px;">2º</span>
+											{% elseif loop.index == 3 %}
+												<span class="fw-bold text-danger-emphasis small me-1" style="width: 15px;">3º</span>
+											{% else %}
+												<span class="fw-bold text-muted small me-1" style="width: 15px;">{{ loop.index }}º</span>
+											{% endif %}
+
+											<h6 class="fw-bold text-dark mb-0 small text-truncate">
+												<a href="/pessoas/{{ lider.id }}" class="text-decoration-none text-dark hover-underline">
+													{{ lider.nome }}
+												</a>
+											</h6>
+										</div>
+										<div class="text-end flex-shrink-0">
+											<span class="fw-bold text-dark small">{{ lider.total_liderados }}</span>
+											<small class="text-muted ms-1" style="font-size: 11px;">({{ lider.porcentagem }}%)</small>
+										</div>
+									</div>
+									<div class="progress" style="height: 6px; background-color: #f0f2f5;">
+										<div class="progress-bar bg-warning rounded-pill" role="progressbar" style="width: {{ lider.porcentagem }}%;"></div>
+									</div>
+								</div>
+							{% else %}
+								<div class="text-center py-4 border border-dashed rounded bg-light-subtle">
+									<small class="text-muted text-uppercase fw-semibold tracking-wider" style="font-size: 10px; letter-spacing: 0.5px;">
+										<i class="bi bi-bar-chart me-1 opacity-75"></i>
+										Nenhuma liderança cadastrada
+									</small>
+								</div>
+							{% endfor %}
 
 						</div>
-					{% else %}
-						<div class="text-center py-2 border border-dashed rounded bg-light-subtle">
-							<small class="text-muted text-uppercase fw-semibold tracking-wider" style="font-size: 10px; letter-spacing: 0.5px;">
-								<i class="bi bi-calendar-x me-1 opacity-75"></i>
-								Sem aniversariantes hoje
-							</small>
-						</div>
-					{% endfor %}
-
-					<!-- Condicional do Ver mais baseada no total dinâmico -->
-					{% if aniversariantes_data.total > 5 %}
-						<div class="d-flex justify-content-start pt-3">
-							<a href="/aniversariantes" class="text-decoration-none small text-muted hover-underline fw-medium" style="font-size: 12px;">
-								Ver todos (+{{ aniversariantes_data.total - 5 }})
+						<div class="d-flex justify-content-end pt-3">
+							<a href="/pessoas/liderancas" class="text-decoration-none small text-muted hover-underline fw-medium" style="font-size: 12px;">
+								Ver todos
 								<i class="bi bi-arrow-right small ms-1"></i>
 							</a>
 						</div>
-					{% endif %}
+					</div>
 
 				</div>
 			</div>
+
 		</div>
 
 	</div>

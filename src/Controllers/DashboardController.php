@@ -21,7 +21,8 @@ class DashboardController extends BaseController {
     public function index(Request $request, Response $response): Response {
         try {
             $payload['aniversariantes_data'] = $this->listarAniversariantes();
-            $payload['compromissos_data'] = $this->listarCompromissos(); // Adicionado aqui
+            $payload['compromissos_data']    = $this->listarCompromissos();
+            $payload['ranking_liderancas']   = $this->listarRankingLiderancas(); // Adicionado aqui!
 
             $dadosView = array_merge($payload, $this->getFlash());
             return $this->renderView($request, $response, self::VIEW, $dadosView);
@@ -134,5 +135,52 @@ class DashboardController extends BaseController {
             'lista' => $listaAniversariantes,
             'total' => $totalUsuarios + $totalPessoas
         ];
+    }
+
+    private function listarRankingLiderancas() {
+        $gabineteId = $this->usuario['gabinete_id'];
+
+        // 1. Pega o total geral de pessoas do gabinete para calcular a porcentagem
+        $totalPessoasGabinete = Pessoa::where('gabinete_id', $gabineteId)->count();
+
+        if ($totalPessoasGabinete === 0) {
+            return [];
+        }
+
+        // 2. Busca todas as pessoas marcadas como liderança
+        $lideres = Pessoa::where([
+            'gabinete_id' => $gabineteId,
+            'lideranca' => true
+        ])->get();
+
+        $ranking = [];
+
+        // 3. Calcula os liderados de cada líder
+        foreach ($lideres as $lider) {
+            $qtdLiderados = Pessoa::where([
+                'indicado_por_pessoa_id' => $lider->id,
+                'gabinete_id' => $gabineteId
+            ])->count();
+
+            // Seguindo sua lógica original de somar o próprio líder (+ 1)
+            $totalLiderados = $qtdLiderados + 1;
+
+            // Calcula a porcentagem em relação ao gabinete
+            $porcentagem = round(($qtdLiderados / $totalPessoasGabinete) * 100, 1);
+
+            $ranking[] = [
+                'id'              => $lider->id,
+                'nome'            => $lider->nome,
+                'total_liderados' => $totalLiderados,
+                'porcentagem'     => $porcentagem
+            ];
+        }
+
+        // 4. Transforma em Coleção para ordenar por quantidade de liderados e pega apenas os 5 primeiros
+        return collect($ranking)
+            ->sortByDesc('total_liderados')
+            ->take(6)
+            ->values()
+            ->all();
     }
 }
