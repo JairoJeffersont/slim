@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Compromissos - {{ nome_gabinete }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 14mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12px;
+            line-height: 1.35;
+            color: #1f2937;
+            background: #f3f4f6;
+        }
+
+        .no-print {
+            max-width: 900px;
+            margin: 16px auto 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .no-print button,
+        .no-print a {
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #fff;
+            padding: 8px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            color: #111827;
+            cursor: pointer;
+        }
+
+        .document {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 10px auto 24px;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            padding: 10mm;
+        }
+
+        .header {
+            border-bottom: 2px solid #111827;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .header h2 {
+            margin: 2px 0 0;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .meta {
+            margin-top: 6px;
+            font-size: 11px;
+            color: #374151;
+        }
+
+        .filters {
+            border: 1px solid #9ca3af;
+            padding: 8px;
+            margin-bottom: 10px;
+            background: #f9fafb;
+        }
+
+        .filters-title {
+            margin: 0 0 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 4px 10px;
+            font-size: 11px;
+        }
+
+        .table-title {
+            margin: 0 0 6px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: 1px solid #6b7280;
+            padding: 6px;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        th {
+            background: #e5e7eb;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.2px;
+            text-align: left;
+        }
+
+        td {
+            font-size: 11px;
+        }
+
+        .text-muted {
+            color: #6b7280;
+        }
+
+        .footer {
+            margin-top: 10px;
+            padding-top: 6px;
+            border-top: 1px solid #9ca3af;
+            font-size: 10px;
+            color: #4b5563;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .document {
+                margin: 0;
+                border: none;
+                width: auto;
+                min-height: auto;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <button type="button" onclick="window.print()">Imprimir</button>
+        <a href="/agenda">Voltar</a>
+    </div>
+
+    <div class="document">
+        <div class="header">
+            <h1>{{ app_name|default('Sistema de Gestão') }}</h1>
+            <h2>{{ nome_gabinete }}</h2>
+            <div class="meta">
+                Relatório oficial de compromissos
+                | Emitido em {{ "now"|date("d/m/Y H:i") }}
+            </div>
+        </div>
+
+        <div class="filters">
+            <p class="filters-title">Filtros Aplicados</p>
+            <div class="filters-grid">
+                <div><strong>Período:</strong> {{ filtros.periodo == 'mes' ? 'Mês' : (filtros.periodo == 'todos' ? 'Todos' : 'Dia') }}</div>
+                <div><strong>Data base:</strong> {{ filtros.data ? filtros.data|date('d/m/Y') : 'Não informada' }}</div>
+                <div><strong>Tipo:</strong> {{ filtros.tipo|default('Todos') }}</div>
+                <div><strong>Situação:</strong> {{ filtros.situacao|default('Todas') }}</div>
+                <div><strong>Estado (pessoa):</strong> {{ filtros.estado|default('Todos') }}</div>
+                <div><strong>Município (pessoa):</strong> {{ filtros.cidade|default('Todos') }}</div>
+                <div style="grid-column: 1 / -1;"><strong>Busca:</strong> {{ filtros.busca|default('Sem busca textual') }}</div>
+            </div>
+        </div>
+
+        <p class="table-title">Tabela de Compromissos</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 18%;">Data e Hora</th>
+                    <th style="width: 24%;">Compromisso</th>
+                    <th style="width: 18%;">Tipo / Situação</th>
+                    <th style="width: 20%;">Pessoa Vinculada</th>
+                    <th style="width: 20%;">Local</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in agendas %}
+                    <tr>
+                        <td>
+                            {{ item.data_hora|date('d/m/Y H:i') }}
+                            {% if item.data_hora_fim %}
+                                <div class="text-muted">até {{ item.data_hora_fim|date('d/m/Y H:i') }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ item.titulo }}</strong>
+                            {% if item.descricao %}
+                                <div class="text-muted">{{ item.descricao }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ item.tipoAgenda.nome|default('Não informado') }}
+                            <div class="text-muted">{{ item.situacaoAgenda.nome|default('Não informado') }}</div>
+                        </td>
+                        <td>{{ item.pessoa.nome|default('Sem pessoa vinculada') }}</td>
+                        <td>{{ item.local|default('Não informado') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">Nenhum compromisso encontrado para os filtros selecionados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <span>{{ app_name|default('Sistema') }}</span>
+            <span>Total de registros: {{ agendas|length }}</span>
+        </div>
+    </div>
+</body>
+</html>

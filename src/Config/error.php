@@ -1,6 +1,8 @@
 <?php
 
 use Slim\Exception\HttpNotFoundException;
+use App\Middleware\SessionManager;
+use Slim\Psr7\Response;
 
 return function ($app, $twig) {
 
@@ -8,7 +10,15 @@ return function ($app, $twig) {
 
     $errorHandler = function ($request, $exception, $displayErrorDetails, $logErrors, $logErrorDetails) use ($twig) {
 
-        $response = new \Slim\Psr7\Response();
+        $session = new SessionManager();
+
+        if (!$session->check()) {
+            return (new Response())
+                ->withHeader('Location', '/login')
+                ->withStatus(302);
+        }
+
+        $response = new Response();
 
         if ($exception instanceof HttpNotFoundException) {
             return $twig->render($response, 'errors/404.twig', [

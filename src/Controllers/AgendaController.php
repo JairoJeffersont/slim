@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Agenda;
+use App\Models\Gabinete;
 use App\Models\Pessoa;
 use App\Models\SituacaoAgenda;
 use App\Models\TipoAgenda;
@@ -12,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AgendaController extends BaseController {
     private const VIEW_AGENDA = 'pages/agenda/agenda.twig';
+    private const VIEW_AGENDA_IMPRESSAO = 'pages/agenda/agenda-impressao.twig';
     private const VIEW_ROUTE = '/agenda';
 
     private array $usuario;
@@ -133,6 +135,11 @@ class AgendaController extends BaseController {
         return str_replace('T', ' ', $valor) . ':00';
     }
 
+    private function obterNomeGabinete(): string {
+        $gabinete = Gabinete::find($this->usuario['gabinete_id']);
+        return $gabinete?->nome ?? 'Gabinete';
+    }
+
     public function indexAgenda(Request $request, Response $response): Response {
         try {
             $query = $request->getQueryParams();
@@ -226,6 +233,53 @@ class AgendaController extends BaseController {
 
             $this->flash('success', 'Compromisso cadastrado com sucesso');
             return $this->redirect($response, self::VIEW_ROUTE);
+        } catch (Exception $e) {
+            $this->flashError($e);
+            return $this->redirect($response, self::VIEW_ROUTE);
+        }
+    }
+
+    public function imprimirAgenda(Request $request, Response $response): Response {
+        try {
+            $query = $request->getQueryParams();
+            $periodoParam = trim((string) ($query['periodo'] ?? 'dia'));
+            $periodo = in_array($periodoParam, ['dia', 'mes', 'todos'], true) ? $periodoParam : 'dia';
+
+            if (!array_key_exists('data', $query)) {
+                $data = date('Y-m-d');
+            } elseif (trim((string) $query['data']) === '') {
+                $data = date('Y-m-d');
+            } else {
+                $data = trim((string) $query['data']);
+            }
+
+            $tipo = isset($query['tipo']) && trim($query['tipo']) !== '' ? (int) $query['tipo'] : null;
+            $situacao = isset($query['situacao']) && trim($query['situacao']) !== '' ? (int) $query['situacao'] : null;
+            $busca = isset($query['busca']) && trim($query['busca']) !== '' ? trim($query['busca']) : null;
+
+            $filtroTipo = $tipo ? TipoAgenda::where([
+                'id' => $tipo,
+                'gabinete_id' => $this->usuario['gabinete_id']
+            ])->first() : null;
+
+            $filtroSituacao = $situacao ? SituacaoAgenda::where([
+                'id' => $situacao,
+                'gabinete_id' => $this->usuario['gabinete_id']
+            ])->first() : null;
+
+            $payload['agendas'] = $this->listarAgendas($tipo, $situacao, $busca, $data, $periodo);
+            $payload['nome_gabinete'] = $this->obterNomeGabinete();
+            $payload['filtros'] = [
+                'periodo' => $periodo,
+                'data' => $data,
+                'tipo' => $filtroTipo?->nome,
+                'situacao' => $filtroSituacao?->nome,
+                'busca' => $busca,
+                'estado' => $query['pessoa_estado'] ?? null,
+                'cidade' => $query['pessoa_cidade'] ?? null
+            ];
+
+            return $this->renderView($request, $response, self::VIEW_AGENDA_IMPRESSAO, $payload);
         } catch (Exception $e) {
             $this->flashError($e);
             return $this->redirect($response, self::VIEW_ROUTE);

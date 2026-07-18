@@ -2,6 +2,7 @@
 
 use App\Controllers\AniversarianteController;
 use App\Controllers\AgendaController;
+use App\Controllers\AgendaExternaController;
 use App\Controllers\CadastroController;
 use App\Controllers\CelulaController;
 use App\Controllers\DashboardController;
@@ -44,9 +45,14 @@ return function (App $app) {
     $app->get('/convite', [CelulaController::class, 'cadastroConvidado']);
     $app->post('/convite/salvar', [CelulaController::class, 'salvarConvidado']);
 
+    $app->get('/agendar/{token}', [AgendaExternaController::class, 'formulario']);
+    $app->post('/agendar/{token}', [AgendaExternaController::class, 'salvar']);
+
     $app->group('', function ($group) {
 
         $group->get('/dashboard', [DashboardController::class, 'index']);
+        $group->get('/', [DashboardController::class, 'index']);
+
 
         $group->get('/perfil', [PerfilController::class, 'index']);
         $group->post('/perfil', [PerfilController::class, 'updateUser']);
@@ -115,6 +121,7 @@ return function (App $app) {
 
         $group->get('/agenda', ['App\\Controllers\\AgendaController', 'indexAgenda']);
         $group->post('/agenda', ['App\\Controllers\\AgendaController', 'newAgenda']);
+        $group->get('/agenda/imprimir', ['App\\Controllers\\AgendaController', 'imprimirAgenda']);
         $group->get('/agenda/{id:[0-9]+}', [FichaAgendaController::class, 'indexAgenda']);
         $group->post('/agenda/{id:[0-9]+}', [FichaAgendaController::class, 'updateAgenda']);
         $group->get('/agenda/{id:[0-9]+}/apagar', [FichaAgendaController::class, 'apagarAgenda']);

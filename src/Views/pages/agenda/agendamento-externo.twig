@@ -1,0 +1,88 @@
+{% extends "layouts/guest.twig" %}
+
+{% block content %}
+	<div class="container-fluid d-flex justify-content-center align-items-center py-4" style="min-height: 100dvh;">
+		<div class="card border-0 bg-transparent" style="width: 100%; max-width: 560px;">
+			<div class="card-body">
+				<div class="text-center mb-3">
+					<img src="/img/logo_white.png" alt="Logo" class="img-fluid" style="max-width: 100px;">
+				</div>
+
+				<h2 class="text-center mb-2 text-white fw-light">{{ app_name }}</h2>
+				{% if gabinete %}
+					<p class="card-text text-center text-white mb-4">
+						Solicitação de agenda para
+						<strong>{{ gabinete.nome }}</strong>
+					</p>
+				{% else %}
+					<p class="card-text text-center text-white mb-4">{{ app_slogan }}</p>
+				{% endif %}
+
+				{# Mensagens de status #}
+				{% if status in ['success', 'info'] %}
+					<div class="alert alert-{{ status }} rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">{{ message }}</div>
+				{% endif %}
+				{% if status == 'error' %}
+					<div class="alert alert-danger rounded-pill py-2 px-4 border-0 text-center small fw-semibold mb-2">{{ message }}
+						{{ error_id }}</div>
+				{% endif %}
+
+				{% if gabinete %}
+					<form class="row g-2 custom-form" method="POST" action="/agendar/{{ token }}">
+
+						<div class="col-12 mt-3 text-white small px-2">Seus dados:</div>
+
+						{# Bloco 1: Identificação #}
+						<div class="col-12"><input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="nome" placeholder="Seu nome completo" required></div>
+						<div class="col-md-6"><input type="email" class="form-control rounded-pill py-2 px-4 border-0" name="email" placeholder="E-mail" required></div>
+						<div class="col-md-6"><input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="telefone" data-mask="(00) 00000-0000" placeholder="Telefone" required></div>
+						<div class="col-md-6"><input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="aniversario" data-mask="00/00" placeholder="Aniversário (dd/mm)" required></div>
+
+						{# Bloco 2: Localização #}
+						<div class="col-md-6">
+							<select class="form-select rounded-pill py-2 px-4 border-0" name="estado" id="uf" required>
+								<option disabled selected value="">Estado</option>
+							</select>
+						</div>
+						<div class="col-12">
+							<select class="form-select rounded-pill py-2 px-4 border-0" name="cidade" id="municipio" required>
+								<option disabled selected value="">Selecione o município</option>
+							</select>
+						</div>
+
+						{# Bloco 3: Detalhes da Solicitação #}
+						<div class="col-12 mt-3 text-white small px-2">Detalhes do agendamento:</div>
+						<div class="col-12">
+							<input type="text" class="form-control rounded-pill py-2 px-4 border-0" name="titulo" placeholder="Título (ex: Reunião sobre Projetos Sociais)" required>
+						</div>
+
+						<div class="col-12">
+							<textarea class="form-control rounded-4 py-2 px-4 border-0" name="pauta" rows="3" placeholder="Pauta / Descrição (ex: Apresentação da proposta de melhorias para o bairro...)" required></textarea>
+						</div>
+						<div class="col-12"><input type="date" class="form-control rounded-pill py-2 px-4 border-0" name="data" required></div>
+
+						{# Ações #}
+						<div class="col-12 d-flex gap-2 mt-3">
+							<button type="submit" class="btn btn-success rounded-pill py-2 w-100 fw-bold">Enviar pedido de agenda</button>
+
+						</div>
+						{# Aviso LGPD #}
+						<div class="col-12 mt-3 text-center">
+							<p class="text-white-50 small mb-0">
+								<i class="bi bi-shield-check me-1"></i>
+								Seus dados estão seguros e protegidos pela LGPD.
+							</p>
+						</div>
+					</form>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$ (document).ready (function () {
+popularEstadosBrasil ('#uf');
+popularMunicipiosBrasil ('#uf', '#municipio');
+});
+	</script>
+{% endblock %}
