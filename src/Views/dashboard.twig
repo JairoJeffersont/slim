@@ -1,105 +1,158 @@
 {% extends "layouts/app.twig" %}
 
 {% block content %}
-    {# Alertas do Sistema #}
-    {% if status in ['success', 'info'] %}
-        <div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-3" data-time="5">
-            {{ message }}
-        </div>
-    {% endif %}
+	{# Alertas do Sistema #}
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-3" data-time="5">
+			{{ message }}
+		</div>
+	{% endif %}
 
-    {% if status == 'error' %}
-        <div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-3">
-            {{ message }}
-            {{ error_id }}
-        </div>
-    {% endif %}
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-3">
+			{{ message }}
+			{{ error_id }}
+		</div>
+	{% endif %}
 
-    {# Layout Empilhado (Largura Total) #}
-    <div class="d-flex flex-column gap-2">
+	{# Layout Empilhado (Largura Total) #}
+	<div
+		class="d-flex flex-column gap-2">
 
-        {# Seção: Compromissos do Dia #}
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0 text-dark">
-                    <i class="bi bi-calendar-check text-primary me-2"></i>Compromissos do Dia
-                </h5>
-                <span class="badge bg-primary-subtle text-primary rounded-pill fw-semibold small px-2 py-1">2 hoje</span>
-            </div>
-            <div class="card-body px-4 pb-4">
-                <div class="list-group list-group-flush gap-2">
+		{# Seção: Compromissos do Dia #}
+		<div class="card border-0 shadow-sm">
+			<div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+				<h5 class="fw-bold mb-0 text-dark">
+					<i class="bi bi-calendar-check text-primary me-2"></i>Compromissos do Dia
+				</h5>
+				<!-- Acessa o total real retornado pelo método -->
+				<span class="badge bg-primary-subtle text-primary rounded-pill fw-semibold small px-2 py-1">
+					{{ compromissos_data.total }}
+					{{ compromissos_data.total == 1 ? 'hoje' : 'hoje' }}
+				</span>
+			</div>
 
-                    {# Exemplo de Compromisso 1 #}
-                    <div class="list-group-item bg-light rounded p-3 border-0 d-flex align-items-start gap-3">
-                        <span class="badge bg-primary py-2 px-2 fw-bold text-center" style="width: 55px;">
-                            09:00
-                        </span>
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 small">Reunião de Alinhamento</h6>
-                            <p class="text-muted mb-0 small"><i class="bi bi-geo-alt me-1"></i>Gabinete Principal</p>
-                        </div>
-                    </div>
+			<div class="card-body px-4 pb-3">
+				<div class="list-group list-group-flush gap-2">
 
-                    {# Exemplo de Compromisso 2 #}
-                    <div class="list-group-item bg-light rounded p-3 border-0 d-flex align-items-start gap-3">
-                        <span class="badge bg-secondary py-2 px-2 fw-bold text-center" style="width: 55px;">
-                            14:30
-                        </span>
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 small">Sessão Plenária</h6>
-                            <p class="text-muted mb-0 small"><i class="bi bi-laptop me-1"></i>Plenário Virtual</p>
-                        </div>
-                    </div>
+					<!-- Loop lendo a lista limitada a 5 compromissos -->
+					<!-- Loop lendo a lista limitada a 5 compromissos -->
+						{% for compromisso in compromissos_data.lista %}
+							<div
+							class="list-group-item bg-light rounded p-0 border-0 d-flex align-items-stretch gap-3 position-relative overflow-hidden mb-1"> <!-- Horário do Compromisso (Ocupando 100% da altura) -->
+							<span class="badge bg-primary fw-bold text-center flex-shrink-0 d-flex align-items-center justify-content-center align-self-stretch rounded-start rounded-0" style="width: 60px; font-size: 13px;">
+								{{ compromisso.horario }}
+							</span>
 
-                </div>
-            </div>
-        </div>
+							<!-- Conteúdo com padding apenas para afastar das bordas -->
+							<div class="text-truncate py-2 pe-3">
+								<h6 class="fw-bold text-dark mb-1 small text-truncate">
+									<a href="{{ compromisso.link }}" class="text-decoration-none text-dark hover-underline stretched-link">
+										{{ compromisso.titulo }}
+									</a>
+								</h6>
+								<p class="text-muted mb-0 small text-truncate">
+									<i class="bi bi-geo-alt me-1 opacity-75"></i>
+									{{ compromisso.local }}
+								</p>
+							</div>
+						</div>
+					{% else %}
+						{# Estado Vazio Minimalista se não houver agenda #}
+						<div class="text-center py-2 border border-dashed rounded bg-light-subtle">
+							<small class="text-muted text-uppercase fw-semibold tracking-wider" style="font-size: 10px; letter-spacing: 0.5px;">
+								<i class="bi bi-calendar-x me-1 opacity-75"></i>
+								Sem compromissos hoje
+							</small>
+						</div>
+					{% endfor %}
 
-        {# Seção: Aniversariantes do Dia #}
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 pt-4 pb-2 px-4">
-                <h5 class="fw-bold mb-0 text-dark">
-                    <i class="bi bi-cake2 text-danger me-2"></i>Aniversariantes do Dia
-                </h5>
-            </div>
-            <div class="card-body px-4 pb-4">
-                <div class="list-group list-group-flush gap-2">
+					{# Link "Ver todos" abaixo da lista #}
+					{% if compromissos_data.total > 5 %}
+						<div class="d-flex justify-content-end pt-3">
+							<a href="/agenda" class="text-decoration-none small text-muted hover-underline fw-medium" style="font-size: 12px;">
+								Ver todos (+{{ compromissos_data.total - 5 }})
+								<i class="bi bi-arrow-right small ms-1"></i>
+							</a>
+						</div>
+					{% endif %}
 
-                    {# Exemplo de Aniversariante 1 #}
-                    <div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <i class="bi bi-person-fill fs-5"></i>
-                            </div>
-                            <div>
-                                <h6 class="fw-semibold text-dark mb-0 small">Mariana Silva</h6>
-                                <small class="text-muted">Assessoria de Imprensa</small>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-outline-success border-0 rounded-circle" title="Enviar Parabéns">
-                            <i class="bi bi-whatsapp"></i>
-                        </button>
-                    </div>
+				</div>
+			</div>
+		</div>
 
-                    {# Exemplo de Aniversariante 2 #}
-                    <div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <i class="bi bi-person-fill fs-5"></i>
-                            </div>
-                            <div>
-                                <h6 class="fw-semibold text-dark mb-0 small">Carlos Eduardo</h6>
-                                <small class="text-muted">Chefe de Gabinete</small>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-outline-success border-0 rounded-circle" title="Enviar Parabéns">
-                            <i class="bi bi-whatsapp"></i>
-                        </button>
-                    </div>
+		{# Seção: Aniversariantes do Dia #}
+		<div class="card border-0 shadow-sm">
+			<div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+				<h5 class="fw-bold mb-0 text-dark">
+					<i class="bi bi-cake2 text-danger me-2"></i>Aniversariantes do Dia
+				</h5>
+				<!-- Acessa o total real retornado pelo método -->
+				<span class="badge bg-danger-subtle text-danger rounded-pill fw-semibold small px-2 py-1">
+					{{ aniversariantes_data.total }}
+					hoje
+				</span>
+			</div>
 
-                </div>
-            </div>
-        </div>
+			<div class="card-body px-4 pb-4">
+				<div
+					class="list-group list-group-flush gap-2">
 
-    </div>
+					<!-- Loop agora lê .lista -->
+					{% for niver in aniversariantes_data.lista %}
+						<div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
+							<div class="d-flex align-items-center gap-3">
+
+								{% if niver.tipo_registro == 'pessoa' and niver.foto %}
+									<img src="{{ niver.foto }}" alt="{{ niver.nome }}" class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;">
+								{% else %}
+									{% if niver.tipo_registro == 'usuario' %}
+										<div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Equipe Interna">
+											<i class="bi bi-person-badge-fill fs-5"></i>
+										</div>
+									{% else %}
+										<div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Contato Externo">
+											<i class="bi bi-person-fill fs-5"></i>
+										</div>
+									{% endif %}
+								{% endif %}
+
+								<div class="text-truncate">
+									<h6 class="fw-semibold text-dark mb-0 small text-truncate">
+										<a href="{{ niver.link }}">
+											{{ niver.nome }}
+										</a>
+									</h6>
+									<small class="text-muted">
+										{{ niver.tipo_registro == 'usuario' ? 'Equipe / Gabinete' : niver.orgao }}
+									</small>
+								</div>
+							</div>
+
+
+						</div>
+					{% else %}
+						<div class="text-center py-2 border border-dashed rounded bg-light-subtle">
+							<small class="text-muted text-uppercase fw-semibold tracking-wider" style="font-size: 10px; letter-spacing: 0.5px;">
+								<i class="bi bi-calendar-x me-1 opacity-75"></i>
+								Sem aniversariantes hoje
+							</small>
+						</div>
+					{% endfor %}
+
+					<!-- Condicional do Ver mais baseada no total dinâmico -->
+					{% if aniversariantes_data.total > 5 %}
+						<div class="d-flex justify-content-start pt-3">
+							<a href="/aniversariantes" class="text-decoration-none small text-muted hover-underline fw-medium" style="font-size: 12px;">
+								Ver todos (+{{ aniversariantes_data.total - 5 }})
+								<i class="bi bi-arrow-right small ms-1"></i>
+							</a>
+						</div>
+					{% endif %}
+
+				</div>
+			</div>
+		</div>
+
+	</div>
 {% endblock %}

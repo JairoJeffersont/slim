@@ -40,7 +40,7 @@ class PessoaController extends BaseController {
             'itens' => (int)($params['itens'] ?? 10),
             'pagina' => (int)($params['pagina'] ?? 1),
             'busca' => $params['busca'] ?? null,
-            'estado' => isset($params['estado']) ? ($params['estado'] ?: null) : $this->usuario['gabinete_estado']
+            'estado' => $params['estado'] ?? null
         ];
     }
 

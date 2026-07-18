@@ -67,7 +67,17 @@ class AgendaExternaController extends BaseController {
         );
     }
 
-    private function buscarSituacaoPadrao(int $gabineteId): ?SituacaoAgenda {
+    private function buscarSituacaoPadrao(int $gabineteId, int $usuario): ?SituacaoAgenda {
+
+
+        SituacaoAgenda::firstOrCreate([
+            'nome' => 'Aguardando confirmação',
+            'gabinete_id' => $gabineteId,
+            'usuario_id' => $usuario
+
+        ]);
+
+
         return SituacaoAgenda::where('gabinete_id', $gabineteId)
             ->orderBy('id', 'asc')
             ->first();
@@ -156,7 +166,7 @@ class AgendaExternaController extends BaseController {
 
             $usuarioResponsavelId = $this->buscarUsuarioResponsavelId($gabinete->id);
             $tipoFixo = $this->buscarTipoFixo($gabinete->id, $usuarioResponsavelId);
-            $situacaoPadrao = $this->buscarSituacaoPadrao($gabinete->id);
+            $situacaoPadrao = $this->buscarSituacaoPadrao($gabinete->id, $usuarioResponsavelId);
 
             if (!$situacaoPadrao) {
                 $this->flash('info', 'Este gabinete ainda não configurou situações de agenda');

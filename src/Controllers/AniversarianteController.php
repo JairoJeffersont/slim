@@ -64,7 +64,7 @@ class AniversarianteController extends BaseController {
             foreach ($pessoas as $p) {
                 $listaAniversariantes[] = [
                     'nome'          => $p->nome,
-                    'telefone'      => $p->celular ?? $p->telefone_fixo,
+                    'telefone'      => $p->telefone,
                     'aniversario'   => $p->aniversario,
                     'tipo_registro' => 'pessoa', // Identifica que é um contato externo
                     'link'          => "/pessoas/{$p->id}" // Link para a ficha da pessoa
