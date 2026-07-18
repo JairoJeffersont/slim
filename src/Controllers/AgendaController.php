@@ -198,7 +198,7 @@ class AgendaController extends BaseController {
                 'pessoa_id' => $pessoa?->id,
                 'titulo' => trim($dados['titulo']),
                 'descricao' => trim($dados['descricao'] ?? '') ?: null,
-                'local' => trim($dados['local'] ?? '') ?: null,
+                'local' => trim($dados['local'] ?? '') ?: 'Não informado',
                 'data_hora' => $dataHora,
                 'data_hora_fim' => $dataHoraFim
             ]);
