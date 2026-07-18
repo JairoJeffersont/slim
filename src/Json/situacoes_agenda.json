@@ -1,0 +1,7 @@
+[
+    { "nome": "Confirmada" },
+    { "nome": "Cancelada" },
+    { "nome": "Finalizada" },
+    { "nome": "Aguardando confirmação" }
+
+]

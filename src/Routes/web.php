@@ -16,6 +16,7 @@ use App\Controllers\PasswordController;
 use App\Controllers\PerfilController;
 use App\Controllers\PessoaController;
 use App\Controllers\ProfissaoController;
+use App\Controllers\SituacaoAgendaController;
 use App\Controllers\TipoDocumentoController;
 use App\Controllers\UsuarioController;
 use App\Middleware\AuthMiddleware;
@@ -101,6 +102,16 @@ return function (App $app) {
         $group->get('/documentos/{id:[0-9]+}', [FichaDocumentoController::class, 'indexDocumento']);
         $group->post('/documentos/{id:[0-9]+}', [FichaDocumentoController::class, 'updateDocumentos']);
         $group->get('/documentos/{id:[0-9]+}/apagar', [FichaDocumentoController::class, 'apagarDocumento']);
+
+        $group->get('/agenda/situacoes', [SituacaoAgendaController::class, 'indexSituacoesAgenda']);
+        $group->post('/agenda/situacoes', [SituacaoAgendaController::class, 'newSituacao']);
+        $group->get('/agenda/situacoes/{id:[0-9]+}', [SituacaoAgendaController::class, 'buscarSituacaoView']);
+        $group->post('/agenda/situacoes/{id:[0-9]+}/editar', [SituacaoAgendaController::class, 'updateSituacao']);
+        $group->get('/agenda/situacoes/{id:[0-9]+}/apagar', [SituacaoAgendaController::class, 'apagarSituacao']);
+        $group->get('/agenda/situacoes/inserir/padrao', [SituacaoAgendaController::class, 'inserirSituacoesPadrao']);
+
+
+
 
 
 

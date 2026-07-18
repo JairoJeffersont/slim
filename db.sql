@@ -181,3 +181,50 @@ CREATE TABLE
         FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
         FOREIGN KEY (tipo_documento_id) REFERENCES tipo_documento (id) ON DELETE RESTRICT
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    situacao_agenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        gabinete_id INT NOT NULL,
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT uc_situacao_agenda_nome_gabinete UNIQUE (nome, gabinete_id)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    tipo_agenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        gabinete_id INT NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT uc_tipo_agenda_nome_gabinete UNIQUE (nome, gabinete_id),
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    agenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        gabinete_id INT NOT NULL,
+        tipo_agenda_id INT NOT NULL,
+        situacao_agenda_id INT NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        titulo VARCHAR(255) NOT NULL,
+        descricao TEXT DEFAULT NULL,
+        local VARCHAR(255) DEFAULT NULL,
+        data_hora DATETIME NOT NULL,
+        data_hora_fim DATETIME DEFAULT NULL,
+        notas TEXT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (tipo_agenda_id) REFERENCES tipo_agenda (id) ON DELETE RESTRICT,
+        FOREIGN KEY (situacao_agenda_id) REFERENCES situacao_agenda (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
