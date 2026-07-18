@@ -51,6 +51,11 @@ class Pessoa extends Model {
     public function agendas(): HasMany {
         return $this->hasMany('App\\Models\\Agenda', 'pessoa_id');
     }
+    public function indicador(): BelongsTo {
+        return $this->belongsTo(Pessoa::class, 'indicado_por_pessoa_id');
+    }
 
-
+    public function liderados(): HasMany {
+        return $this->hasMany(Pessoa::class, 'indicado_por_pessoa_id');
+    }
 }

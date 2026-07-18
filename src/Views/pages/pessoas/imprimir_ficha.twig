@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Ficha Cadastral -
+			{{ pessoa.nome }}</title>
+		<style>
+			@page {
+				size: A4 portrait;
+				margin: 14mm;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				font-family: "Times New Roman", Times, serif;
+				font-size: 12px;
+				line-height: 1.35;
+				color: #1f2937;
+				background: #f3f4f6;
+			}
+
+			.no-print {
+				max-width: 900px;
+				margin: 16px auto 0;
+				display: flex;
+				justify-content: center;
+				gap: 10px;
+			}
+
+			.no-print button,
+			.no-print a {
+				border: 1px solid #d1d5db;
+				border-radius: 4px;
+				background: #fff;
+				padding: 8px 12px;
+				font-size: 12px;
+				text-decoration: none;
+				color: #111827;
+				cursor: pointer;
+			}
+
+			.document {
+				width: 210mm;
+				min-height: 297mm;
+				margin: 10px auto 24px;
+				background: #fff;
+				border: 1px solid #d1d5db;
+				padding: 10mm;
+			}
+
+			.header {
+				border-bottom: 2px solid #111827;
+				padding-bottom: 8px;
+				margin-bottom: 15px;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-end;
+			}
+
+			.header-text h1 {
+				margin: 0;
+				font-size: 18px;
+				letter-spacing: 0.4px;
+				text-transform: uppercase;
+			}
+
+			.header-text h2 {
+				margin: 2px 0 0;
+				font-size: 13px;
+				font-weight: normal;
+			}
+
+			.meta {
+				margin-top: 6px;
+				font-size: 11px;
+				color: #374151;
+			}
+
+			.photo-container {
+				width: 28mm;
+				height: 35mm;
+				border: 1px solid #9ca3af;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: #f9fafb;
+				overflow: hidden;
+			}
+
+			.photo-container img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.photo-placeholder {
+				font-size: 9px;
+				color: #9ca3af;
+				text-align: center;
+				text-transform: uppercase;
+			}
+
+			.section-title {
+				margin: 12px 0 6px;
+				font-size: 12px;
+				font-weight: bold;
+				text-transform: uppercase;
+				border-bottom: 1px solid #6b7280;
+				padding-bottom: 2px;
+				letter-spacing: 0.3px;
+			}
+
+			.grid-info {
+				display: grid;
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				gap: 6px 12px;
+				margin-bottom: 10px;
+			}
+
+			.grid-info > div {
+				font-size: 11px;
+				word-wrap: break-word;
+			}
+
+			.grid-info strong {
+				display: block;
+				font-size: 10px;
+				text-transform: uppercase;
+				color: #4b5563;
+				margin-bottom: 1px;
+			}
+
+			.col-span-2 {
+				grid-column: span 2 / span 2;
+			}
+			.col-span-3 {
+				grid-column: span 3 / span 3;
+			}
+			.col-span-4 {
+				grid-column: span 4 / span 4;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				table-layout: fixed;
+				margin-top: 5px;
+			}
+
+			th,
+			td {
+				border: 1px solid #6b7280;
+				padding: 5px 6px;
+				vertical-align: top;
+				word-wrap: break-word;
+			}
+
+			th {
+				background: #e5e7eb;
+				text-transform: uppercase;
+				font-size: 10px;
+				letter-spacing: 0.2px;
+				text-align: left;
+			}
+
+			td {
+				font-size: 11px;
+			}
+
+			.text-muted {
+				color: #6b7280;
+			}
+
+			.badge-lideranca {
+				display: inline-block;
+				background: #111827;
+				color: #fff;
+				font-size: 9px;
+				font-weight: bold;
+				padding: 1px 4px;
+				text-transform: uppercase;
+				margin-top: 2px;
+			}
+
+			.footer {
+				margin-top: 20px;
+				padding-top: 6px;
+				border-top: 1px solid #9ca3af;
+				font-size: 10px;
+				color: #4b5563;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			@media print {
+				body {
+					background: #fff;
+				}
+
+				.no-print {
+					display: none;
+				}
+
+				.document {
+					margin: 0;
+					border: none;
+					width: auto;
+					min-height: auto;
+					padding: 0;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="no-print">
+			<button type="button" onclick="window.print()">Imprimir Ficha</button>
+			<a href="/pessoas/{{ pessoa.id }}">Voltar para o Perfil</a>
+		</div>
+
+		<div class="document">
+			<div class="header">
+				<div class="header-text">
+					<h1>{{  app_name  }} | {{  app_slogan  }}</h1>
+					<h2>Ficha Cadastral de Cidadão / Liderança</h2>
+					<div class="meta">
+						Gabinete:
+						{{ nome_gabinete }}
+						| Emitido em
+						{{ "now"|date("d/m/Y H:i") }}
+					</div>
+				</div>
+
+				<div class="photo-container">
+					{% if pessoa.foto %}
+						<img src="{{ pessoa.foto }}" alt="Foto de {{ pessoa.nome }}">
+					{% else %}
+						<div class="photo-placeholder">Sem Foto<br>Oficial</div>
+					{% endif %}
+				</div>
+			</div>
+
+			{# Seção 1: Dados Pessoais #}
+			<p class="section-title">1. Dados Pessoais</p>
+			<div class="grid-info">
+				<div class="col-span-2">
+					<strong>Nome Completo:</strong>
+					{{ pessoa.nome }}</div>
+				<div>
+					<strong>Tratamento / Tipo:</strong>
+					{% if pessoa.lideranca %}
+						<span class="badge-lideranca">Liderança</span>
+					{% else %}
+						Regular / Eleitor
+					{% endif %}
+				</div>
+				<div>
+					<strong>Data de Nascimento:</strong>
+					{{ pessoa.aniversario ? pessoa.aniversario|date('d/m/Y') : 'Não informado' }}</div>
+
+				<div class="col-span-2">
+					<strong>Profissão:</strong>
+					{{ pessoa.profissao.nome|default('Não informado') }}</div>
+				<div class="col-span-2">
+					<strong>Órgão / Vínculo Institucional:</strong>
+					{{ pessoa.orgao.nome|default('Não informado') }}</div>
+			</div>
+
+			{# Seção 2: Informações de Contato e Localização #}
+			<p class="section-title">2. Contato e Endereço</p>
+			<div class="grid-info">
+				<div>
+					<strong>Telefone/WhatsApp:</strong>
+					{{ pessoa.telefone|default('Não informado') }}</div>
+				<div class="col-span-3">
+					<strong>E-mail:</strong>
+					{{ pessoa.email|default('Não informado') }}</div>
+
+				<div class="col-span-2">
+					<strong>Logradouro (Rua/Av):</strong>
+					{{ pessoa.endereco|default('Não informado') }}</div>
+				<div>
+					<strong>Bairro:</strong>
+					{{ pessoa.bairro|default('Não informado') }}</div>
+				<div>
+					<strong>Município / UF:</strong>
+					{{ pessoa.cidade|default('Não informado') }}{{ pessoa.estado ? ' - ' ~ pessoa.estado : '' }}</div>
+			</div>
+
+			{# Seção 3: Articulação Política / Vínculos #}
+			<p class="section-title">3. Vínculos e Articulação</p>
+			<div class="grid-info">
+				<div class="col-span-2">
+					<strong>Indicado por (Liderança de Origem):</strong>
+					{{ pessoa.indicador.nome|default('Nenhuma (Indicação Direta)') }}</div>
+				<div class="col-span-2">
+					<strong>Cadastrado por:</strong>
+					{{ pessoa.usuario.nome|default('Sistema') }}</div>
+			</div>
+
+			{# Seção 4: Liderados (Exibida apenas se for líder ou possuir liderados) #}
+			{% if pessoa.lideranca or pessoa.liderados|length > 0 %}
+				<p class="section-title">4. Relação de Liderados / Contatos Vinculados</p>
+				<table>
+					<thead>
+						<tr>
+							<th style="width: 40%;">Nome Completo</th>
+							<th style="width: 30%;">Telefone / WhatsApp</th>
+							<th style="width: 30%;">Bairro / Cidade</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for liderado in pessoa.liderados %}
+							<tr>
+								<td>
+									<strong>{{ liderado.nome }}</strong>
+								</td>
+								<td>{{ liderado.telefone|default('Não informado') }}</td>
+								<td>{{ liderado.bairro|default('-') }}{{ liderado.cidade ? ' (' ~ liderado.cidade ~ ')' : '' }}</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="3" class="text-muted">Nenhum liderado ou contato diretamente vinculado a esta liderança até o momento.</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			{% endif %}
+
+			{# Seção 5: Histórico Recente de Demandas / Atendimentos #}
+			<p class="section-title" style="margin-top: 15px;">5. Histórico de Compromissos</p>
+			<table>
+				<thead>
+					<tr>
+						<th style="width: 20%;">Data</th>
+						<th style="width: 40%;">Título do Compromisso / Descrição</th>
+						<th style="width: 20%;">Tipo</th>
+						<th style="width: 20%;">Situação</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for compromisso in pessoa.agendas %}
+						<tr>
+							<td>{{ compromisso.data_hora|date('d/m/Y H:i') }}</td>
+							<td>
+								<strong>{{ compromisso.titulo }}</strong>
+								{% if compromisso.local %}
+									<div class="text-muted" style="font-size: 10px;">{{ compromisso.local }}</div>
+								{% endif %}
+							</td>
+							<td>{{ compromisso.tipoAgenda.nome|default('Geral') }}</td>
+							<td>{{ compromisso.situacaoAgenda.nome|default('-') }}</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4" class="text-muted">Nenhum registro ou histórico ativo vinculado a este cadastro.</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			{# Seção 6: Notas e Observações Gerais Internas #}
+			{% if pessoa.informacoes %}
+				<p class="section-title" style="margin-top: 15px;">6. Observações Internas de Gabinete</p>
+				<div style="font-size: 11px; text-align: justify; border: 1px solid #6b7280; padding: 8px; background: #f9fafb;">
+					{{ pessoa.informacoes|raw }}
+				</div>
+			{% endif %}
+
+			<div class="footer">
+				<span>Ficha Cadastral Oficial Interna - Uso Restrito</span>
+				<span>ID do Registro: #{{ pessoa.id }}</span>
+			</div>
+		</div>
+	</body>
+</html>

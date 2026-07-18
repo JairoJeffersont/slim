@@ -168,4 +168,40 @@ class FichaPessoaController extends BaseController {
             return $this->redirect($response, self::VIEW_ROUTE . '/' . $id);
         }
     }
+
+    public function imprimirFicha(Request $request, Response $response, array $args): Response {
+        try {
+            $id = $args['id'];
+            $gabineteId = $this->usuario['gabinete_id'];
+
+            $pessoa = Pessoa::where('id', $id)
+                ->where('gabinete_id', $gabineteId)
+                ->with([
+                    'orgao',
+                    'profissao',
+                    'usuario',
+                    'indicador',
+                    'liderados', // <-- INSERIDO AQUI
+                    'agendas' => function ($query) {
+                        $query->with(['tipoAgenda', 'situacaoAgenda'])->orderBy('data_hora', 'DESC');
+                    }
+                ])
+                ->first();
+
+            if (!$pessoa) {
+                $this->flash('info', "Registro não encontrado.");
+                return $this->redirect($response, '/pessoas');
+            }
+
+            $payload = [
+                'nome_gabinete' => $this->usuario['nome_parlamentar'] ?? 'Gabinete Principal',
+                'pessoa'        => $pessoa
+            ];
+
+            return $this->renderView($request, $response, 'pages/pessoas/imprimir_ficha.twig', $payload);
+        } catch (Exception $e) {
+            $this->flashError($e);
+            return $this->redirect($response, '/pessoas');
+        }
+    }
 }

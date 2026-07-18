@@ -96,6 +96,8 @@ return function (App $app) {
         $group->get('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'index']);
         $group->post('/pessoas/{id:[0-9]+}', [FichaPessoaController::class, 'updatePessoa']);
         $group->get('/pessoas/{id:[0-9]+}/apagar', [FichaPessoaController::class, 'apagarPessoa']);
+        $group->get('/pessoas/{id:[0-9]+}/imprimir', [FichaPessoaController::class, 'imprimirFicha']);
+
 
         $group->post('/pessoas/{id:[0-9]+}/tornar-lider', [CelulaController::class, 'tornarLider']);
         $group->post('/pessoas/{id:[0-9]+}/remover-lider', [CelulaController::class, 'removerLider']);
