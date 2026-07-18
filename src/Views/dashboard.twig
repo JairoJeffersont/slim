@@ -1,18 +1,105 @@
 {% extends "layouts/app.twig" %}
 
-
 {% block content %}
-{% if status in ['success', 'info'] %}
-		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">
-			{{ message }}
-		</div>
-	{% endif %}
+    {# Alertas do Sistema #}
+    {% if status in ['success', 'info'] %}
+        <div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-3" data-time="5">
+            {{ message }}
+        </div>
+    {% endif %}
 
-	{% if status == 'error' %}
-		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">
-			{{ message }}
-			{{ error_id }}
-		</div>
-	{% endif %}
-	dash
+    {% if status == 'error' %}
+        <div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-3">
+            {{ message }}
+            {{ error_id }}
+        </div>
+    {% endif %}
+
+    {# Layout Empilhado (Largura Total) #}
+    <div class="d-flex flex-column gap-2">
+
+        {# Seção: Compromissos do Dia #}
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-calendar-check text-primary me-2"></i>Compromissos do Dia
+                </h5>
+                <span class="badge bg-primary-subtle text-primary rounded-pill fw-semibold small px-2 py-1">2 hoje</span>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <div class="list-group list-group-flush gap-2">
+
+                    {# Exemplo de Compromisso 1 #}
+                    <div class="list-group-item bg-light rounded p-3 border-0 d-flex align-items-start gap-3">
+                        <span class="badge bg-primary py-2 px-2 fw-bold text-center" style="width: 55px;">
+                            09:00
+                        </span>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1 small">Reunião de Alinhamento</h6>
+                            <p class="text-muted mb-0 small"><i class="bi bi-geo-alt me-1"></i>Gabinete Principal</p>
+                        </div>
+                    </div>
+
+                    {# Exemplo de Compromisso 2 #}
+                    <div class="list-group-item bg-light rounded p-3 border-0 d-flex align-items-start gap-3">
+                        <span class="badge bg-secondary py-2 px-2 fw-bold text-center" style="width: 55px;">
+                            14:30
+                        </span>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1 small">Sessão Plenária</h6>
+                            <p class="text-muted mb-0 small"><i class="bi bi-laptop me-1"></i>Plenário Virtual</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {# Seção: Aniversariantes do Dia #}
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 pb-2 px-4">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-cake2 text-danger me-2"></i>Aniversariantes do Dia
+                </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <div class="list-group list-group-flush gap-2">
+
+                    {# Exemplo de Aniversariante 1 #}
+                    <div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-person-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold text-dark mb-0 small">Mariana Silva</h6>
+                                <small class="text-muted">Assessoria de Imprensa</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-success border-0 rounded-circle" title="Enviar Parabéns">
+                            <i class="bi bi-whatsapp"></i>
+                        </button>
+                    </div>
+
+                    {# Exemplo de Aniversariante 2 #}
+                    <div class="list-group-item rounded p-2 border-0 border-bottom d-flex align-items-center justify-content-between px-0">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-person-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold text-dark mb-0 small">Carlos Eduardo</h6>
+                                <small class="text-muted">Chefe de Gabinete</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-success border-0 rounded-circle" title="Enviar Parabéns">
+                            <i class="bi bi-whatsapp"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}

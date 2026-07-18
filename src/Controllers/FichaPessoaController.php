@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\UploadHelper;
 use App\Models\Pessoa;
 use App\Models\Orgao;
 use App\Models\Profissao;
@@ -12,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class FichaPessoaController extends BaseController {
     private const VIEW_FICHA_PESSOAS = 'pages/pessoas/ficha_pessoa.twig';
     private const VIEW_ROUTE = '/pessoas';
+    private const EXTENSOES_PERMITIDAS = ['jpg', 'jpeg', 'png'];
+
 
     private array $usuario;
 
@@ -76,6 +79,24 @@ class FichaPessoaController extends BaseController {
 
             $dados = $request->getParsedBody();
 
+            $arquivos = $request->getUploadedFiles();
+
+            $arquivoAntigo = $pessoa->foto;
+            $arquivoUrl = $arquivoAntigo;
+
+            if (isset($arquivos['foto']) && $arquivos['foto']->getError() === UPLOAD_ERR_OK) {
+
+                $nomeArquivo = $arquivos['foto']->getClientFilename();
+                $extensao = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+
+                if (!in_array($extensao, self::EXTENSOES_PERMITIDAS)) {
+                    $this->flash('info', 'Tipo de arquivo não permitido');
+                    return $this->redirect($response, self::VIEW_ROUTE . '/' . $pessoa->id);
+                }
+
+                $arquivoUrl = UploadHelper::processar($arquivos['foto'], 'fotos/usuarios/');
+            }
+
             $pessoa->update([
                 'nome' => $dados['nome'],
                 'orgao_id' => $dados['orgao_id'] ?: null,
@@ -92,8 +113,12 @@ class FichaPessoaController extends BaseController {
                 'instagram' => $dados['instagram'],
                 'facebook' => $dados['facebook'],
                 'informacoes' => $dados['informacoes'],
-                'foto' => $dados['foto'] ?? $pessoa->foto // Mantém a foto atual caso não seja enviada uma nova
+                'foto' => $arquivoUrl ?? $pessoa->foto // Mantém a foto atual caso não seja enviada uma nova
             ]);
+
+            if ($arquivoAntigo && $arquivoAntigo !== $arquivoUrl) {
+                UploadHelper::remover($arquivoAntigo);
+            }
 
             $this->flash('success', 'Cadastro atualizado com sucesso');
 
@@ -120,7 +145,15 @@ class FichaPessoaController extends BaseController {
                 return $this->redirect($response, self::VIEW_ROUTE);
             }
 
+            $arquivoUrl = $pessoa->foto;
+
             $pessoa->delete();
+
+
+            if ($arquivoUrl) {
+                UploadHelper::remover($arquivoUrl);
+            }
+
 
             $this->flash('success', 'Cadastro apagado com sucesso');
 

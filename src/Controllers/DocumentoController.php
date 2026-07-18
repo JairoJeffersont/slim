@@ -8,7 +8,6 @@ use App\Models\TipoDocumento;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Psr7\UploadedFile;
 
 class DocumentoController extends BaseController {
     private const VIEW_DOCUMENTOS = 'pages/documentos/documentos.twig';
@@ -101,7 +100,7 @@ class DocumentoController extends BaseController {
                     return $this->redirect($response, self::VIEW_ROUTE);
                 }
 
-                $arquivoUrl = UploadHelper::processar($arquivos['arquivo'], 'documentos/'.$this->usuario['gabinete_id']);
+                $arquivoUrl = UploadHelper::processar($arquivos['arquivo'], 'documentos/');
             }
 
             $tipo = TipoDocumento::find($dados['tipo_documento_id']);

@@ -8,10 +8,14 @@ use App\Models\Profissao;
 use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Helpers\UploadHelper;
+
 
 class PessoaController extends BaseController {
     private const VIEW_PESSOAS = 'pages/pessoas/pessoas.twig';
     private const VIEW_ROUTE = '/pessoas';
+        private const EXTENSOES_PERMITIDAS = ['jpg', 'jpeg', 'png'];
+
 
     private array $usuario;
 
@@ -102,6 +106,23 @@ class PessoaController extends BaseController {
                 }
             }
 
+            $arquivos = $request->getUploadedFiles();
+
+            $arquivoUrl = null;
+
+            if (isset($arquivos['foto']) && $arquivos['foto']->getError() === UPLOAD_ERR_OK) {
+
+                $nomeArquivo = $arquivos['foto']->getClientFilename();
+                $extensao = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
+
+                if (!in_array($extensao, self::EXTENSOES_PERMITIDAS)) {
+                    $this->flash('info', 'Tipo de arquivo não permitido');
+                    return $this->redirect($response, self::VIEW_ROUTE);
+                }
+
+                $arquivoUrl = UploadHelper::processar($arquivos['foto'], 'fotos/usuarios/');
+            }
+
             Pessoa::create([
                 'nome' => $dados['nome'],
                 'orgao_id' => $dados['orgao_id'] ?: null,
@@ -115,9 +136,9 @@ class PessoaController extends BaseController {
                 'bairro' => $dados['bairro'],
                 'cidade' => $dados['cidade'],
                 'estado' => $dados['estado'],
+                'foto' => $arquivoUrl,
                 'instagram' => $dados['instagram'],
                 'facebook' => $dados['facebook'],
-                'foto' => $dados['foto'] ?? null,
                 'informacoes' => $dados['informacoes'],
                 'gabinete_id' => $this->usuario['gabinete_id'],
                 'usuario_id' => $this->usuario['id']

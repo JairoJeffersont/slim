@@ -29,106 +29,116 @@
 	{% endif %}
 
 	<div class="card mb-2 border-0 shadow-sm">
-		<div class="card-body p-2">
+        <div class="card-body p-2">
 
-			<div class="text-start custom-form">
+            <div class="text-start custom-form">
 
-				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
-					<i class="bi bi-person-fill text-secondary"></i>
-					<div class="text-truncate w-100 d-flex align-items-center justify-content-between">
-						<div class="text-truncate">
-							<small class="text-muted d-block" style="font-size:10px;">NOME</small>
-							<span class="small fw-bold text-dark text-truncate d-block">
-								{{ pessoa.nome }}
-							</span>
-						</div>
-						{% if pessoa.lideranca %}
-							<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded">
-								<i class="bi bi-star-fill"></i>
-								Líder
-							</span>
-						{% endif %}
-					</div>
-				</div>
+                <div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
 
-				<div class="row g-2 mb-2">
-					<div class="col-6">
-						<div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
-							<i class="bi bi-building text-secondary fs-6"></i>
-							<div class="text-truncate">
-								<small class="text-muted d-block" style="font-size:10px;">VÍNCULO / ÓRGÃO</small>
-								<span class="small fw-medium text-dark text-truncate d-block">
-									{{ pessoa.orgao.nome|default('Não informado') }}
-								</span>
-							</div>
-						</div>
-					</div>
+                    {# Adicionando a foto de perfil #}
+                    {% if pessoa.foto %}
+                        <img src="{{ pessoa.foto }}" alt="{{ pessoa.nome }}" class="rounded-circle border me-2 border-2 border-white shadow-sm" style="width: 55px; height: 55px; object-fit: cover;">
+                    {% else %}
+                        {# Avatar padrão se não houver foto #}
+                        <div class="bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center border border-2 border-white shadow-sm" style="width: 45px; height: 45px;">
+                            <i class="bi bi-person-fill fs-5"></i>
+                        </div>
+                    {% endif %}
 
-					<div class="col-6">
-						<div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
-							<i class="bi bi-person-workspace text-secondary fs-6"></i>
-							<div class="text-truncate">
-								<small class="text-muted d-block" style="font-size:10px;">PROFISSÃO</small>
-								<span class="small fw-medium text-dark text-truncate d-block">
-									{{ pessoa.profissao.nome|default('Não informada') }}
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
+                    <div class="text-truncate w-100 d-flex align-items-center justify-content-between">
+                        <div class="text-truncate">
+                            <small class="text-muted d-block" style="font-size:10px;">NOME</small>
+                            <span class="small fw-bold text-dark text-truncate d-block">
+                                {{ pessoa.nome }}
+                            </span>
+                        </div>
+                        {% if pessoa.lideranca %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded">
+                                <i class="bi bi-star-fill"></i>
+                                Líder
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
 
-				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
-					<i class="bi bi-envelope-fill text-secondary"></i>
-					<div class="text-truncate">
-						<small class="text-muted d-block" style="font-size:10px;">EMAIL</small>
-						<span class="small fw-medium text-dark">
-							{{ pessoa.email|default('Não informado') }}
-						</span>
-					</div>
-				</div>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
+                            <i class="bi bi-building text-secondary fs-6"></i>
+                            <div class="text-truncate">
+                                <small class="text-muted d-block" style="font-size:10px;">VÍNCULO / ÓRGÃO</small>
+                                <span class="small fw-medium text-dark text-truncate d-block">
+                                    {{ pessoa.orgao.nome|default('Não informado') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
-					<i class="bi bi-telephone-fill text-secondary"></i>
-					<div>
-						<small class="text-muted d-block" style="font-size:10px;">TELEFONE</small>
-						<span class="small fw-medium text-dark">
-							{{ pessoa.telefone|default('Não informado') }}
-						</span>
-					</div>
-				</div>
+                    <div class="col-6">
+                        <div class="p-2 bg-light rounded border d-flex align-items-center gap-2 h-100">
+                            <i class="bi bi-person-workspace text-secondary fs-6"></i>
+                            <div class="text-truncate">
+                                <small class="text-muted d-block" style="font-size:10px;">PROFISSÃO</small>
+                                <span class="small fw-medium text-dark text-truncate d-block">
+                                    {{ pessoa.profissao.nome|default('Não informada') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
-					<i class="bi bi-geo-alt-fill text-secondary"></i>
-					<div class="text-truncate">
-						<small class="text-muted d-block" style="font-size:10px;">LOCALIZAÇÃO</small>
-						<span class="small fw-medium text-dark text-truncate d-block">
-							{{ [pessoa.endereco, pessoa.bairro, pessoa.cidade, pessoa.estado]|filter(v => v is not empty)|join(', ')|default('Não informado') }}
-						</span>
-					</div>
-				</div>
+                <div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+                    <i class="bi bi-envelope-fill text-secondary"></i>
+                    <div class="text-truncate">
+                        <small class="text-muted d-block" style="font-size:10px;">EMAIL</small>
+                        <span class="small fw-medium text-dark">
+                            {{ pessoa.email|default('Não informado') }}
+                        </span>
+                    </div>
+                </div>
 
-				<div class="row g-2 mb-0">
-					<div class="col-6">
-						<div class="p-2 bg-light rounded border">
-							<small class="text-muted d-block" style="font-size:10px;">INSTAGRAM</small>
-							<span class="small fw-medium text-dark text-truncate d-block">
-								{{ pessoa.instagram|default('Não informado') }}
-							</span>
-						</div>
-					</div>
+                <div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+                    <i class="bi bi-telephone-fill text-secondary"></i>
+                    <div>
+                        <small class="text-muted d-block" style="font-size:10px;">TELEFONE</small>
+                        <span class="small fw-medium text-dark">
+                            {{ pessoa.telefone|default('Não informado') }}
+                        </span>
+                    </div>
+                </div>
 
-					<div class="col-6">
-						<div class="p-2 bg-light rounded border">
-							<small class="text-muted d-block" style="font-size:10px;">FACEBOOK</small>
-							<span class="small fw-medium text-dark text-truncate d-block">
-								{{ pessoa.facebook|default('Não informado') }}
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                <div class="d-flex align-items-center gap-2 mb-2 p-2 bg-light rounded border">
+                    <i class="bi bi-geo-alt-fill text-secondary"></i>
+                    <div class="text-truncate">
+                        <small class="text-muted d-block" style="font-size:10px;">LOCALIZAÇÃO</small>
+                        <span class="small fw-medium text-dark text-truncate d-block">
+                            {{ [pessoa.endereco, pessoa.bairro, pessoa.cidade, pessoa.estado]|filter(v => v is not empty)|join(', ')|default('Não informado') }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-0">
+                    <div class="col-6">
+                        <div class="p-2 bg-light rounded border">
+                            <small class="text-muted d-block" style="font-size:10px;">INSTAGRAM</small>
+                            <span class="small fw-medium text-dark text-truncate d-block">
+                                {{ pessoa.instagram|default('Não informado') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="p-2 bg-light rounded border">
+                            <small class="text-muted d-block" style="font-size:10px;">FACEBOOK</small>
+                            <span class="small fw-medium text-dark text-truncate d-block">
+                                {{ pessoa.facebook|default('Não informado') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	{% if pessoa.lideranca %}
 		<div class="card mb-2 border-0 shadow-sm">
@@ -151,7 +161,7 @@
 
 	<div class="card mb-2 border-0 shadow-sm">
 		<div class="card-body p-2">
-			<form class="row g-2 custom-form" method="POST" action="/pessoas/{{ pessoa.id }}">
+			<form class="row g-2 custom-form" method="POST" action="/pessoas/{{ pessoa.id }}" enctype="multipart/form-data">
 
 				<div class="col-md-4 col-12">
 					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome*" value="{{ pessoa.nome }}" required>
@@ -189,7 +199,7 @@
 					</select>
 				</div>
 
-				<div class="col-md-6 col-12">
+				<div class="col-md-4 col-12">
 					<div class="input-group">
 						<select class="form-control form-control-sm" name="orgao_id">
 							<option value="" {% if pessoa.orgao_id is null %} selected {% endif %}>Órgão não informado</option>
@@ -207,7 +217,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-6 col-12">
+				<div class="col-md-4 col-12">
 					<div class="input-group">
 						<select class="form-control form-control-sm" name="profissao_id">
 							<option value="" {% if pessoa.profissao_id is null %} selected {% endif %}>Profissão não informada</option>
@@ -222,6 +232,10 @@
 							<i class="bi bi-plus-circle"></i>
 						</a>
 					</div>
+				</div>
+
+				<div class="col-md-4 col-12">
+					<input type="file" class="form-control form-control-sm" name="foto" required>
 				</div>
 
 				<div class="col-md-6 col-6">

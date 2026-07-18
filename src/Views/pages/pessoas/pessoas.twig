@@ -36,7 +36,7 @@
 
 	<div class="card mb-2 border-0 shadow-sm">
 		<div class="card-body p-3">
-			<form class="row g-2 custom-form" method="POST" action="{% if pessoa %}/pessoas/{{ pessoa.id }}{% else %}/pessoas{% endif %}">
+			<form class="row g-2 custom-form" method="POST" enctype="multipart/form-data" >
 
 				<div class="col-md-4 col-12">
 					<input type="text" class="form-control form-control-sm" name="nome" placeholder="Nome*" value="{{ pessoa.nome|default('') }}" required>
@@ -74,7 +74,7 @@
 					</select>
 				</div>
 
-				<div class="col-md-3 col-12">
+				<div class="col-md-2 col-12">
 					<div class="input-group">
 						<select class="form-control form-control-sm" name="orgao_id">
 							<option value="" selected>Órgão não informado</option>
@@ -88,7 +88,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-3 col-12">
+				<div class="col-md-2 col-12">
 					<div class="input-group">
 						<select class="form-control form-control-sm" name="profissao_id">
 							<option value="" selected>Profissão não informada</option>
@@ -103,12 +103,15 @@
 					</div>
 				</div>
 
-				<div class="col-md-3 col-6">
+				<div class="col-md-2 col-6">
 					<input type="text" class="form-control form-control-sm" name="instagram" placeholder="Instagram (ex: @usuario)" value="{{ pessoa.instagram|default('') }}">
 				</div>
 
-				<div class="col-md-3 col-6">
+				<div class="col-md-2 col-6">
 					<input type="text" class="form-control form-control-sm" name="facebook" placeholder="Facebook (link ou usuário)" value="{{ pessoa.facebook|default('') }}">
+				</div>
+				<div class="col-md-4 col-12">
+					<input type="file" class="form-control form-control-sm" name="foto" required>
 				</div>
 
 				<div class="col-md-12 col-12">

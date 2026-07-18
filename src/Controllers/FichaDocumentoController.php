@@ -85,7 +85,7 @@ class FichaDocumentoController extends BaseController {
                     return $this->redirect($response, self::VIEW_ROUTE . '/' . $documento->id);
                 }
 
-                $arquivoUrl = UploadHelper::processar($arquivos['arquivo'], 'documentos/'.$this->usuario['gabinete_id']);
+                $arquivoUrl = UploadHelper::processar($arquivos['arquivo'], 'documentos/');
             }
 
             $tipo = TipoDocumento::find($dados['tipo_documento_id']);
