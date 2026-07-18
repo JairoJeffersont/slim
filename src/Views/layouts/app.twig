@@ -45,5 +45,42 @@
 		</div>
 		<script src="/vendor/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 		<script src="/js/scripts.js"></script>
+		<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Pega o caminho da URL atual (ex: /pessoas/liderancas)
+        const currentPath = window.location.pathname;
+
+        // 2. Procura por todos os links dentro do menu lateral
+        const menuLinks = document.querySelectorAll("#sidebarMenu a");
+
+        menuLinks.forEach(link => {
+            // Pega o valor do atributo href do link
+            const linkPath = link.getAttribute("href");
+
+            // Verifica se a URL atual corresponde ao link
+            if (currentPath === linkPath) {
+                // Adiciona a classe de ativo no link atual
+                link.classList.add("active", "fw-bold", "bg-secondary", "text-white");
+                // Remove classes antigas que possam conflitar com o fundo escuro (opcional)
+                link.classList.remove("text-secondary");
+
+                // 3. Encontra o menu colapsável pai (o <div class="collapse">)
+                const collapseParent = link.closest(".collapse");
+
+                if (collapseParent) {
+                    // Adiciona a classe do Bootstrap para deixar o menu aberto
+                    collapseParent.classList.add("show");
+
+                    // 4. Encontra o botão que controla esse colapso para mudar a setinha
+                    const buttonToggler = document.querySelector(`[data-bs-target="#${collapseParent.id}"]`);
+                    if (buttonToggler) {
+                        buttonToggler.setAttribute("aria-expanded", "true");
+                        buttonToggler.classList.remove("collapsed");
+                    }
+                }
+            }
+        });
+    });
+</script>
 	</body>
 </html>

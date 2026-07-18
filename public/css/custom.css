@@ -148,3 +148,9 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
         margin-left: -15rem;
     }
 }
+
+#sidebarMenu .list-group-item.active {
+    background-color: #e9ecef !important; /* Um cinza claro de destaque */
+    color: #f8f9fa !important; /* Texto azul padrão do Bootstrap ou a cor do seu sistema */
+    font-weight: 600;
+}
