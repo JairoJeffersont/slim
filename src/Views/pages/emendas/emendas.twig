@@ -1,0 +1,165 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button">
+				<i class="bi bi-house-door-fill"></i>
+				Início</a>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<h6 class="mb-0 fw-bold mb-1">Emendas Parlamentares</h6>
+			<small class="text-muted">Cadastre e acompanhe emendas por tipo, situação, tema, ano e valor.</small>
+		</div>
+	</div>
+
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">{{ message }}</div>
+	{% endif %}
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">{{ message }}
+			{{ error_id }}</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<form class="row g-2 custom-form" method="POST" action="/emendas">
+				<div class="col-md-3 col-12">
+					<select class="form-select form-select-sm" name="tipo_emenda_id" required>
+						<option disabled selected value="">Tipo*</option>
+						{% for tipo in tipos %}
+							<option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-3 col-12">
+					<select class="form-select form-select-sm" name="situacao_emenda_id" required>
+						<option disabled selected value="">Situação*</option>
+						{% for situacao in situacoes %}
+							<option value="{{ situacao.id }}">{{ situacao.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-3 col-12">
+					<select class="form-select form-select-sm" name="tema_emenda_id" required>
+						<option disabled selected value="">Tema*</option>
+						{% for tema in temas %}
+							<option value="{{ tema.id }}">{{ tema.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-3 col-12">
+					<input type="text" class="form-control form-control-sm" name="titulo" placeholder="Título da emenda*" required>
+				</div>
+				<div class="col-md-2 col-6"><input type="text" class="form-control form-control-sm" name="numero" placeholder="Número"></div>
+				<div class="col-md-2 col-6"><input type="number" class="form-control form-control-sm" name="ano" placeholder="Ano" min="1988" max="2100"></div>
+				<div class="col-md-2 col-6"><input type="text" class="form-control form-control-sm" name="valor" placeholder="Valor (0,00)"></div>
+				<div class="col-md-3 col-6"><input type="date" class="form-control form-control-sm" name="data_publicacao"></div>
+				<div class="col-md-12 col-12">
+					<textarea class="form-control form-control-sm" name="descricao" rows="4" placeholder="Descrição"></textarea>
+				</div>
+
+				<div class="col-12">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja cadastrar esta emenda?">
+						<i class="bi bi-floppy-fill me-1"></i>Salvar emenda</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="card border-0 shadow-sm">
+		<div class="card-body p-3">
+			{% set printQuery =
+				'tipo=' ~ ((tipoGet is not null ? tipoGet : '')|url_encode) ~
+				'&situacao=' ~ ((situacaoGet is not null ? situacaoGet : '')|url_encode) ~
+				'&tema=' ~ ((temaGet is not null ? temaGet : '')|url_encode) ~
+				'&ano=' ~ ((anoGet is not null ? anoGet : '')|url_encode) ~
+				'&busca=' ~ (busca|default('')|url_encode)
+			%}
+
+			<div class="d-flex justify-content-start mb-2">
+				<a href="/emendas/imprimir?{{ printQuery }}" style="font-size:0.8em" target="_blank" class="btn btn-outline-secondary btn-sm">
+					<i class="bi bi-printer-fill me-1"></i>
+					Imprimir emendas
+				</a>
+			</div>
+
+			<form class="row g-2 custom-form mb-2" method="GET">
+				<div class="col-md-2">
+					<select class="form-select form-select-sm" name="tipo">
+						<option value="">Todos os tipos</option>
+						{% for tipo in tipos %}
+							<option value="{{ tipo.id }}" {% if tipoGet == tipo.id %} selected {% endif %}>{{ tipo.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-2">
+					<select class="form-select form-select-sm" name="situacao">
+						<option value="">Todas as situações</option>
+						{% for situacao in situacoes %}
+							<option value="{{ situacao.id }}" {% if situacaoGet == situacao.id %} selected {% endif %}>{{ situacao.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-2">
+					<select class="form-select form-select-sm" name="tema">
+						<option value="">Todos os temas</option>
+						{% for tema in temas %}
+							<option value="{{ tema.id }}" {% if temaGet == tema.id %} selected {% endif %}>{{ tema.nome }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="col-md-2"><input type="number" class="form-control form-control-sm" name="ano" value="{{ anoGet }}" placeholder="Ano" min="1988" max="2100"></div>
+				<div class="col-md-3"><input type="text" class="form-control form-control-sm" name="busca" value="{{ busca }}" placeholder="Buscar por título, descrição, número"></div>
+				<div class="col-md-1">
+					<button type="submit" class="btn btn-success btn-sm w-100">
+						<i class="bi bi-search"></i>
+					</button>
+				</div>
+			</form>
+
+			<div class="table-responsive">
+				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+					<thead>
+						<tr>
+							<th>Título</th>
+							<th>Classificação</th>
+							<th>Número / Ano</th>
+							<th>Valor</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item in emendas %}
+							<tr>
+								<td>
+									<a href="/emendas/{{ item.id }}">{{ item.titulo }}</a>
+									{% if item.descricao %}
+										<div class="small text-muted">{{ item.descricao }}</div>
+									{% endif %}
+								</td>
+								<td>
+									<div class="small">{{ item.tipoEmenda.nome|default('Não informado') }}</div>
+									<div class="small text-muted">{{ item.situacaoEmenda.nome|default('Não informado') }}
+										|
+										{{ item.temaEmenda.nome|default('Não informado') }}</div>
+								</td>
+								<td>{{ item.numero|default('-') }}
+									/
+									{{ item.ano|default('-') }}</td>
+								<td>R$
+									{{ item.valor is not null ? item.valor|number_format(2, ',', '.') : '0,00' }}</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="4" class="text-muted">Nenhuma emenda encontrada.</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

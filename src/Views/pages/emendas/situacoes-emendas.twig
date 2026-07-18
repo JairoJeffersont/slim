@@ -1,0 +1,63 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button"><i class="bi bi-house-door-fill"></i> Início</a>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<h6 class="mb-0 fw-bold mb-1">Gerenciamento de Situações de Emenda</h6>
+			<small class="text-muted">Cadastre e organize as situações das emendas parlamentares.</small>
+		</div>
+	</div>
+
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">{{ message }}</div>
+	{% endif %}
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">{{ message }} {{ error_id }}</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-2">
+			<form class="row g-2 custom-form" method="POST" action="{% if situacao %}/emendas/situacoes/{{ situacao.id }}/editar{% else %}/emendas/situacoes{% endif %}">
+				<div class="col-md-3 col-12">
+					<input type="text" class="form-control form-control-sm" name="nome" value="{{ situacao.nome|default('') }}" placeholder="Situação (Ex. Aprovada)" required>
+				</div>
+				<div class="col-md-7 col-12">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="{% if situacao %}Deseja atualizar esta situação?{% else %}Deseja inserir esta situação?{% endif %}">
+						<i class="bi bi-floppy-fill"></i> {% if situacao %}Atualizar{% else %}Salvar{% endif %}
+					</button>
+					{% if not situacao %}
+						<a href="/emendas/situacoes/inserir/padrao" class="btn btn-primary btn-sm confirm" data-text="Deseja inserir as situações padrão?">
+							<i class="bi bi-plus-circle-fill"></i> Inserir situações padrão
+						</a>
+					{% endif %}
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="card border-0 shadow-sm">
+		<div class="card-body p-2">
+			<div class="table-responsive">
+				<table class="table table-hover align-middle mb-0 table-bordered table-striped custom-table">
+					<thead><tr><th style="width:70%">Situação</th><th style="width:30%">Ações</th></tr></thead>
+					<tbody>
+						{% for item in situacoes %}
+							<tr>
+								<td><a href="/emendas/situacoes/{{ item.id }}">{{ item.nome }}</a></td>
+								<td><a href="/emendas/situacoes/{{ item.id }}/apagar" class="confirm badge border border-danger text-danger text-decoration-none py-1.5" data-text="Tem certeza que deseja apagar esta situação?"><i class="bi bi-trash3-fill me-1"></i>Apagar</a></td>
+							</tr>
+						{% else %}
+							<tr><td class="text-muted" colspan="2">Nenhuma situação de emenda encontrada.</td></tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

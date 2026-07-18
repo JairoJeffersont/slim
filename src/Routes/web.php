@@ -7,8 +7,10 @@ use App\Controllers\CadastroController;
 use App\Controllers\CelulaController;
 use App\Controllers\DashboardController;
 use App\Controllers\DocumentoController;
+use App\Controllers\EmendaController;
 use App\Controllers\FichaAgendaController;
 use App\Controllers\FichaDocumentoController;
+use App\Controllers\FichaEmendaController;
 use App\Controllers\FichaOrgaoController;
 use App\Controllers\FichaPessoaController;
 use App\Controllers\GabineteController;
@@ -22,6 +24,9 @@ use App\Controllers\ProfissaoController;
 use App\Controllers\SituacaoAgendaController;
 use App\Controllers\TipoAgendaController;
 use App\Controllers\TipoDocumentoController;
+use App\Controllers\TipoEmendaController;
+use App\Controllers\SituacaoEmendaController;
+use App\Controllers\TemaEmendaController;
 use App\Controllers\UsuarioController;
 use App\Middleware\AuthMiddleware;
 use Slim\App;
@@ -133,6 +138,34 @@ return function (App $app) {
         $group->post('/agenda/tipos/{id:[0-9]+}/editar', [TipoAgendaController::class, 'updateTipoAgenda']);
         $group->get('/agenda/tipos/{id:[0-9]+}/apagar', [TipoAgendaController::class, 'apagarTipoAgenda']);
         $group->get('/agenda/tipos/inserir/padrao', [TipoAgendaController::class, 'inserirTiposPadrao']);
+
+        $group->get('/emendas/tipos', [TipoEmendaController::class, 'index']);
+        $group->post('/emendas/tipos', [TipoEmendaController::class, 'novo']);
+        $group->get('/emendas/tipos/inserir/padrao', [TipoEmendaController::class, 'inserirPadrao']);
+        $group->get('/emendas/tipos/{id:[0-9]+}', [TipoEmendaController::class, 'buscar']);
+        $group->post('/emendas/tipos/{id:[0-9]+}/editar', [TipoEmendaController::class, 'atualizar']);
+        $group->get('/emendas/tipos/{id:[0-9]+}/apagar', [TipoEmendaController::class, 'apagar']);
+
+        $group->get('/emendas/situacoes', [SituacaoEmendaController::class, 'index']);
+        $group->post('/emendas/situacoes', [SituacaoEmendaController::class, 'novo']);
+        $group->get('/emendas/situacoes/inserir/padrao', [SituacaoEmendaController::class, 'inserirPadrao']);
+        $group->get('/emendas/situacoes/{id:[0-9]+}', [SituacaoEmendaController::class, 'buscar']);
+        $group->post('/emendas/situacoes/{id:[0-9]+}/editar', [SituacaoEmendaController::class, 'atualizar']);
+        $group->get('/emendas/situacoes/{id:[0-9]+}/apagar', [SituacaoEmendaController::class, 'apagar']);
+
+        $group->get('/emendas/temas', [TemaEmendaController::class, 'index']);
+        $group->post('/emendas/temas', [TemaEmendaController::class, 'novo']);
+        $group->get('/emendas/temas/inserir/padrao', [TemaEmendaController::class, 'inserirPadrao']);
+        $group->get('/emendas/temas/{id:[0-9]+}', [TemaEmendaController::class, 'buscar']);
+        $group->post('/emendas/temas/{id:[0-9]+}/editar', [TemaEmendaController::class, 'atualizar']);
+        $group->get('/emendas/temas/{id:[0-9]+}/apagar', [TemaEmendaController::class, 'apagar']);
+
+        $group->get('/emendas', [EmendaController::class, 'index']);
+        $group->post('/emendas', [EmendaController::class, 'novo']);
+        $group->get('/emendas/imprimir', [EmendaController::class, 'imprimir']);
+        $group->get('/emendas/{id:[0-9]+}', [FichaEmendaController::class, 'index']);
+        $group->post('/emendas/{id:[0-9]+}', [FichaEmendaController::class, 'atualizar']);
+        $group->get('/emendas/{id:[0-9]+}/apagar', [FichaEmendaController::class, 'apagar']);
 
 
         $group->get('/logout', [LoginController::class, 'logout']);

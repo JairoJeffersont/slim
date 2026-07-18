@@ -229,3 +229,65 @@ CREATE TABLE
         FOREIGN KEY (situacao_agenda_id) REFERENCES situacao_agenda (id) ON DELETE RESTRICT,
         FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    tipo_emenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        gabinete_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT uc_tipo_emenda_nome_gabinete UNIQUE (nome, gabinete_id),
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    situacao_emenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        gabinete_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT uc_situacao_emenda_nome_gabinete UNIQUE (nome, gabinete_id),
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    tema_emenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        gabinete_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT uc_tema_emenda_nome_gabinete UNIQUE (nome, gabinete_id),
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE
+    emenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        gabinete_id INT NOT NULL,
+        tipo_emenda_id INT NOT NULL,
+        situacao_emenda_id INT NOT NULL,
+        tema_emenda_id INT NOT NULL,
+        usuario_id INT DEFAULT NULL,
+        titulo VARCHAR(255) NOT NULL,
+        descricao TEXT DEFAULT NULL,
+        numero VARCHAR(50) DEFAULT NULL,
+        ano INT DEFAULT NULL,
+        valor DECIMAL(15,2) DEFAULT 0,
+        data_publicacao DATE DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (gabinete_id) REFERENCES gabinete (id) ON DELETE RESTRICT,
+        FOREIGN KEY (tipo_emenda_id) REFERENCES tipo_emenda (id) ON DELETE RESTRICT,
+        FOREIGN KEY (situacao_emenda_id) REFERENCES situacao_emenda (id) ON DELETE RESTRICT,
+        FOREIGN KEY (tema_emenda_id) REFERENCES tema_emenda (id) ON DELETE RESTRICT,
+        FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE RESTRICT
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

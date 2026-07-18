@@ -1,0 +1,7 @@
+[
+    {"nome": "Proposta"},
+    {"nome": "Aprovada"},
+    {"nome": "Em execução"},
+    {"nome": "Concluída"},
+    {"nome": "Cancelada"}
+]

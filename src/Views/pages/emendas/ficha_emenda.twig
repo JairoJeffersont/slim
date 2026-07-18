@@ -1,0 +1,48 @@
+{% extends "layouts/app.twig" %}
+
+{% block content %}
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-1">
+			<a class="btn btn-primary btn-sm custom-nav" href="/dashboard" role="button"><i class="bi bi-house-door-fill"></i> Início</a>
+			<a class="btn btn-success btn-sm custom-nav" href="/emendas" role="button"><i class="bi bi-arrow-left"></i> Voltar</a>
+		</div>
+	</div>
+
+	{% if status in ['success', 'info'] %}
+		<div class="alert alert-{{ status }} py-2 px-4 border-0 small fw-semibold mb-2" data-time="5">{{ message }}</div>
+	{% endif %}
+	{% if status == 'error' %}
+		<div class="alert alert-danger py-2 px-4 border-0 small fw-semibold mb-2">{{ message }} {{ error_id }}</div>
+	{% endif %}
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<h6 class="mb-3 fw-bold"><i class="bi bi-cash-coin"></i> Detalhes da Emenda</h6>
+			<div class="row g-2">
+				<div class="col-md-6"><div class="p-2 bg-light rounded border"><small class="text-muted d-block" style="font-size:10px;">TÍTULO</small><span class="small fw-medium text-dark d-block">{{ emenda.titulo }}</span></div></div>
+				<div class="col-md-3"><div class="p-2 bg-light rounded border"><small class="text-muted d-block" style="font-size:10px;">VALOR</small><span class="small fw-medium text-dark d-block">R$ {{ emenda.valor is not null ? emenda.valor|number_format(2, ',', '.') : '0,00' }}</span></div></div>
+				<div class="col-md-3"><div class="p-2 bg-light rounded border"><small class="text-muted d-block" style="font-size:10px;">NÚMERO / ANO</small><span class="small fw-medium text-dark d-block">{{ emenda.numero|default('-') }} / {{ emenda.ano|default('-') }}</span></div></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card mb-2 border-0 shadow-sm">
+		<div class="card-body p-3">
+			<form class="row g-2 custom-form" method="POST" action="/emendas/{{ emenda.id }}">
+				<div class="col-md-3 col-12"><select class="form-select form-select-sm" name="tipo_emenda_id" required>{% for tipo in tipos %}<option value="{{ tipo.id }}" {% if emenda.tipo_emenda_id == tipo.id %}selected{% endif %}>{{ tipo.nome }}</option>{% endfor %}</select></div>
+				<div class="col-md-3 col-12"><select class="form-select form-select-sm" name="situacao_emenda_id" required>{% for situacao in situacoes %}<option value="{{ situacao.id }}" {% if emenda.situacao_emenda_id == situacao.id %}selected{% endif %}>{{ situacao.nome }}</option>{% endfor %}</select></div>
+				<div class="col-md-3 col-12"><select class="form-select form-select-sm" name="tema_emenda_id" required>{% for tema in temas %}<option value="{{ tema.id }}" {% if emenda.tema_emenda_id == tema.id %}selected{% endif %}>{{ tema.nome }}</option>{% endfor %}</select></div>
+				<div class="col-md-3 col-12"><input type="text" class="form-control form-control-sm" name="titulo" value="{{ emenda.titulo }}" required></div>
+				<div class="col-md-2 col-6"><input type="text" class="form-control form-control-sm" name="numero" value="{{ emenda.numero }}" placeholder="Número"></div>
+				<div class="col-md-2 col-6"><input type="number" class="form-control form-control-sm" name="ano" value="{{ emenda.ano }}" placeholder="Ano" min="1988" max="2100"></div>
+				<div class="col-md-2 col-6"><input type="text" class="form-control form-control-sm" name="valor" value="{{ emenda.valor is not null ? emenda.valor|number_format(2, ',', '.') : '' }}" placeholder="Valor"></div>
+				<div class="col-md-3 col-6"><input type="date" class="form-control form-control-sm" name="data_publicacao" value="{{ emenda.data_publicacao ? emenda.data_publicacao|date('Y-m-d') : '' }}"></div>
+				<div class="col-md-12 col-12"><textarea class="form-control form-control-sm" name="descricao" rows="4" placeholder="Descrição">{{ emenda.descricao }}</textarea></div>
+				<div class="col-md-12 d-flex flex-wrap gap-2">
+					<button type="submit" class="btn btn-success btn-sm confirm" data-text="Deseja salvar as alterações?"><i class="bi bi-floppy-fill"></i> Atualizar</button>
+					<a class="btn btn-danger btn-sm confirm" data-text="Deseja apagar esta emenda?" href="/emendas/{{ emenda.id }}/apagar"><i class="bi bi-trash"></i> Apagar</a>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}
